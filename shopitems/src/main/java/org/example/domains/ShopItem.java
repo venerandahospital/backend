@@ -24,4 +24,7 @@ public class ShopItem extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal price;
 
+    @Column
+    public String image;
+
 }

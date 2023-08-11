@@ -6,6 +6,8 @@ import org.example.domains.ShopItem;
 import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.payloads.ShopItemRequest;
 
+import java.util.List;
+
 @ApplicationScoped
 public class ShopItemService {
 
@@ -19,10 +21,19 @@ public class ShopItemService {
         shopItem.category = request.category;
         shopItem.description = request.description;
         shopItem.price = request.price;
+        shopItem.image = request.image;
 
         shopItemRepository.persist(shopItem);
 
         return shopItem;
 
+    }
+
+    public List<ShopItem> getAllShopItems() {
+        return shopItemRepository.listAll();
+    }
+
+    public void deleteAllShopItems(){
+        shopItemRepository.deleteAll();
     }
 }

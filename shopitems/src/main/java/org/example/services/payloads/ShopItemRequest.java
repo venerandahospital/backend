@@ -20,4 +20,7 @@ public class ShopItemRequest {
 
     @Schema(example = "200")
     public BigDecimal price;
+
+    @Schema(example = "https://euro.montbell.com/products/prod_img/zoom/z_2301368_bric.jpg")
+    public String image;
 }
