@@ -1,12 +1,21 @@
 package org.example.services;
 
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Status;
+import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.ShopItem;
 import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.payloads.ShopItemRequest;
+import org.example.services.payloads.ShopItemUpdateRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.listAll;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -22,9 +31,9 @@ public class ShopItemService {
         shopItem.description = request.description;
         shopItem.price = request.price;
         shopItem.image = request.image;
+        shopItem.creationDate = LocalDateTime.now();
 
         shopItemRepository.persist(shopItem);
-
         return shopItem;
 
     }
@@ -33,7 +42,33 @@ public class ShopItemService {
         return shopItemRepository.listAll();
     }
 
+    public List<ShopItem> listLatestFirst() {
+        return listAll(Sort.descending("creationDate")); // Assuming you have a 'createdAt' field in ShopItem class
+    }
+
+    public ShopItem getShopItemById(Long id){
+        return shopItemRepository.findById(id);
+    }
+
     public void deleteAllShopItems(){
         shopItemRepository.deleteAll();
+
+    }
+    public void deleteShopItemById(Long id){
+        ShopItem shopItem = shopItemRepository.findById(id);
+        shopItem.delete();
+    }
+
+    public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
+        ShopItem shopItem = shopItemRepository.findById(id);
+        shopItem.title = request.title;
+        shopItem.price = request.price;
+        shopItem.description = request.description;
+        shopItem.category = request.category;
+        shopItem.image = request.image;
+
+        shopItemRepository.persist(shopItem);
+
+        return shopItem;
     }
 }

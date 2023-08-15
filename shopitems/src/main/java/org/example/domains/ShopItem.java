@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 public class ShopItem extends PanacheEntity {
@@ -26,5 +27,8 @@ public class ShopItem extends PanacheEntity {
 
     @Column
     public String image;
+
+    @Column
+    public LocalDateTime creationDate;
 
 }

@@ -21,8 +21,7 @@ public class User extends PanacheEntity {
     @Column(nullable = false)
     public String role;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username, String email, String role) {
         this.username = username;

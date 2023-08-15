@@ -24,7 +24,7 @@ import org.example.statics.StatusTypes;
 @Path("management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "User Management - User Management", description = "User Management")
+@Tag(name = "User Management Module", description = "User Management")
 
 public class UserController {
 
@@ -36,7 +36,7 @@ public class UserController {
         @Transactional
         @Operation(summary = "Create User", description = "Create user")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
-        public Response createUser(UserRequest request, @Context SecurityContext ctx){
+        public Response createUser(UserRequest request){
             return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,userService.createNewUser(request) )).build();
         }
 

@@ -22,7 +22,6 @@ public class UserService {
 
     private static final String NOT_FOUND = "Not found!";
 
-
     public User createNewUser(UserRequest request){
         User user = new User();
         user.username = request.username;
@@ -84,9 +83,7 @@ public class UserService {
         return new RoleResponse(Arrays.stream(RoleEnums.values())
                 .map(Enum::name)
                 .collect(Collectors.toSet()));
-
     }
-
     public List<User> getAllAgents() {
         return userRepository.listAll();
     }
