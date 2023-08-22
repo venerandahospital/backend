@@ -3,16 +3,13 @@ package org.example.services;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
 import org.example.services.payloads.*;
-import org.example.statics.*;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserService {
@@ -23,6 +20,88 @@ public class UserService {
     private static final String NOT_FOUND = "Not found!";
 
     public User createNewUser(UserRequest request){
+        User user = new User();
+        user.username = request.username;
+        user.email = request.email;
+        user.password = BcryptUtil.bcryptHash(request.password);
+
+        userRepository.persist(user);
+
+        return user;
+
+    }
+
+    public User updateUserById(UpdateRequest request, Long id){
+        User user = userRepository.findById(id);
+        user.username = request.username;
+        user.email = request.email;
+
+        userRepository.persist(user);
+
+        return user;
+
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.listAll();
+    }
+
+
+    public Response deleteUserById(Long id) {
+        User user = userRepository.findById(id);
+
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+
+        userRepository.delete(user);
+
+        return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public User createNewUser(UserRequest request){
         User user = new User();
         user.username = request.username;
         user.email = request.email;
@@ -86,7 +165,7 @@ public class UserService {
     }
     public List<User> getAllAgents() {
         return userRepository.listAll();
-    }
+    }*/
 }
 
 

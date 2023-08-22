@@ -28,7 +28,7 @@ public class ShopItemController {
     ShopItemService shopItemService;
 
     @POST
-    @Path("/add-item")
+    @Path("/add-new-Items")
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -55,7 +55,6 @@ public class ShopItemController {
     }
 
     @DELETE
-    @Path("delete-all")
     @Transactional
     @Operation(summary = "delete all shopItems", description = "delete all shopItems.")
     @APIResponse(description = "Successful", responseCode = "200")

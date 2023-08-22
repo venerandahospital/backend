@@ -4,6 +4,8 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Status;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
@@ -22,6 +24,8 @@ public class ShopItemService {
 
     @Inject
     ShopItemRepository shopItemRepository;
+
+    private static final String NOT_FOUND = "Not found!";
 
     public ShopItem addShopItem(ShopItemRequest request) {
         ShopItem shopItem = new ShopItem();
@@ -42,8 +46,9 @@ public class ShopItemService {
         return shopItemRepository.listAll();
     }
 
+    @Transactional
     public List<ShopItem> listLatestFirst() {
-        return listAll(Sort.descending("creationDate")); // Assuming you have a 'createdAt' field in ShopItem class
+        return shopItemRepository.listAll(Sort.descending("creationDate"));
     }
 
     public ShopItem getShopItemById(Long id){
@@ -60,15 +65,20 @@ public class ShopItemService {
     }
 
     public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
-        ShopItem shopItem = shopItemRepository.findById(id);
-        shopItem.title = request.title;
-        shopItem.price = request.price;
-        shopItem.description = request.description;
-        shopItem.category = request.category;
-        shopItem.image = request.image;
+        return shopItemRepository.findByIdOptional(id)
+                .map(shopItem -> {
+                    shopItem.number = request.number;
+                    shopItem.title = request.title;
+                    shopItem.price = request.price;
+                    shopItem.description = request.description;
+                    shopItem.category = request.category;
+                    shopItem.image = request.image;
 
-        shopItemRepository.persist(shopItem);
+                    shopItem.persist();
 
-        return shopItem;
+                    return shopItem;
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
+
+
 }
