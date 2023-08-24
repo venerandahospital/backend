@@ -9,6 +9,8 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
 import org.example.services.payloads.*;
+import org.example.statics.UserTypes;
+
 import java.util.List;
 
 @ApplicationScoped
@@ -23,6 +25,7 @@ public class UserService {
         User user = new User();
         user.username = request.username;
         user.email = request.email;
+        user.role = UserTypes.CUSTOMER.label;
         user.password = BcryptUtil.bcryptHash(request.password);
 
         userRepository.persist(user);
@@ -59,6 +62,8 @@ public class UserService {
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }
+
+
 
 
 

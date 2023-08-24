@@ -31,16 +31,9 @@ public class UserRepository implements PanacheRepository<User> {
 
     public Boolean verifyPassword(String plainTextPwd, String encryptedPwd) {
         try {
-            // Convert encrypted password string to a password key
             Password rawPassword = ModularCrypt.decode(encryptedPwd);
-
-            // Create the password factory based on the bcrypt algorithm
             PasswordFactory factory = PasswordFactory.getInstance(BCryptPassword.ALGORITHM_BCRYPT);
-
-            // Create encrypted password based on stored string
             BCryptPassword restored = (BCryptPassword) factory.translate(rawPassword);
-
-            // Verify restored password against original
             return factory.verify(restored, plainTextPwd.toCharArray());
 
         } catch (InvalidKeySpecException | NoSuchAlgorithmException | InvalidKeyException e) {

@@ -42,6 +42,7 @@ public class UserController {
 
         @PUT
         @Path("{id}")
+        @RolesAllowed({"ADMIN"})
         @Transactional
         @Operation(summary = "Update User by Id", description = "Update User by Id")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
@@ -51,16 +52,18 @@ public class UserController {
 
         @GET
         @Transactional
+        @RolesAllowed({"ADMIN"})
         @Operation(summary = "get all Users", description = "get all Users")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
-        public Response getAllAgents(){
+        public Response getAllUsers(){
             return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userService.getAllUsers())).build();
         }
 
         @DELETE
         @Path("{id}")
+        @RolesAllowed({"ADMIN"})
         @Transactional
-        @Operation(summary = "get all Users", description = "get all Users")
+        @Operation(summary = "delete user by id", description = "delete user by id")
         @APIResponse(description = "Successful", responseCode = "200")
         public Response deleteUserById(@PathParam("id") Long id){
                 return userService.deleteUserById(id);

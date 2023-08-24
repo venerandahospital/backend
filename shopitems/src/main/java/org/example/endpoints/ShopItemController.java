@@ -1,9 +1,11 @@
 package org.example.endpoints;
 
+import io.vertx.core.http.HttpServerRequest;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -24,11 +26,13 @@ import org.example.services.payloads.ShopItemUpdateRequest;
 @Tag(name = "Shop Management Module", description = "Shop Management")
 public class ShopItemController {
 
+
     @Inject
     ShopItemService shopItemService;
 
     @POST
     @Path("/add-new-Items")
+    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -56,6 +60,7 @@ public class ShopItemController {
 
     @DELETE
     @Transactional
+    @RolesAllowed({"ADMIN"})
     @Operation(summary = "delete all shopItems", description = "delete all shopItems.")
     @APIResponse(description = "Successful", responseCode = "200")
     public Response deleteAllItems(){
@@ -66,6 +71,7 @@ public class ShopItemController {
 
     @PUT
     @Path("{id}")
+    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
@@ -75,6 +81,7 @@ public class ShopItemController {
 
     @DELETE
     @Path("{id}")
+    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "delete shopItem by id ", description = "delete shopItem by id.")
     @APIResponse(description = "Successful", responseCode = "200")

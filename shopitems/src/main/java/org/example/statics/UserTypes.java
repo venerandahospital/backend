@@ -4,6 +4,8 @@ public enum UserTypes {
 
     AGENT("Agent".toUpperCase()),
 
+    ADMIN("Admin".toUpperCase()),
+
     CUSTOMER("Client".toUpperCase());
 
     public final String label;
