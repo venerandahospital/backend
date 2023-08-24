@@ -32,7 +32,7 @@ public class ShopItemController {
 
     @POST
     @Path("/add-new-Items")
-    @RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))

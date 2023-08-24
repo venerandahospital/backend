@@ -41,6 +41,8 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
         String jwt = parseJwt(request);
 
         if (request.path().startsWith("/shop/auth") ||
+                request.path().contains("/shop-item/get-all-Items") ||
+                request.path().contains("/shop-item/add-new-Items") ||
                 request.path().contains("/user-login")) {
 
             return Uni.createFrom()

@@ -10,8 +10,6 @@ public class UserAuthRequest {
     @Schema(example = "123")
     public String password;
 
-    @Schema(example = "ADMIN")
-    public String role;
 
 
 
