@@ -32,9 +32,9 @@ public class UserController {
         UserService userService;
 
         @POST
-        @Path("create")
+        @Path("signup")
         @Transactional
-        @Operation(summary = "Create User", description = "Create user")
+        @Operation(summary = "Customer Signup", description = "Customer Signup")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
         public Response createUser(UserRequest request){
             return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,userService.createNewUser(request) )).build();
@@ -52,7 +52,7 @@ public class UserController {
 
         @GET
         @Transactional
-        @RolesAllowed({"ADMIN"})
+        //@RolesAllowed({"ADMIN"})
         @Operation(summary = "get all Users", description = "get all Users")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
         public Response getAllUsers(){

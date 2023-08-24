@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
+import org.example.statics.RoleEnums;
 
 import static org.example.statics.RoleEnums.ADMIN;
 
@@ -21,7 +22,7 @@ public class Initializer {
         if (Boolean.FALSE.equals(userRepository.usernameExists("admin"))){
             User adminUser = new User();
             adminUser.username = "admin";
-            adminUser.role = ADMIN.label;
+            adminUser.role = RoleEnums.ADMIN.label;
             adminUser.email = "admin@shop.com";
             adminUser.password = BcryptUtil.bcryptHash("123");
 
