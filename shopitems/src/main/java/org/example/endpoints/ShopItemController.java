@@ -51,6 +51,7 @@ public class ShopItemController {
 
     @GET
     @Path("{id}")
+    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "get shopItem by id", description = "get shopItem by id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))

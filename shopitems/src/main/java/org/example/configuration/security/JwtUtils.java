@@ -42,7 +42,7 @@ public class JwtUtils {
 
         return Jwt.subject(user.email).issuedAt(Instant.now())
                 .groups(Set.of(user.role))
-                .expiresIn(Duration.ofHours(24))
+                .expiresIn(Duration.ofSeconds(1000))
                 .upn(user.username)
                 .issuer("shop server")
                 .signWithSecret(jwtSecret);

@@ -52,6 +52,7 @@ public class UserController {
 
         @GET
         @Transactional
+        @Path("/get-all-users")
         //@RolesAllowed({"ADMIN"})
         @Operation(summary = "get all Users", description = "get all Users")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
