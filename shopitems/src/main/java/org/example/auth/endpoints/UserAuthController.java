@@ -36,7 +36,7 @@ public class UserAuthController {
         return Response.ok(response).build();
     }
 
-   /* @POST
+    @POST
     @Path("reset-link")
     @Operation(summary = "Send password reset link", description = "Send password reset link")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -44,7 +44,8 @@ public class UserAuthController {
         return userAuthService.sendResetPassword(request);
     }
 
-    @POST
+
+   /* @POST
     @Path("reset-password")
     @Operation(summary = "Reset password ", description = "Do a password reset")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))

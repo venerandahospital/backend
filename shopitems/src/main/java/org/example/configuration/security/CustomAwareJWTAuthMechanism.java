@@ -45,7 +45,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/shop-item/add-new-Items") ||
                 request.path().contains("/user-management/signup") ||
                 request.path().contains("/user-management/get-all-users") ||
-                //request.path().contains("/shop-item") ||
+                request.path().contains("/auth/reset-link") ||
 
 
                 request.path().contains("/user-login")) {
