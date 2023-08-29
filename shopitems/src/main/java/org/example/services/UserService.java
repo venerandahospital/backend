@@ -20,7 +20,7 @@ public class UserService {
     @Inject
     UserRepository userRepository;
 
-    private static final String NOT_FOUND = "Not found!";
+    public static final String NOT_FOUND = "Not found!";
 
     public User createNewUser(UserRequest request){
         User user = new User();

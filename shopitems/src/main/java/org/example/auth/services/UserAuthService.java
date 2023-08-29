@@ -1,22 +1,27 @@
 package org.example.auth.services;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
-import org.example.auth.services.payloads.ResetPasswordRequest;
-import org.example.auth.services.payloads.UserAuthRequest;
-import org.example.auth.services.payloads.UserAuthResponse;
+import org.example.auth.services.payloads.*;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.configuration.security.JwtUtils;
+import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
 import org.example.messages.EmailService;
+import org.example.statics.RoleEnums;
 import org.example.statics.UserTypes;
 import org.jboss.logging.Logger;
 
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.example.services.UserService.NOT_FOUND;
 
 @ApplicationScoped
 
@@ -52,8 +57,61 @@ public class UserAuthService {
                             return Response.ok(new ResponseMessage(ActionMessages.SEND.label)).build();
                         }
                 )
-                .orElseThrow(() -> new WebApplicationException("Not found",404));
+                .orElseThrow(() -> new WebApplicationException("User Not found",404));
     }
+
+    public User updatePassword(Long id, UpdatePasswordRequest request){
+        return userRepository.findByIdOptional(id)
+                .map(user -> Optional.ofNullable(userRepository.login(user.username, request.oldPassword))
+                        .map(confirmedUser -> validateUser(user,request))
+                        .orElseThrow(() -> new WebApplicationException("Invalid credentials",409))
+                )
+                .orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+    }
+
+    public User validateUser(User user, UpdatePasswordRequest request){
+        if (Boolean.FALSE.equals(request.oldPassword.equals(request.newPassword))){
+            user.password = BcryptUtil.bcryptHash(request.newPassword);
+            user.persist();
+
+            return user;
+        }
+        throw new WebApplicationException("Your new password must be unique",409);
+    }
+
+    public Response updatePassword(String token, ForcePasswordUpdateRequest request){
+        if (Boolean.TRUE.equals(jwtUtils.validateResetToken(token))){
+            return userRepository.findByEmailOptional(jwtUtils.getJwt().getSubject())
+                    .map(user -> {
+                        user.password = BcryptUtil.bcryptHash(request.newPassword);
+                        user.persist();
+
+                        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label)).build();
+                    })
+                    .orElseThrow(() -> new WebApplicationException("Something went wrong Contact Admin"));
+        }
+        throw new WebApplicationException("Invalid token",403);
+    }
+
+
+
+    public User updateRole(Long id , RoleRequest request){
+        return userRepository.findByIdOptional(id)
+                .map(user -> {
+                    user.role = RoleEnums.valueOf(request.role).name();
+                    user.persist();
+
+                    return user;
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+    }
+
+    public RoleResponse roles(){
+        return new RoleResponse(Arrays.stream(RoleEnums.values())
+                .map(Enum::name)
+                .collect(Collectors.toSet()));
+
+    }
+
 
 
 }
