@@ -67,7 +67,6 @@ public class UserAuthController {
         return userAuthService.updatePassword(token, request);
     }
 
-
     @PUT
     @Path("update-agent-role/{id}")
     @Transactional

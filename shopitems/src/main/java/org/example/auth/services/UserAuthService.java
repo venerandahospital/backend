@@ -3,6 +3,7 @@ package org.example.auth.services;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.payloads.*;
@@ -48,16 +49,41 @@ public class UserAuthService {
                 .orElseThrow(() -> new WebApplicationException("user Not Found", 404));
     }
 
+    @Transactional
     public Response sendResetPassword(ResetPasswordRequest request){
         return userRepository.findByEmailOptional(request.email)
                 .map(user -> {
-                            emailService.sendPasswordResetLink(user)
-                                    .subscribe()
-                                    .with(voidItem -> Logger.getLogger(UserAuthService.class).info("Email sent"));
-                            return Response.ok(new ResponseMessage(ActionMessages.SEND.label)).build();
+                    String generatedPassword = generateRandomPassword(5);
+
+                    emailService.sendPasswordResetLink(user, generatedPassword)
+                            .subscribe()
+                            .with(voidItem -> Logger.getLogger(UserAuthService.class).info("Email sent"));
+
+                    user.password = BcryptUtil.bcryptHash(generatedPassword);
+
+
+                    userRepository.persist(user);
+
+
+                    return Response.ok(new ResponseMessage(ActionMessages.SEND.label)).build();
                         }
                 )
                 .orElseThrow(() -> new WebApplicationException("User Not found",404));
+    }
+
+
+    private String generateRandomPassword(int length) {
+        // Define characters that can be used in the password
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder password = new StringBuilder();
+
+        // Generate a random password of the specified length
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * characters.length());
+            password.append(characters.charAt(randomIndex));
+        }
+
+        return password.toString();
     }
 
     public User updatePassword(Long id, UpdatePasswordRequest request){
