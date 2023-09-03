@@ -46,9 +46,6 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/auth/reset-link") ||
 
 
-
-
-
                 request.path().contains("/user-login")) {
 
             return Uni.createFrom()

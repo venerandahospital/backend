@@ -153,9 +153,6 @@ public class UserController {
        /////end points for roles//////////////////////////////////////////////////////////////////////////
 
 
-
-
-
         @GET
         @Path("get-all-roles")
         @RolesAllowed({"ADMIN"})
