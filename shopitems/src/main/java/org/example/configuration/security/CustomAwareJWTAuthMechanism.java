@@ -40,13 +40,11 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
         HttpServerRequest request = context.request();
         String jwt = parseJwt(request);
 
-        if (request.path().startsWith("/shop/auth") ||
+        if (request.path().startsWith("/auth/user-login") ||
                 request.path().contains("/shop-item/get-all-Items") ||
-                request.path().contains("/shop-item/add-new-Items") ||
                 request.path().contains("/user-management/signup") ||
-                request.path().contains("/user-management/get-all-users") ||
                 request.path().contains("/auth/reset-link") ||
-                request.path().contains("/shop/shop-item") ||
+
 
 
 

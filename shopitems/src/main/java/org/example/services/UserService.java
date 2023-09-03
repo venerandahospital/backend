@@ -1,9 +1,19 @@
 package org.example.services;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.panache.common.Sort;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.example.auth.services.payloads.RoleRequest;
+import org.example.auth.services.payloads.RoleResponse;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
@@ -12,7 +22,9 @@ import org.example.services.payloads.*;
 import org.example.statics.RoleEnums;
 import org.example.statics.UserTypes;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserService {
@@ -22,7 +34,7 @@ public class UserService {
 
     public static final String NOT_FOUND = "Not found!";
 
-    public User createNewUser(UserRequest request){
+    public User createNewCustomerUser(UserRequest request){
         User user = new User();
         user.username = request.username;
         user.email = request.email;
@@ -33,6 +45,11 @@ public class UserService {
 
         return user;
 
+    }
+
+    public User getById(Long id){
+        return userRepository.findByIdOptional(id)
+                .orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 
     public User updateUserById(UpdateRequest request, Long id){
@@ -51,6 +68,7 @@ public class UserService {
     }
 
 
+
     public Response deleteUserById(Long id) {
         User user = userRepository.findById(id);
 
@@ -62,6 +80,52 @@ public class UserService {
         userRepository.delete(user);
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
+    }
+
+    public void deleteAllUsers(){
+        userRepository.deleteAll();
+
+    }
+
+
+
+  //////////////////////////////////////agent section //////////////////////////////////
+
+
+
+    public User createNewAgentUser(AgentUserRequest request){
+        User user = new User();
+        user.username = request.username;
+        user.email = request.email;
+        user.role = RoleEnums.valueOf(request.role).label;
+        user.password = BcryptUtil.bcryptHash(request.password);
+
+        userRepository.persist(user);
+
+        return user;
+
+    }
+
+
+    public User updateAgentRole(Long id , UpdateAgentRole request){
+        return userRepository.findByIdOptional(id)
+                .map(user -> {
+                    user.role = RoleEnums.valueOf(request.role).name();
+                    userRepository.persist(user);
+
+                    return user;
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+    }
+
+
+    //////////////////////////////////////role section //////////////////////////////////
+
+
+    public RoleResponse getAllRoles(){
+        return new RoleResponse(Arrays.stream(RoleEnums.values())
+                .map(Enum::name)
+                .collect(Collectors.toSet()));
+
     }
 
 

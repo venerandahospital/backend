@@ -32,7 +32,7 @@ public class ShopItemController {
 
     @POST
     @Path("/add-new-Items")
-    //@RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -51,7 +51,6 @@ public class ShopItemController {
 
     @GET
     @Path("{id}")
-    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "get shopItem by id", description = "get shopItem by id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -72,7 +71,7 @@ public class ShopItemController {
 
     @PUT
     @Path("{id}")
-    //@RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))

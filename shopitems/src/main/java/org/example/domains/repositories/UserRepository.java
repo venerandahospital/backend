@@ -54,7 +54,15 @@ public class UserRepository implements PanacheRepository<User> {
         return find("email", email).firstResult();
     }
 
-    public List<User> getAdminUsers() {
+    public List<User> getAllAdmins() {
         return list("role", RoleEnums.ADMIN.label);
+    }
+
+    public List<User> getAllCustomers() {
+        return list("role", RoleEnums.CUSTOMER.label);
+    }
+
+    public List<User> getAllAgents() {
+        return list("role", RoleEnums.AGENT.label);
     }
 }

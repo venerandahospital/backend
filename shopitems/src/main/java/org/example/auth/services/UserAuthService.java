@@ -98,7 +98,7 @@ public class UserAuthService {
     public User validateUser(User user, UpdatePasswordRequest request){
         if (Boolean.FALSE.equals(request.oldPassword.equals(request.newPassword))){
             user.password = BcryptUtil.bcryptHash(request.newPassword);
-            user.persist();
+            userRepository.persist(user);
 
             return user;
         }
@@ -110,7 +110,7 @@ public class UserAuthService {
             return userRepository.findByEmailOptional(jwtUtils.getJwt().getSubject())
                     .map(user -> {
                         user.password = BcryptUtil.bcryptHash(request.newPassword);
-                        user.persist();
+                        userRepository.persist(user);
 
                         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label)).build();
                     })
@@ -121,22 +121,7 @@ public class UserAuthService {
 
 
 
-    public User updateRole(Long id , RoleRequest request){
-        return userRepository.findByIdOptional(id)
-                .map(user -> {
-                    user.role = RoleEnums.valueOf(request.role).name();
-                    user.persist();
 
-                    return user;
-                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
-    }
-
-    public RoleResponse roles(){
-        return new RoleResponse(Arrays.stream(RoleEnums.values())
-                .map(Enum::name)
-                .collect(Collectors.toSet()));
-
-    }
 
 
 

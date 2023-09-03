@@ -11,8 +11,6 @@ public class UserAuthRequest {
     public String password;
 
 
-
-
     public UserAuthRequest() {
     }
 

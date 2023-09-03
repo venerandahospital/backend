@@ -74,7 +74,7 @@ public class ShopItemService {
                     shopItem.category = request.category;
                     shopItem.image = request.image;
 
-                    shopItem.persist();
+                    shopItemRepository.persist(shopItem);
 
                     return shopItem;
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
