@@ -46,8 +46,8 @@ public class UserController {
         }
 
         @GET
-        @Path("{id}")
-        @RolesAllowed({"ADMIN"})
+        @Path("get-user/{id}")
+        //@RolesAllowed({"ADMIN"})
         @Operation(summary = "Get customer or agent by Id", description = "Get customer or agent by Id")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
         public Response getById(@PathParam("id") Long id){
@@ -55,8 +55,8 @@ public class UserController {
         }
 
         @PUT
-        @Path("{id}")
-        @RolesAllowed({"ADMIN","CUSTOMER"})
+        @Path("update-user/{id}")
+        //@RolesAllowed({"ADMIN","CUSTOMER"})
         @Transactional
         @Operation(summary = "Update customer or agent by Id", description = "Update customer or agent by Id")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
@@ -67,7 +67,7 @@ public class UserController {
         @GET
         @Transactional
         @Path("/get-all-users")
-        @RolesAllowed({"ADMIN"})
+       // @RolesAllowed({"ADMIN"})
         @Operation(summary = "get all Users customers and agents", description = "get all Users customers and agents")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
         public Response getAllUsers(){

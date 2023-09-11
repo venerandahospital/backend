@@ -1,10 +1,15 @@
 package org.example.services;
 
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
+import io.smallrye.mutiny.Multi;
+import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.sqlclient.Row;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Status;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
@@ -13,9 +18,17 @@ import org.example.domains.ShopItem;
 import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.payloads.ShopItemRequest;
 import org.example.services.payloads.ShopItemUpdateRequest;
+import org.example.services.payloads.FullShopItemResponse;
+import org.example.services.payloads.ShopItemParametersRequest;
 
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.listAll;
 
@@ -24,6 +37,9 @@ public class ShopItemService {
 
     @Inject
     ShopItemRepository shopItemRepository;
+
+    @Inject
+    MySQLPool client;
 
     private static final String NOT_FOUND = "Not found!";
 
@@ -64,6 +80,14 @@ public class ShopItemService {
         shopItem.delete();
     }
 
+    public List<ShopItem> findItemsByCategoryAndTitle(String category, String title) {
+        return shopItemRepository.list("category = :category and title = :title",
+                Sort.by("category").and("title"),
+                Parameters.with("category", category).and("title", title));
+    }
+
+
+
     public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
         return shopItemRepository.findByIdOptional(id)
                 .map(shopItem -> {
@@ -81,4 +105,67 @@ public class ShopItemService {
     }
 
 
-}
+        public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
+            StringJoiner whereClause = getStringJoiner(request);
+
+            String sql = """
+                USE shop;
+                
+                SELECT
+                id,
+                category,
+                title
+                FROM shopitem
+                %s
+                ORDER BY title;
+                """.formatted(whereClause);
+
+            return client.query(sql)
+                    .execute()
+                    .onItem()
+                    .transformToMulti(rows -> Multi.createFrom().iterable(rows))
+                    .onItem()
+                    .transform(this::from)
+                    .collect().asList().await()
+                    .indefinitely();
+        }
+
+    private FullShopItemResponse from(Row row){
+
+        FullShopItemResponse response = new FullShopItemResponse();
+        response.id = row.getLong("ticketId");
+        response.description = row.getString("description");
+        response.category = row.getString("category");
+        response.title = row.getString("title");
+
+
+        return response;
+    }
+
+
+
+        private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+            AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
+
+            Map<String, String> searchCriteria = new HashMap<>();
+            searchCriteria.put("category", request.category);
+            searchCriteria.put("title", request.title);
+
+            StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
+
+            searchCriteria.forEach((key, value) -> {
+                if (value != null && !value.isEmpty()) {
+                    whereClause.add(key + " = '" + value + "'");
+                    hasSearchCriteria.set(Boolean.TRUE);
+                }
+            });
+
+            if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
+                whereClause.add("1 = 1");
+            }
+            return whereClause;
+        }
+    }
+
+
+

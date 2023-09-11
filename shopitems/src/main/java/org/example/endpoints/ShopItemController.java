@@ -1,11 +1,9 @@
 package org.example.endpoints;
 
-import io.vertx.core.http.HttpServerRequest;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -13,12 +11,15 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.example.domains.ShopItem;
 import org.example.domains.User;
 import org.example.services.ShopItemService;
 import org.example.services.payloads.ShopItemRequest;
 import org.example.services.payloads.ShopItemResponse;
 import org.example.configuration.handler.*;
-import org.example.services.payloads.ShopItemUpdateRequest;
+import org.example.services.payloads.*;
+
+import java.util.List;
 
 @Path("/shop-item")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,6 +30,19 @@ public class ShopItemController {
 
     @Inject
     ShopItemService shopItemService;
+
+    @GET
+    @Path("/search")
+    @RolesAllowed({"ADMIN","AGENT"})
+    @Transactional
+    @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
+    public List<ShopItem> searchItems(
+            @QueryParam("category") String category,
+            @QueryParam("title") String title) {
+        return shopItemService.findItemsByCategoryAndTitle(category, title);
+    }
+
 
     @POST
     @Path("/add-new-Items")
@@ -47,6 +61,15 @@ public class ShopItemController {
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
     public Response getShopItems() {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.listLatestFirst())).build();
+    }
+
+    @GET
+    @Path("/get-Items-advanced-search")
+    @RolesAllowed({"ADMIN","USER","AGENT"})
+    @Operation(summary = "get shop items advanced search", description = "get shop items advanced search.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = FullShopItemResponse.class)))
+    public Response getShopItemsAdvancedFilter(@BeanParam ShopItemParametersRequest request){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getShopItemsAdvancedFilter(request))).build();
     }
 
     @GET

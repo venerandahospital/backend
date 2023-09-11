@@ -23,7 +23,7 @@ public class Initializer {
             User adminUser = new User();
             adminUser.username = "admin";
             adminUser.role = RoleEnums.ADMIN.label;
-            adminUser.email = "admin@shop.com";
+            adminUser.email = "herd@shop.com";
             adminUser.password = BcryptUtil.bcryptHash("123");
 
             adminUser.persist();
