@@ -33,7 +33,7 @@ public class ShopItemController {
 
     @GET
     @Path("/search")
-    @RolesAllowed({"ADMIN","AGENT"})
+    //@RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -46,7 +46,7 @@ public class ShopItemController {
 
     @POST
     @Path("/add-new-Items")
-    @RolesAllowed({"ADMIN","AGENT"})
+    //@RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -65,7 +65,7 @@ public class ShopItemController {
 
     @GET
     @Path("/get-Items-advanced-search")
-    @RolesAllowed({"ADMIN","USER","AGENT"})
+    //@RolesAllowed({"ADMIN","USER","AGENT"})
     @Operation(summary = "get shop items advanced search", description = "get shop items advanced search.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = FullShopItemResponse.class)))
     public Response getShopItemsAdvancedFilter(@BeanParam ShopItemParametersRequest request){
