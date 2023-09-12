@@ -46,7 +46,7 @@ public class ShopItemController {
     @Operation(summary = "get all shopItems", description = "get all shopItems.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
     public Response getShopItems() {
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getAllShopItems())).build();
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.listLatestFirst())).build();
     }
 
     @GET
@@ -72,7 +72,7 @@ public class ShopItemController {
 
     @PUT
     @Path("{id}")
-    @RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
