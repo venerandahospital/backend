@@ -34,9 +34,16 @@ public class EmailService {
         return reactiveMailer.send(Mail.withHtml(user.email, "Sign Credentials",mailData));
     }
 
-    public Uni<Void> sendPasswordResetLink(User user){
+    public Uni<Void> sendPasswordResetLink(User user, String generatedPassword){
         String resetToken = jwtUtils.generateResetToken(user.email);
-        String mailData = reset.data("username",user.username,"token",resetToken,"loginUrl", AppConstants.LOGIN_URL,"logo", AppConstants.LOGO, "link", AppConstants.LINK).render();
+        String mailData = reset
+                .data("username", user.username)
+                .data("token", resetToken)
+                .data("loginUrl", AppConstants.LOGIN_URL)
+                .data("logo", AppConstants.LOGO)
+                .data("link", AppConstants.LINK)
+                .data("password", generatedPassword)
+                .render();
         return reactiveMailer.send(Mail.withHtml(user.email, "Password Reset",mailData));
     }
 

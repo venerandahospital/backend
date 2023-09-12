@@ -1,6 +1,7 @@
 package org.example.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
@@ -29,6 +30,7 @@ public class ShopItem extends PanacheEntity {
     public String image;
 
     @Column
+    @JsonbDateFormat(value = "dd/MM/yyyy")
     public LocalDateTime creationDate;
 
 }

@@ -52,38 +52,20 @@ public class UserAuthController {
     @PUT
     @Path("update-password/{id}")
     @Transactional
-    @RolesAllowed({"ADMIN","CUSTOMER"})
+    @RolesAllowed({"ADMIN","CUSTOMER","AGENT"})
     @Operation(summary = "Update user password", description = "Update user password")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
     public Response updatePassword(@PathParam("id") Long id, UpdatePasswordRequest request){
         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userAuthService.updatePassword(id, request) )).build();
     }
 
-    @POST
+    /*@POST
     @Path("reset-password")
     @Operation(summary = "Reset password ", description = "password reset")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
     public Response reset(@QueryParam("token") String token, ForcePasswordUpdateRequest request) {
         return userAuthService.updatePassword(token, request);
-    }
+    }*/
 
 
-    @PUT
-    @Path("update-agent-role/{id}")
-    @Transactional
-    @RolesAllowed({"ADMIN","USER"})
-    @Operation(summary = "Update User Role by Id", description = "Update User Role by Id")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
-    public Response updateRole(@PathParam("id") Long id, RoleRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userAuthService.updateRole(id, request) )).build();
-    }
-
-    @GET
-    @Path("/roles")
-    @RolesAllowed({"ADMIN","USER"})
-    @Operation(summary = "get roles", description = "get roles")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = RoleResponse.class)))
-    public Response role(){
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userAuthService.roles() )).build();
-    }
 }

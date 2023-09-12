@@ -14,9 +14,11 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.example.auth.services.payloads.RoleResponse;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
+import org.example.domains.repositories.UserRepository;
 import org.example.services.UserService;
 import org.example.services.payloads.*;
 import org.example.statics.StatusTypes;
@@ -31,20 +33,32 @@ public class UserController {
         @Inject
         UserService userService;
 
+        @Inject
+        UserRepository userRepository;
+
         @POST
         @Path("signup")
         @Transactional
         @Operation(summary = "Customer Signup", description = "Customer Signup")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
         public Response createUser(UserRequest request){
-            return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,userService.createNewUser(request) )).build();
+            return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,userService.createNewCustomerUser(request) )).build();
+        }
+
+        @GET
+        @Path("get-user/{id}")
+        //@RolesAllowed({"ADMIN"})
+        @Operation(summary = "Get customer or agent by Id", description = "Get customer or agent by Id")
+        @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
+        public Response getById(@PathParam("id") Long id){
+                return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userService.getById(id) )).build();
         }
 
         @PUT
-        @Path("{id}")
-        @RolesAllowed({"ADMIN"})
+        @Path("update-user/{id}")
+        //@RolesAllowed({"ADMIN","CUSTOMER"})
         @Transactional
-        @Operation(summary = "Update User by Id", description = "Update User by Id")
+        @Operation(summary = "Update customer or agent by Id", description = "Update customer or agent by Id")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
         public Response update(@PathParam("id") Long id, UpdateRequest request){
             return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userService.updateUserById(request, id) )).build();
@@ -53,56 +67,101 @@ public class UserController {
         @GET
         @Transactional
         @Path("/get-all-users")
-        //@RolesAllowed({"ADMIN"})
-        @Operation(summary = "get all Users", description = "get all Users")
+       // @RolesAllowed({"ADMIN"})
+        @Operation(summary = "get all Users customers and agents", description = "get all Users customers and agents")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
         public Response getAllUsers(){
             return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userService.getAllUsers())).build();
+        }
+
+        @GET
+        @Transactional
+        @Path("/get-all-customers")
+        @RolesAllowed({"ADMIN","AGENT"})
+        @Operation(summary = "get all customers ", description = "get all customers")
+        @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
+        public Response getAllCustomers(){
+                return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userRepository.getAllCustomers())).build();
         }
 
         @DELETE
         @Path("{id}")
         @RolesAllowed({"ADMIN"})
         @Transactional
-        @Operation(summary = "delete user by id", description = "delete user by id")
+        @Operation(summary = "delete customer or agent by id", description = "delete customer or agent by id")
         @APIResponse(description = "Successful", responseCode = "200")
         public Response deleteUserById(@PathParam("id") Long id){
                 return userService.deleteUserById(id);
         }
 
-        /*@PUT
-        @Path("update-password/{id}")
+
+        @DELETE
         @Transactional
-        @Operation(summary = "Update User Password by Id", description = "Update User Password by Id")
+        @RolesAllowed({"ADMIN"})
+        @Operation(summary = "delete all customers and agents", description = "delete all customers and agents.")
+        @APIResponse(description = "Successful", responseCode = "200")
+        public Response deleteAllItems(){
+                userService.deleteAllUsers();
+                return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
+
+        }
+
+        ///// agent endpoints///////////////////////////////////////////////////////////
+
+
+        @POST
+        @Path("agent-signup")
+        @RolesAllowed({"ADMIN"})
+        @Transactional
+        @Operation(summary = "Agent Signup", description = "Agent Signup")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
-        public Response updatePassword(@PathParam("id") Long id, UpdatePasswordRequest request){
-            return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userService.updatePassword(id, request) )).build();
+        public Response createAgentUser(AgentUserRequest request){
+                return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,userService.createNewAgentUser(request) )).build();
         }
 
         @GET
-        @Path("{id}")
-        @Operation(summary = "Get User by Id", description = "Get User by Id")
-        @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
-        public Response getById(@PathParam("id") Long id){
-            return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userService.getById(id) )).build();
+        @Transactional
+        @Path("/get-all-agents")
+        @RolesAllowed({"ADMIN"})
+        @Operation(summary = "get all agents ", description = "get all agents")
+        @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
+        public Response getAllAgents(){
+                return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userRepository.getAllAgents())).build();
         }
+
 
         @PUT
-        @Path("update-User-role/{id}")
+        @Path("update-agent-role/{id}")
         @Transactional
-        @Operation(summary = "Update User Role by Id", description = "Update User Role by Id")
+        @RolesAllowed({"ADMIN"})
+        @Operation(summary = "Update Agent Role by Id", description = "Update support Agent Role by Id")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
-        public Response updateRole(@PathParam("id") Long id, RoleRequest request){
-            return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userService.updateRole(id, request) )).build();
+        public Response updateRole(@PathParam("id") Long id, UpdateAgentRole request){
+                return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userService.updateAgentRole(id, request) )).build();
         }
 
         @GET
-        @Path("/roles")
-        @Operation(summary = "get roles", description = "get roles")
+        @Transactional
+        @Path("/get-all-admins")
+        @RolesAllowed({"ADMIN"})
+        @Operation(summary = "get all admins ", description = "get all admins")
+        @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class,type = SchemaType.ARRAY)))
+        public Response getAllAdmins(){
+                return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userRepository.getAllAdmins())).build();
+        }
+
+       /////end points for roles//////////////////////////////////////////////////////////////////////////
+
+
+        @GET
+        @Path("get-all-roles")
+        @RolesAllowed({"ADMIN"})
+        @Operation(summary = "get all roles", description = "get all roles")
         @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = RoleResponse.class)))
-        public Response role(){
-            return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,userService.roles() )).build();
-        }*/
+        public Response role() {
+                return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, userService.getAllRoles())).build();
+
+        }
     }
 
 

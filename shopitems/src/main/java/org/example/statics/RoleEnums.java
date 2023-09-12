@@ -4,7 +4,7 @@ public enum RoleEnums {
 
     ADMIN("Admin".toUpperCase()),
     CUSTOMER("Customer".toUpperCase()),
-    AGENT("User".toUpperCase());
+    AGENT("Agent".toUpperCase());
 
     public final String label;
 
