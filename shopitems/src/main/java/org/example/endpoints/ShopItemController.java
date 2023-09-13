@@ -13,12 +13,15 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.domains.ShopItem;
 import org.example.domains.User;
+import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.ShopItemService;
 import org.example.services.payloads.ShopItemRequest;
 import org.example.services.payloads.ShopItemResponse;
 import org.example.configuration.handler.*;
 import org.example.services.payloads.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Path("/shop-item")
@@ -31,6 +34,9 @@ public class ShopItemController {
     @Inject
     ShopItemService shopItemService;
 
+    @Inject
+    ShopItemRepository shopItemRepository;
+
     @GET
     @Path("/search")
     //@RolesAllowed({"ADMIN","AGENT"})
@@ -40,8 +46,9 @@ public class ShopItemController {
     public List<ShopItem> searchItems(
             @QueryParam("category") String category,
             @QueryParam("title") String title) {
-        return shopItemService.findItemsByCategoryAndTitle(category, title);
+        return shopItemService.searchItems(category, title);
     }
+
 
 
     @POST

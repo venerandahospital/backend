@@ -23,6 +23,7 @@ import org.example.services.payloads.ShopItemParametersRequest;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.list;
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.listAll;
 
 @ApplicationScoped
@@ -80,12 +82,19 @@ public class ShopItemService {
         shopItem.delete();
     }
 
-    public List<ShopItem> findItemsByCategoryAndTitle(String category, String title) {
-        return shopItemRepository.list("category = :category and title = :title",
-                Sort.by("category").and("title"),
-                Parameters.with("category", category).and("title", title));
-    }
 
+    public List<ShopItem> searchItems(String category, String title) {
+        if (category != null && title != null) {
+            return shopItemRepository.list("category = ?1 AND title = ?2", category, title);
+        } else if (category != null) {
+            return shopItemRepository.list("category = ?1", category);
+        } else if (title != null) {
+            return shopItemRepository.list("title = ?1", title);
+        } else {
+            // If both parameters are null or empty, return all items.
+            return shopItemRepository.listAll();
+        }
+    }
 
 
     public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
@@ -110,9 +119,7 @@ public class ShopItemService {
 
             String sql = """
                 USE shop;
-                
                 SELECT
-                id,
                 category,
                 title
                 FROM shopitem
