@@ -118,7 +118,7 @@ public class ShopItemService {
             StringJoiner whereClause = getStringJoiner(request);
 
             String sql = """
-                USE shop;
+      
                 SELECT
                 category,
                 title
@@ -140,8 +140,8 @@ public class ShopItemService {
     private FullShopItemResponse from(Row row){
 
         FullShopItemResponse response = new FullShopItemResponse();
-        response.id = row.getLong("ticketId");
-        response.description = row.getString("description");
+        //response.id = row.getLong("ticketId");
+        //response.description = row.getString("description");
         response.category = row.getString("category");
         response.title = row.getString("title");
 
