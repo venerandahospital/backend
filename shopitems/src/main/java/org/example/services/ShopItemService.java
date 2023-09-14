@@ -119,19 +119,19 @@ public class ShopItemService {
            StringJoiner whereClause = getStringJoiner(request);
 
             String sql = """
-               
-                SELECT
-                id,
-                category,
-                number,
-                image,
-                title,
-                price,
-                description
-                FROM shopitem
-                %s
-                ORDER BY title;
-                """.formatted(whereClause);
+                                   
+                    SELECT
+                    id,
+                    category,
+                    number,
+                    image,
+                    title,
+                    price,
+                    description
+                    FROM shopitem
+                    %s
+                    ORDER BY creationDate DESC;                             
+                    """.formatted(whereClause);
 
             return client.query(sql)
                     .execute()
@@ -154,9 +154,6 @@ public class ShopItemService {
         response.category = row.getString("category");
         response.title = row.getString("title");
         response.price = row.getBigDecimal("price");
-
-
-
         return response;
     }
 
