@@ -2,6 +2,8 @@ package org.example.services.payloads;
 
 import jakarta.ws.rs.QueryParam;
 
+import java.time.LocalDate;
+
 public class ShopItemParametersRequest {
 
 
@@ -10,4 +12,6 @@ public class ShopItemParametersRequest {
 
     @QueryParam("title")
     public String title;
+    
+
 }

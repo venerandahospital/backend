@@ -1,7 +1,6 @@
 package org.example.services.payloads;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class FullShopItemResponse {
@@ -14,7 +13,11 @@ public class FullShopItemResponse {
 
     public String description;
 
+    public LocalDateTime creationDate;
 
+    public String number;
 
+    public String image;
 
+    public BigDecimal price;
 }

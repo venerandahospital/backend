@@ -31,8 +31,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.list;
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.listAll;
+import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.*;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -114,14 +113,21 @@ public class ShopItemService {
     }
 
 
-        public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
-            StringJoiner whereClause = getStringJoiner(request);
+
+
+    public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
+           StringJoiner whereClause = getStringJoiner(request);
 
             String sql = """
                
                 SELECT
+                id,
                 category,
-                title
+                number,
+                image,
+                title,
+                price,
+                description
                 FROM shopitem
                 %s
                 ORDER BY title;
@@ -135,14 +141,36 @@ public class ShopItemService {
                     .transform(this::from)
                     .collect().asList().await()
                     .indefinitely();
+
         }
 
     private FullShopItemResponse from(Row row){
 
         FullShopItemResponse response = new FullShopItemResponse();
-        //response.description = row.getString("description");
+        response.id = row.getLong("id");
+        response.description = row.getString("description");
+        response.image = row.getString("image");
+        response.number = row.getString("number");
         response.category = row.getString("category");
         response.title = row.getString("title");
+        response.price = row.getBigDecimal("price");
+
+
+
+        return response;
+    }
+
+    private FullShopItemResponse fullShopItemDTO(ShopItem shopItem){
+        FullShopItemResponse response = new FullShopItemResponse();
+        response.id = shopItem.id;
+        response.number = shopItem.number;
+        response.price = shopItem.price;
+        response.description = shopItem.description;
+        response.category = shopItem.category;
+        response.title = shopItem.title;
+        response.creationDate = shopItem.creationDate;
+        response.image = shopItem.image;
+
 
 
         return response;
