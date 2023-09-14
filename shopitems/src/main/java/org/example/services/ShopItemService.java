@@ -52,7 +52,7 @@ public class ShopItemService {
         shopItem.description = request.description;
         shopItem.price = request.price;
         shopItem.image = request.image;
-        shopItem.creationDate = LocalDateTime.now();
+        shopItem.creationDate = LocalDate.now();
 
         shopItemRepository.persist(shopItem);
         return shopItem;
@@ -181,6 +181,9 @@ public class ShopItemService {
             Map<String, String> searchCriteria = new HashMap<>();
             searchCriteria.put("category", request.category);
             searchCriteria.put("title", request.title);
+            searchCriteria.put("datefrom", String.valueOf(request.datefrom));
+            searchCriteria.put("dateto", String.valueOf(request.dateto));
+
 
             StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
 
