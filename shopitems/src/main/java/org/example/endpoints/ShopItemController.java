@@ -74,7 +74,7 @@ public class ShopItemController {
     @Path("/get-Items-advanced-search")
     //@RolesAllowed({"ADMIN","USER","AGENT"})
     @Operation(summary = "get shop items advanced search", description = "get shop items advanced search.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = FullShopItemResponse.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItem.class)))
     public Response getShopItemsAdvancedFilter(@BeanParam ShopItemParametersRequest request){
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getShopItemsAdvancedFilter(request))).build();
     }
