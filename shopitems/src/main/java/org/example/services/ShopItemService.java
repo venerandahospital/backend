@@ -189,11 +189,14 @@ public class ShopItemService {
 
             searchCriteria.forEach((key, value) -> {
                 if (value != null && !value.isEmpty()) {
-                    whereClause.add(key + " = '" + value + "'");
+                    if ("datefrom".equals(key) || "dateto".equals(key)) {
+                        whereClause.add("creationDate BETWEEN '" + request.datefrom + "' AND '" + request.dateto + "'");
+                    } else {
+                        whereClause.add(key + " = '" + value + "'");
+                    }
                     hasSearchCriteria.set(Boolean.TRUE);
                 }
             });
-
             if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
                 whereClause.add("1 = 1");
             }
