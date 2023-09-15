@@ -31,7 +31,7 @@ public class ShopItem extends PanacheEntity {
     public String image;
 
     @Column
-    @JsonbDateFormat(value = "yyy/mm/dd")
+    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate creationDate;
 
 }

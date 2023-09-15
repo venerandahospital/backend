@@ -65,7 +65,7 @@ public class ShopItemController {
     @Path("/get-all-Items")
     @Transactional
     @Operation(summary = "get all shopItems", description = "get all shopItems.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItem.class)))
     public Response getShopItems() {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.listLatestFirst())).build();
     }
