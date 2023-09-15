@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,7 +31,7 @@ public class ShopItem extends PanacheEntity {
     public String image;
 
     @Column
-    @JsonbDateFormat(value = "dd/MM/yyyy")
-    public LocalDateTime creationDate;
+    @JsonbDateFormat(value = "yyy/mm/dd")
+    public LocalDate creationDate;
 
 }

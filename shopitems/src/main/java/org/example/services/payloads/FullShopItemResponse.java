@@ -1,7 +1,7 @@
 package org.example.services.payloads;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class FullShopItemResponse {
 
@@ -13,7 +13,7 @@ public class FullShopItemResponse {
 
     public String description;
 
-    public LocalDateTime creationDate;
+    public LocalDate creationDate;
 
     public String number;
 
