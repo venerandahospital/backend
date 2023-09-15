@@ -25,10 +25,7 @@ import org.example.services.payloads.ShopItemParametersRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.*;
@@ -127,6 +124,7 @@ public class ShopItemService {
                     image,
                     title,
                     price,
+                    creationDate,
                     description
                     FROM shopitem
                     %s
@@ -154,6 +152,8 @@ public class ShopItemService {
         response.category = row.getString("category");
         response.title = row.getString("title");
         response.price = row.getBigDecimal("price");
+        response.creationDate = row.getLocalDate("creationDate");
+
         return response;
     }
 
@@ -173,9 +173,38 @@ public class ShopItemService {
         return response;
     }
 
+    private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+        AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
+
+        List<String> conditions = new ArrayList<>();
+        if (request.category != null && !request.category.isEmpty()) {
+            conditions.add("category = '" + request.category + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        if (request.title != null && !request.title.isEmpty()) {
+            conditions.add("title = '" + request.title + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        if (request.datefrom != null && request.dateto != null) {
+            conditions.add("creationDate BETWEEN '" + request.datefrom + "' AND '" + request.dateto + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
+
+        conditions.forEach(whereClause::add);
+
+        if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
+            whereClause.add("1 = 1");
+        }
+
+        return whereClause;
+    }
 
 
-        private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+        /*private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
             AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
 
             Map<String, String> searchCriteria = new HashMap<>();
@@ -201,7 +230,7 @@ public class ShopItemService {
                 whereClause.add("1 = 1");
             }
             return whereClause;
-        }
+        }*/
     }
 
 
