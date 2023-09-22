@@ -1,55 +1,46 @@
 package org.example.services;
 
-import com.itextpdf.text.pdf.PdfDocument;
-import io.quarkus.panache.common.Parameters;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
+
+
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
 import io.vertx.mutiny.sqlclient.Row;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Status;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import org.example.configuration.handler.ActionMessages;
-import org.example.configuration.handler.ResponseMessage;
-import org.example.domains.ShopItem;
 import org.example.auth.services.UserAuthService;
+import org.example.domains.ShopItem;
 import org.example.domains.repositories.ShopItemRepository;
-import org.example.services.payloads.ShopItemRequest;
-import org.example.services.payloads.ShopItemUpdateRequest;
 import org.example.services.payloads.FullShopItemResponse;
 import org.example.services.payloads.ShopItemParametersRequest;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import javax.inject.Singleton;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.example.services.payloads.ShopItemRequest;
+import org.example.services.payloads.ShopItemUpdateRequest;
 
 
-import javax.swing.text.Document;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.List;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.*;
+
+
+
+
+
+
+
+
+
 
 @ApplicationScoped
 public class ShopItemService {
@@ -80,6 +71,10 @@ public class ShopItemService {
         return shopItem;
 
     }
+
+
+
+
 
 
 
