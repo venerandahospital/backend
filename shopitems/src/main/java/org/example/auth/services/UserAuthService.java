@@ -72,7 +72,7 @@ public class UserAuthService {
     }
 
 
-    private String generateRandomPassword(int length) {
+    public String generateRandomPassword(int length) {
         // Define characters that can be used in the password
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();

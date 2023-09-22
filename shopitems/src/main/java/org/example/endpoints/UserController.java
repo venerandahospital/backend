@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
+
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
@@ -22,6 +23,11 @@ import org.example.domains.repositories.UserRepository;
 import org.example.services.UserService;
 import org.example.services.payloads.*;
 import org.example.statics.StatusTypes;
+import org.jboss.resteasy.reactive.server.core.multipart.FormData;
+
+
+import java.io.InputStream;
+import java.util.UUID;
 
 @Path("user-management")
 @Produces(MediaType.APPLICATION_JSON)
@@ -63,6 +69,7 @@ public class UserController {
         public Response update(@PathParam("id") Long id, UpdateRequest request){
             return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,userService.updateUserById(request, id) )).build();
         }
+
 
         @GET
         @Transactional

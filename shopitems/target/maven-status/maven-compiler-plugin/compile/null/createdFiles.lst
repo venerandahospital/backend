@@ -4,3 +4,4 @@ org\example\services\payloads\UpdateAgentRole.class
 org\example\services\payloads\RoleRequestUpdate.class
 org\example\services\payloads\AgentUserRequest.class
 org\example\services\payloads\AgentUpdateRequest.class
+org\example\configuration\initializer\FirebaseInitializer.class
