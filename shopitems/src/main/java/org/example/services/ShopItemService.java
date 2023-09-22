@@ -1,5 +1,6 @@
 package org.example.services;
 
+import com.itextpdf.text.pdf.PdfDocument;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
@@ -15,21 +16,38 @@ import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.ShopItem;
+import org.example.auth.services.UserAuthService;
 import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.payloads.ShopItemRequest;
 import org.example.services.payloads.ShopItemUpdateRequest;
 import org.example.services.payloads.FullShopItemResponse;
 import org.example.services.payloads.ShopItemParametersRequest;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.inject.Singleton;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+
+import javax.swing.text.Document;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.List;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.*;
 
@@ -42,22 +60,95 @@ public class ShopItemService {
     @Inject
     MySQLPool client;
 
+    @Inject
+    UserAuthService userAuthService;
+
     private static final String NOT_FOUND = "Not found!";
 
     public ShopItem addShopItem(ShopItemRequest request) {
         ShopItem shopItem = new ShopItem();
         shopItem.title = request.title;
-        shopItem.number = request.number;
+        shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
         shopItem.description = request.description;
         shopItem.price = request.price;
         shopItem.image = request.image;
+
         shopItem.creationDate = LocalDate.now();
 
         shopItemRepository.persist(shopItem);
         return shopItem;
 
     }
+
+
+
+
+   /* public Response generatePdf() {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Document document = new Document();
+            PdfWriter.getInstance(document, baos);
+
+            document.open();
+            document.add(new Paragraph("Hello, PDF from Quarkus!"));
+
+            document.close();
+
+            byte[] pdfBytes = baos.toByteArray();
+
+            return Response.ok(pdfBytes)
+                    .header("Content-Disposition", "attachment; filename=quarkus_pdf.pdf")
+                    .build();
+        } catch (DocumentException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @Transactional
+    public Response generateAndReturnPdf() {
+        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+
+            // Add content to the PDF
+            for (ShopItem shopItem : shopItems) {
+                Paragraph paragraph = new Paragraph();
+                paragraph.add("Number: " + shopItem.number);
+                paragraph.add("\n");
+                paragraph.add("Category: " + shopItem.category);
+                paragraph.add("\n");
+                paragraph.add("Title: " + shopItem.title);
+                paragraph.add("\n");
+                paragraph.add("Description: " + shopItem.description);
+                paragraph.add("\n");
+                paragraph.add("Price: $" + shopItem.price.toString());
+                paragraph.add("\n");
+                paragraph.add("\n"); // Add space between items
+                document.add(paragraph);
+            }
+
+            document.close();
+
+            byte[] pdfBytes = baos.toByteArray();
+
+            return Response.ok(new ByteArrayInputStream(pdfBytes))
+                    .header("Content-Disposition", "attachment; filename=shop_items.pdf")
+                    .type("application/pdf")
+                    .build();
+        } catch (DocumentException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }*/
+
+
+
 
     public List<ShopItem> getAllShopItems() {
         return shopItemRepository.listAll();
@@ -99,7 +190,7 @@ public class ShopItemService {
     public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
         return shopItemRepository.findByIdOptional(id)
                 .map(shopItem -> {
-                    shopItem.number = request.number;
+
                     shopItem.title = request.title;
                     shopItem.price = request.price;
                     shopItem.description = request.description;
@@ -127,6 +218,7 @@ public class ShopItemService {
                     image,
                     title,
                     price,
+                    creationDate,
                     description
                     FROM shopitem
                     %s
@@ -154,6 +246,8 @@ public class ShopItemService {
         response.category = row.getString("category");
         response.title = row.getString("title");
         response.price = row.getBigDecimal("price");
+        response.creationDate = row.getLocalDate("creationDate");
+
         return response;
     }
 
@@ -168,14 +262,41 @@ public class ShopItemService {
         response.creationDate = shopItem.creationDate;
         response.image = shopItem.image;
 
-
-
         return response;
     }
 
+    private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+        AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
+
+        List<String> conditions = new ArrayList<>();
+        if (request.category != null && !request.category.isEmpty()) {
+            conditions.add("category = '" + request.category + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        if (request.title != null && !request.title.isEmpty()) {
+            conditions.add("title = '" + request.title + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        if (request.datefrom != null && request.dateto != null) {
+            conditions.add("creationDate BETWEEN '" + request.datefrom + "' AND '" + request.dateto + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
+
+        conditions.forEach(whereClause::add);
+
+        if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
+            whereClause.add("1 = 1");
+        }
+
+        return whereClause;
+    }
 
 
-        private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+        private StringJoiner getStringJoinerSimplified(ShopItemParametersRequest request) {
             AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
 
             Map<String, String> searchCriteria = new HashMap<>();

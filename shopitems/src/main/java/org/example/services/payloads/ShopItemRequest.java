@@ -6,9 +6,6 @@ import java.math.BigDecimal;
 
 public class ShopItemRequest {
 
-    @Schema(example = "DXF20089")
-    public String number;
-
     @Schema(example = "men's clothing")
     public String category;
 
@@ -23,4 +20,5 @@ public class ShopItemRequest {
 
     @Schema(example = "https://euro.montbell.com/products/prod_img/zoom/z_2301368_bric.jpg")
     public String image;
+
 }

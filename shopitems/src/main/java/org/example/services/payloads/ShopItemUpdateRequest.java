@@ -6,9 +6,6 @@ import java.math.BigDecimal;
 
 public class ShopItemUpdateRequest {
 
-    @Schema(example = "RRX9199")
-    public String number;
-
     @Schema(example = "men's clothing")
     public String category;
 
