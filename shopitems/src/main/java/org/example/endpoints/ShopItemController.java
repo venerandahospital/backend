@@ -121,5 +121,15 @@ public class ShopItemController {
 
     }
 
+    @GET
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Path("/generate-pdf")
+    @Operation(summary = "pdf", description = "pdf download")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
+    public Response generateAndReturnPdf() {
+        return shopItemService.generateAndReturnPdf();
+    }
+
 
 }

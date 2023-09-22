@@ -1,13 +1,13 @@
 package org.example.services;
 
-import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.io.*;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.element.IBlockElement;
+import com.itextpdf.layout.element.Text;
 
-
+import com.itextpdf.layout.property.TextAlignment;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
@@ -16,6 +16,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
 import org.example.domains.ShopItem;
 import org.example.domains.repositories.ShopItemRepository;
@@ -24,23 +25,15 @@ import org.example.services.payloads.ShopItemParametersRequest;
 import org.example.services.payloads.ShopItemRequest;
 import org.example.services.payloads.ShopItemUpdateRequest;
 
-
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
-
-
-
-
-
-
-
-
-
-
-
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -71,6 +64,112 @@ public class ShopItemService {
         return shopItem;
 
     }
+
+
+    /*@Transactional
+    public Response generateAndReturnPdf() {
+        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            PdfWriter pdfWriter = new PdfWriter(baos);
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+
+            Document document = new Document(pdfDocument);
+
+            // Add content to the PDF
+            for (ShopItem shopItem : shopItems) {
+                document.add(new Paragraph("Number: " + shopItem.number));
+                document.add(new Paragraph("Category: " + shopItem.category));
+                document.add(new Paragraph("Title: " + shopItem.title));
+                document.add(new Paragraph("Description: " + shopItem.description));
+                document.add(new Paragraph("Price: $" + shopItem.price.toString()));
+                document.add(new Paragraph("\n")); // Add space between items
+            }
+
+            document.close();
+
+            byte[] pdfBytes = baos.toByteArray();
+
+            return Response.ok(new ByteArrayInputStream(pdfBytes))
+                    .header("Content-Disposition", "attachment; filename=shop_items.pdf")
+                    .type("application/pdf")
+                    .build();
+        } catch (IOException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }*/
+
+
+
+
+
+
+
+    @Transactional
+    public Response generateAndReturnPdf() {
+        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            PdfWriter pdfWriter = new PdfWriter(baos);
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+
+            Document document = new Document(pdfDocument);
+
+            Table table = new Table(6);
+            table.setWidthPercent(100);
+
+            Cell[] headerCells = {
+                    createCell("Number"),
+                    createCell("Category"),
+                    createCell("Title"),
+                    createCell("Description"),
+                    createCell("Price"),
+                    createCell("Creation Date")
+
+            };
+
+            for (Cell cell : headerCells) {
+                cell.setTextAlignment(TextAlignment.CENTER);
+                table.addCell(cell);
+            }
+
+            for (ShopItem shopItem : shopItems) {
+                table.addCell(createCell(shopItem.number));
+                table.addCell(createCell(shopItem.category));
+                table.addCell(createCell(shopItem.title));
+                table.addCell(createCell(shopItem.description));
+                table.addCell(createCell("$" + shopItem.price.toString()));
+                table.addCell(createCell(shopItem.creationDate.toString()));
+            }
+
+            document.add(table);
+
+            document.close();
+
+            byte[] pdfBytes = baos.toByteArray();
+
+            return Response.ok(new ByteArrayInputStream(pdfBytes))
+                    .header("Content-Disposition", "attachment; filename=shop_items.pdf")
+                    .type("application/pdf")
+                    .build();
+        } catch (IOException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private Cell createCell(String content) {
+        return new Cell().add(content);
+    }
+
+
+
+
+
+
 
 
 

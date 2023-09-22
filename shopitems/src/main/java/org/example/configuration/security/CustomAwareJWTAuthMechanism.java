@@ -50,7 +50,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/shop-item/get-Items-advanced-search") ||
                 request.path().contains("/shop/shop-item/add-new-Items") ||
                 request.path().contains("/shop-item/search") ||
-
+                request.path().contains("/shop-item/generate-pdf") ||
 
 
 
