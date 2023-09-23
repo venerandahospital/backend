@@ -16,6 +16,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
 import org.example.domains.ShopItem;
@@ -27,6 +28,8 @@ import org.example.services.payloads.ShopItemUpdateRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,6 +37,12 @@ import java.util.List;
 
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import io.quarkus.panache.common.Sort;
+import java.math.BigDecimal;
+import java.util.List;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -66,50 +75,10 @@ public class ShopItemService {
     }
 
 
-    /*@Transactional
-    public Response generateAndReturnPdf() {
-        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            PdfWriter pdfWriter = new PdfWriter(baos);
-            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-
-            Document document = new Document(pdfDocument);
-
-            // Add content to the PDF
-            for (ShopItem shopItem : shopItems) {
-                document.add(new Paragraph("Number: " + shopItem.number));
-                document.add(new Paragraph("Category: " + shopItem.category));
-                document.add(new Paragraph("Title: " + shopItem.title));
-                document.add(new Paragraph("Description: " + shopItem.description));
-                document.add(new Paragraph("Price: $" + shopItem.price.toString()));
-                document.add(new Paragraph("\n")); // Add space between items
-            }
-
-            document.close();
-
-            byte[] pdfBytes = baos.toByteArray();
-
-            return Response.ok(new ByteArrayInputStream(pdfBytes))
-                    .header("Content-Disposition", "attachment; filename=shop_items.pdf")
-                    .type("application/pdf")
-                    .build();
-        } catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }*/
-
-
-
-
-
-
-
     @Transactional
-    public Response generateAndReturnPdf() {
-        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+    public Response generateAndReturnPdf(ShopItemParametersRequest request) {
+        //List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -137,7 +106,7 @@ public class ShopItemService {
                 table.addCell(cell);
             }
 
-            for (ShopItem shopItem : shopItems) {
+            for (FullShopItemResponse shopItem : getShopItemsAdvancedFilter(request)) {
                 table.addCell(createCell(shopItem.number));
                 table.addCell(createCell(shopItem.category));
                 table.addCell(createCell(shopItem.title));
@@ -164,6 +133,64 @@ public class ShopItemService {
     private Cell createCell(String content) {
         return new Cell().add(content);
     }
+
+
+    ///// now generating excell sheet ////////////////////////////
+
+    /*public Response generateExcelFile(List<ShopItem> shopItems) {
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Shop Items");
+
+                // Create headers
+                Row headerRow = (Row) sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("Number");
+                headerRow.createCell(1).setCellValue("Category");
+                headerRow.createCell(2).setCellValue("Title");
+                headerRow.createCell(3).setCellValue("Description");
+                headerRow.createCell(4).setCellValue("Price");
+                headerRow.createCell(5).setCellValue("Image");
+                headerRow.createCell(6).setCellValue("Creation Date");
+
+                // Populate data
+                int rowNum = 1;
+                for (ShopItem item : shopItems) {
+                    Row row = (Row) sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(item.number);
+                    row.createCell(1).setCellValue(item.category);
+                    row.createCell(2).setCellValue(item.title);
+                    row.createCell(3).setCellValue(item.description);
+                    row.createCell(4).setCellValue(item.price.doubleValue());
+                    row.createCell(5).setCellValue(item.image);
+                    row.createCell(6).setCellValue(item.creationDate.toString());
+                }
+
+                // Create a temporary file
+                File tempFile = File.createTempFile("shop_items", ".xlsx");
+
+                // Save the Excel file to the temporary file
+                try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+                    workbook.write(outputStream);
+                }
+
+                // Create a response with the temporary file as an entity
+                Response.ResponseBuilder response = Response.ok(tempFile);
+                response.header("Content-Disposition", "attachment; filename=shop_items.xlsx");
+                response.header("Content-Length", String.valueOf(tempFile.length()));
+                response.type(MediaType.APPLICATION_OCTET_STREAM);
+
+                // Delete the temporary file after it's downloaded
+                tempFile.deleteOnExit();
+
+                return response.build();
+            } catch (IOException | java.io.IOException e) {
+                // Handle exceptions
+                e.printStackTrace();
+                return Response.serverError().entity("Error generating Excel file").build();
+            }
+        }*/
+
+
+
 
 
 

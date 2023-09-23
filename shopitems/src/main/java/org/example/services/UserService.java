@@ -40,6 +40,7 @@ public class UserService {
         user.email = request.email;
         user.role = RoleEnums.CUSTOMER.label;
         user.password = BcryptUtil.bcryptHash(request.password);
+        user.profilePic = request.profilePic;
 
         userRepository.persist(user);
 
@@ -56,6 +57,7 @@ public class UserService {
         User user = userRepository.findById(id);
         user.username = request.username;
         user.email = request.email;
+        user.profilePic = request.profilePic;
 
         userRepository.persist(user);
 

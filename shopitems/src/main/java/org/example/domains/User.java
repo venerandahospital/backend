@@ -21,14 +21,18 @@ public class User extends PanacheEntity {
     @Column
     public String role;
 
+    @Column
+    public String profilePic;
+
     public User() {
     }
 
-    public User(String username, String email, String password, String role) {
+    public User(String username, String email, String password, String role, String profilePic) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.profilePic = profilePic;
     }
 
     public String getRole() {
@@ -37,6 +41,14 @@ public class User extends PanacheEntity {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getprofilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getUsername() {

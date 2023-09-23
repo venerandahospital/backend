@@ -14,5 +14,8 @@ public class UserRequest {
     @Schema(example = "Hope@9199")
     public String password;
 
+    @Schema(example = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=7a7ac099-cccd-4982-a93b-2912af397211")
+    public String profilePic;
+
 
 }

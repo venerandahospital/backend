@@ -22,6 +22,7 @@ public class Initializer {
         if (Boolean.FALSE.equals(userRepository.usernameExists("admin"))){
             User adminUser = new User();
             adminUser.username = "admin";
+            adminUser.profilePic = "";
             adminUser.role = RoleEnums.ADMIN.label;
             adminUser.email = "herd@shop.com";
             adminUser.password = BcryptUtil.bcryptHash("123");
