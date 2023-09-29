@@ -6,19 +6,19 @@ import java.math.BigDecimal;
 
 public class ShopItemRequest {
 
-    @Schema(example = "men's clothing")
+    @Schema(example = "Electronics")
     public String category;
 
     @Schema(example = "Men Cotton Jacket")
     public String title;
 
-    @Schema(example = "Great outerwear jackets for Spring Autumn Winter, suitable for many occasions, such as working, hiking, camping, mountain rock climbing,")
+    @Schema(example = "This is the best and cheapest ladies hand bag ont he market ang that arches with most dresse")
     public String description;
 
     @Schema(example = "200")
     public BigDecimal price;
 
-    @Schema(example = "https://euro.montbell.com/products/prod_img/zoom/z_2301368_bric.jpg")
+    @Schema(example = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fcomputer.jpg?alt=media&token=54728992-5370-4be3-91d2-05e54bac6042")
     public String image;
 
 }
