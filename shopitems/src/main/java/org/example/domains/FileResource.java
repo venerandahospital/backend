@@ -30,12 +30,9 @@ public class FileResource extends PanacheEntity {
     @Column
     public Long entryTime = Instant.now().getEpochSecond() * 1000;
 
-    public FileResource() {
-
-    }
+    public FileResource() {}
 
     public FileResource(String systemName, String url, String fileType, byte[] data) {
-
         this.systemName = systemName;
         this.url = url;
         this.fileType = fileType;

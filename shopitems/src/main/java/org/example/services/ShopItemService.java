@@ -190,21 +190,6 @@ public class ShopItemService {
         }*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    /* public Response generatePdf() {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
