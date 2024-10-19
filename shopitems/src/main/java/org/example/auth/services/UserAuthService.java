@@ -76,7 +76,6 @@ public class UserAuthService {
         // Define characters that can be used in the password
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();
-
         // Generate a random password of the specified length
         for (int i = 0; i < length; i++) {
             int randomIndex = (int) (Math.random() * characters.length());

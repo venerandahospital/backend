@@ -2,6 +2,7 @@ org\example\auth\services\payloads\ResetPasswordRequest.class
 org\example\services\payloads\UserResponse.class
 org\example\auth\services\payloads\ForcePasswordUpdateRequest.class
 org\example\domains\User.class
+org\example\domains\Course.class
 org\example\domains\ShopItem.class
 org\example\configuration\handler\ErrorMapper.class
 org\example\services\payloads\RoleResponse.class

@@ -43,18 +43,20 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
         if (request.path().startsWith("/auth/user-login") ||
                 request.path().contains("/shop-item/get-all-Items") ||
                 request.path().contains("/user-management/signup") ||
+                request.path().contains("/course/get-all-courses") ||
+                request.path().contains("/course/create-new-course") ||
+                request.path().contains("/course/course/update-course") ||
+
+
+
                 request.path().contains("/auth/reset-link") ||
-                request.path().contains("/shop/user-management/get-user") ||
-                request.path().contains("/shop/user-management/update-user") ||
-                request.path().contains("/shop/user-management/get-all-users") ||
-                request.path().contains("/shop-item/get-Items-advanced-search") ||
-                request.path().contains("/shop/shop-item/add-new-Items") ||
-                request.path().contains("/shop-item/search") ||
+                request.path().contains("/course/user-management/get-user") ||
+                request.path().contains("/course/user-management/update-user") ||
+                request.path().contains("/course/user-management/get-all-users") ||
+                request.path().contains("/course/shop-item/get-Items-advanced-search") ||
+                //request.path().contains("/course/shop-item/add-new-Items") ||
+                request.path().contains("/course/shop-item/search") ||
                 request.path().contains("/shop-item/generate-pdf") ||
-
-
-
-
 
 
                 request.path().contains("/user-login")) {

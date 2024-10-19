@@ -6,6 +6,7 @@ C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\pa
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\RoleRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\fileresource\service\payload\FileRequestBytes.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\UserService.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\Course.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\UpdateAgentRole.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\services\payloads\UserAuthResponse.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\UpdateRequest.java
@@ -14,14 +15,17 @@ C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\endpoi
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\repositories\ShopItemRepository.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\ShopItemParametersRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\endpoints\UserController.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\CourseResponse.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\services\payloads\RoleResponse.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\FileResource.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\CourseRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\configuration\handler\ErrorMapper.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\configuration\security\CustomAwareJWTAuthMechanism.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\UserRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\repositories\FileResourceRepository.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\ShopItemResponse.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\repositories\UserRepository.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\CourseUpdateRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\AgentUserRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\configuration\handler\ResponseMessage.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\statics\AppConstants.java
@@ -36,6 +40,8 @@ C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\pa
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\pdfGenerator.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\RoleResponse.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\RoleRequestUpdate.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\endpoints\CourseController.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\CourseService.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\fileresource\service\payload\FileRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\configuration\initializer\Initializer.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\ShopItemService.java
@@ -48,4 +54,5 @@ C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\servic
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\services\payloads\UpdatePasswordRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\services\payloads\ResetPasswordRequest.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\auth\services\payloads\UserAuthRequest.java
+C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\repositories\CourseRepository.java
 C:\Users\DELL\Desktop\shopbackup\shopitems\src\main\java\org\example\domains\User.java

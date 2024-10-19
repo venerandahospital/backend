@@ -311,7 +311,6 @@ public class ShopItemService {
 
 
 
-
     public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
            StringJoiner whereClause = getStringJoiner(request);
 

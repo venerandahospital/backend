@@ -39,9 +39,9 @@ public class ShopItemController {
 
     @GET
     @Path("/search")
-    //@RolesAllowed({"ADMIN","AGENT"})
+    @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
-    @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
+    @Operation(summary = "search", description = "search.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
     public List<ShopItem> searchItems(
             @QueryParam("category") String category,
@@ -50,10 +50,9 @@ public class ShopItemController {
     }
 
 
-
     @POST
     @Path("/add-new-Items")
-    //@RolesAllowed({"ADMIN","AGENT"})
+    @RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
