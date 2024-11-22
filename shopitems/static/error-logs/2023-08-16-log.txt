@@ -62,8 +62,8 @@ Caused by: java.lang.NumberFormatException: For input string: "20.json"
 	at org.jboss.resteasy.reactive.server.handlers.ParameterHandler.handleResult(ParameterHandler.java:108)
 	... 10 more
 
-2023-08-16T10:41:23.867232 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:23.867232 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -93,8 +93,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T10:41:24.041497 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:24.041497 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -124,8 +124,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T10:41:24.231509 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:24.231509 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -155,8 +155,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T10:41:48.733881 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:48.733881 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -186,8 +186,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T10:41:48.911900 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:48.911900 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -217,8 +217,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T10:41:49.100087 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T10:41:49.100087 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -1348,8 +1348,8 @@ Caused by: java.lang.NumberFormatException: For input string: "{id}"
 	at org.jboss.resteasy.reactive.server.handlers.ParameterHandler.handleResult(ParameterHandler.java:108)
 	... 10 more
 
-2023-08-16T11:28:13.644942 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T11:28:13.644942 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -1379,8 +1379,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T11:28:41.332467 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T11:28:41.332467 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
@@ -1410,8 +1410,8 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.dele
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-16T11:40:19.287506 Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.ShopItem.delete()" because "shopItem" is null
+2023-08-16T11:40:19.287506 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
 	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:59)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
 	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)

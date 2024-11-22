@@ -43,7 +43,7 @@ public class User extends PanacheEntity {
         this.role = role;
     }
 
-    public String getprofilePic() {
+    public String getProfilePic() {
         return profilePic;
     }
 

@@ -6,12 +6,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import org.example.auth.services.UserAuthService;
 import org.example.domains.Course;
-import org.example.domains.ShopItem;
 import org.example.domains.repositories.CourseRepository;
-import org.example.domains.repositories.ShopItemRepository;
-import org.example.services.payloads.CourseRequest;
-import org.example.services.payloads.CourseUpdateRequest;
-import org.example.services.payloads.ShopItemUpdateRequest;
+import org.example.services.payloads.requests.CourseRequest;
+import org.example.services.payloads.requests.CourseUpdateRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -57,7 +54,7 @@ public class CourseService {
                     course.details = request.details;
                     course.image = request.image;
                     course.parent = request.parent;
-                    course.creationDate = LocalDate.now();
+                    course.lastUpdateDate = LocalDate.now();
 
                     courseRepository.persist(course);
                     return course;

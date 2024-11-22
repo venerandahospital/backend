@@ -1,26 +1,20 @@
 package org.example.services;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.panache.common.Sort;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.example.auth.services.payloads.RoleRequest;
 import org.example.auth.services.payloads.RoleResponse;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
-import org.example.services.payloads.*;
+import org.example.services.payloads.requests.AgentUserRequest;
+import org.example.services.payloads.requests.UpdateAgentRole;
+import org.example.services.payloads.requests.UpdateRequest;
+import org.example.services.payloads.requests.UserRequest;
 import org.example.statics.RoleEnums;
-import org.example.statics.UserTypes;
 
 import java.util.Arrays;
 import java.util.List;

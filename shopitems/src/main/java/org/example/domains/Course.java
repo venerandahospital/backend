@@ -31,4 +31,8 @@ public class Course extends PanacheEntity {
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate creationDate;
 
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate lastUpdateDate;
+
 }

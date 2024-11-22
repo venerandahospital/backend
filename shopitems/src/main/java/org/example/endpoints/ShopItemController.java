@@ -11,17 +11,16 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.example.domains.ShopItem;
+import org.example.domains.Item;
 import org.example.domains.User;
-import org.example.domains.repositories.ShopItemRepository;
+import org.example.domains.repositories.ItemRepository;
 import org.example.services.ShopItemService;
-import org.example.services.payloads.ShopItemRequest;
-import org.example.services.payloads.ShopItemResponse;
+import org.example.services.payloads.requests.ShopItemParametersRequest;
+import org.example.services.payloads.requests.ShopItemRequest;
 import org.example.configuration.handler.*;
-import org.example.services.payloads.*;
+import org.example.services.payloads.requests.ShopItemUpdateRequest;
+import org.example.services.payloads.responses.basicResponses.ShopItemResponse;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Path("/shop-item")
@@ -35,15 +34,15 @@ public class ShopItemController {
     ShopItemService shopItemService;
 
     @Inject
-    ShopItemRepository shopItemRepository;
+    ItemRepository shopItemRepository;
 
     @GET
     @Path("/search")
-    @RolesAllowed({"ADMIN","AGENT"})
+    //@RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "search", description = "search.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
-    public List<ShopItem> searchItems(
+    public List<Item> searchItems(
             @QueryParam("category") String category,
             @QueryParam("title") String title) {
         return shopItemService.searchItems(category, title);
@@ -52,7 +51,7 @@ public class ShopItemController {
 
     @POST
     @Path("/add-new-Items")
-    @RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "add a new shopItem", description = "add a new shopItem.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)))
@@ -64,7 +63,7 @@ public class ShopItemController {
     @Path("/get-all-Items")
     @Transactional
     @Operation(summary = "get all shopItems", description = "get all shopItems.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItem.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Item.class)))
     public Response getShopItems() {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.listLatestFirst())).build();
     }
@@ -73,7 +72,7 @@ public class ShopItemController {
     @Path("/get-Items-advanced-search")
     //@RolesAllowed({"ADMIN","USER","AGENT"})
     @Operation(summary = "get shop items advanced search", description = "get shop items advanced search.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItem.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Item.class)))
     public Response getShopItemsAdvancedFilter(@BeanParam ShopItemParametersRequest request){
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getShopItemsAdvancedFilter(request))).build();
     }

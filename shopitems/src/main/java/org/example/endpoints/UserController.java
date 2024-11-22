@@ -4,11 +4,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -21,13 +19,11 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
 import org.example.services.UserService;
-import org.example.services.payloads.*;
+import org.example.services.payloads.requests.AgentUserRequest;
+import org.example.services.payloads.requests.UpdateAgentRole;
+import org.example.services.payloads.requests.UpdateRequest;
+import org.example.services.payloads.requests.UserRequest;
 import org.example.statics.StatusTypes;
-import org.jboss.resteasy.reactive.server.core.multipart.FormData;
-
-
-import java.io.InputStream;
-import java.util.UUID;
 
 @Path("user-management")
 @Produces(MediaType.APPLICATION_JSON)

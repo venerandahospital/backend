@@ -46,17 +46,48 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/course/get-all-courses") ||
                 request.path().contains("/course/create-new-course") ||
                 request.path().contains("/course/course/update-course") ||
+                request.path().contains("/course/shop-cart/add-to-cart") ||
+                request.path().contains("/course/shop-item/add-new-Items") ||
+                request.path().contains("/course/shop-cart/get-cart-items/") ||
+                request.path().contains("/course/Patient-management/get-all-patients") ||
+                request.path().contains("/course/Patient-management/get-patient") ||
+                request.path().contains("/course/Patient-management/update-patient/") ||
+                request.path().contains("/course/Patient-management/create-new-patient-visit") ||
+                request.path().contains("/course/Patient-management/create-new-InitialTriageVitals") ||
+                request.path().contains("/course/Patient-management/get-all-InitialTriageVitals") ||
+                request.path().contains("/course/Patient-management/create-new-Consultation") ||
+                request.path().contains("/course/Patient-management/create-new-labTest") ||
+                request.path().contains("/course/items-used/add-to-item-used") ||
+                request.path().contains("/course/Patient-management/get-All-used-items") ||
+                request.path().contains("/course/Patient-management/get-used-items/") ||
+                request.path().contains("/course/Patient-management/add-to-item-used") ||
+                request.path().contains("/course/Patient-management/get-InitialTriageVitals-visit") ||
+                request.path().contains("/course/Patient-management/get-all-labTest") ||
+                request.path().contains("/course/Patient-management/create-new-InPatientTreatmentGiven") ||
+                request.path().contains("/course/Patient-management/create-new-procedure") ||
+                request.path().contains("/course/Patient-management/get-all-procedures") ||
+                request.path().contains("/course/Patient-management/create-new-treatmentRequest") ||
+                request.path().contains("/course/Patient-management/create-new-Recommendation") ||
+                request.path().contains("/course/Patient-management/create-new-VitalsMonitoring") ||
 
 
+
+
+
+                request.path().contains("/course/Patient-management/create-new-patient") ||
+                request.path().contains("/course/Patient-management/get-patient-with-max-number") ||
+                request.path().contains("/course/Patient-management/delete-patient-by-id/") ||
 
                 request.path().contains("/auth/reset-link") ||
                 request.path().contains("/course/user-management/get-user") ||
                 request.path().contains("/course/user-management/update-user") ||
                 request.path().contains("/course/user-management/get-all-users") ||
                 request.path().contains("/course/shop-item/get-Items-advanced-search") ||
-                //request.path().contains("/course/shop-item/add-new-Items") ||
+                request.path().contains("/course/shop-item/add-new-Items") ||
                 request.path().contains("/course/shop-item/search") ||
                 request.path().contains("/shop-item/generate-pdf") ||
+
+
 
 
                 request.path().contains("/user-login")) {

@@ -1,7 +1,6 @@
 package org.example.endpoints;
 
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -15,13 +14,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.Course;
-import org.example.domains.ShopItem;
-import org.example.domains.User;
 import org.example.domains.repositories.CourseRepository;
-import org.example.domains.repositories.ShopItemRepository;
 import org.example.services.CourseService;
-import org.example.services.ShopItemService;
-import org.example.services.payloads.*;
+import org.example.services.payloads.requests.CourseRequest;
+import org.example.services.payloads.requests.CourseUpdateRequest;
+import org.example.services.payloads.responses.basicResponses.CourseResponse;
 
 @Path("/course")
 @Produces(MediaType.APPLICATION_JSON)

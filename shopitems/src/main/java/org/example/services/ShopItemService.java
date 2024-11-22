@@ -4,8 +4,6 @@ import com.itextpdf.io.*;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.IBlockElement;
-import com.itextpdf.layout.element.Text;
 
 import com.itextpdf.layout.property.TextAlignment;
 import io.quarkus.panache.common.Sort;
@@ -16,20 +14,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
-import org.example.domains.ShopItem;
-import org.example.domains.repositories.ShopItemRepository;
-import org.example.services.payloads.FullShopItemResponse;
-import org.example.services.payloads.ShopItemParametersRequest;
-import org.example.services.payloads.ShopItemRequest;
-import org.example.services.payloads.ShopItemUpdateRequest;
+import org.example.domains.Item;
+import org.example.domains.repositories.ItemRepository;
+import org.example.services.payloads.requests.ShopItemParametersRequest;
+import org.example.services.payloads.requests.ShopItemRequest;
+import org.example.services.payloads.requests.ShopItemUpdateRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,18 +31,13 @@ import java.util.List;
 
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import io.quarkus.panache.common.Sort;
-import java.math.BigDecimal;
-import java.util.List;
+import org.example.services.payloads.responses.basicResponses.FullShopItemResponse;
 
 @ApplicationScoped
 public class ShopItemService {
 
     @Inject
-    ShopItemRepository shopItemRepository;
+    ItemRepository shopItemRepository;
 
     @Inject
     MySQLPool client;
@@ -58,13 +47,14 @@ public class ShopItemService {
 
     private static final String NOT_FOUND = "Not found!";
 
-    public ShopItem addShopItem(ShopItemRequest request) {
-        ShopItem shopItem = new ShopItem();
+    public Item addShopItem(ShopItemRequest request) {
+        Item shopItem = new Item();
         shopItem.title = request.title;
         shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
         shopItem.description = request.description;
-        shopItem.price = request.price;
+        shopItem.costPrice = request.costPrice;
+        shopItem.sellingPrice = request.sellingPrice;
         shopItem.image = request.image;
 
         shopItem.creationDate = LocalDate.now();
@@ -256,16 +246,16 @@ public class ShopItemService {
 
 
 
-    public List<ShopItem> getAllShopItems() {
+    public List<Item> getAllShopItems() {
         return shopItemRepository.listAll();
     }
 
     @Transactional
-    public List<ShopItem> listLatestFirst() {
+    public List<Item> listLatestFirst() {
         return shopItemRepository.listAll(Sort.descending("creationDate"));
     }
 
-    public ShopItem getShopItemById(Long id){
+    public Item getShopItemById(Long id){
         return shopItemRepository.findById(id);
     }
 
@@ -274,12 +264,12 @@ public class ShopItemService {
 
     }
     public void deleteShopItemById(Long id){
-        ShopItem shopItem = shopItemRepository.findById(id);
+        Item shopItem = shopItemRepository.findById(id);
         shopItem.delete();
     }
 
 
-    public List<ShopItem> searchItems(String category, String title) {
+    public List<Item> searchItems(String category, String title) {
         if (category != null && title != null) {
             return shopItemRepository.list("category = ?1 AND title = ?2", category, title);
         } else if (category != null) {
@@ -293,12 +283,13 @@ public class ShopItemService {
     }
 
 
-    public ShopItem updateShopItemById(Long id, ShopItemUpdateRequest request) {
+    public Item updateShopItemById(Long id, ShopItemUpdateRequest request) {
         return shopItemRepository.findByIdOptional(id)
                 .map(shopItem -> {
 
                     shopItem.title = request.title;
-                    shopItem.price = request.price;
+                    shopItem.costPrice = request.costPrice;
+                    shopItem.sellingPrice = request.sellingPrice;
                     shopItem.description = request.description;
                     shopItem.category = request.category;
                     shopItem.image = request.image;
@@ -356,11 +347,12 @@ public class ShopItemService {
         return response;
     }
 
-    private FullShopItemResponse fullShopItemDTO(ShopItem shopItem){
+    private FullShopItemResponse fullShopItemDTO(Item shopItem){
         FullShopItemResponse response = new FullShopItemResponse();
         response.id = shopItem.id;
         response.number = shopItem.number;
-        response.price = shopItem.price;
+        response.costPrice = shopItem.costPrice;
+        response.sellingPrice = shopItem.sellingPrice;
         response.description = shopItem.description;
         response.category = shopItem.category;
         response.title = shopItem.title;
