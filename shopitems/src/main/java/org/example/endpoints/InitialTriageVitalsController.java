@@ -14,12 +14,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.services.InitialTriageVitalsService;
-import org.example.services.PatientVisitService;
 import org.example.services.payloads.requests.InitialTriageVitalsRequest;
-import org.example.services.payloads.requests.PatientVisitRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
-import org.example.services.payloads.responses.dtos.PatientDTO;
-import org.example.services.payloads.responses.dtos.PatientVisitDTO;
 import org.example.statics.StatusTypes;
 
 import java.util.List;
@@ -47,7 +43,7 @@ public class InitialTriageVitalsController {
     @Transactional
     @Path("/get-all-InitialTriageVitals")
     // @RolesAllowed({"ADMIN"})
-    @Operation(summary = "Get allInitialTriageVitals", description = "Retrieve a list of all InitialTriageVitals")
+    @Operation(summary = "Get all InitialTriageVitals", description = "Retrieve a list of all InitialTriageVitals")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class, type = SchemaType.ARRAY)))
     public Response getAllPatients() {
         List<InitialTriageVitalsDTO> initialTriageVitalsList = initialTriageVitalsService.getAllInitialTriageVitals();
@@ -55,12 +51,15 @@ public class InitialTriageVitalsController {
     }
 
     @GET
-    @Path("get-InitialTriageVitals-visit/{id}")
-    //@RolesAllowed({"ADMIN"})
-    @Operation(summary = "Get patInitialTriageVitals where visit id", description = "Get patInitialTriageVitals where visit id")
+    @Path("get-Initial-TriageVitals-visit-by-id/{id}")
+    @Operation(summary = "Get InitialTriageVitals where visit id", description = "Get InitialTriageVitals where visit id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
     public Response getInitialTriageVitalsById(@PathParam("id") Long visitId) {
-        InitialTriageVitalsDTO InitialTriageVital = initialTriageVitalsService.getInitialTriageVitalWhereVisitId(visitId);
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, InitialTriageVital)).build();
+        // Call the service method to get a list of InitialTriageVitalsDTO for the given visitId
+        List<InitialTriageVitalsDTO> initialTriageVitals = initialTriageVitalsService.getInitialTriageVitalsByVisitId(visitId);
+
+        // Return a successful response with the list of DTOs
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, initialTriageVitals)).build();
     }
+
 }

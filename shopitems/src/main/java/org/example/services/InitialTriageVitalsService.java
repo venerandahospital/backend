@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.example.domains.*;
 import org.example.domains.repositories.InitialTriageVitalsRepository;
 import org.example.domains.repositories.PatientVisitRepository;
@@ -17,6 +18,8 @@ import org.example.services.payloads.responses.dtos.PatientVisitDTO;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+
+import static io.quarkus.arc.ComponentsProvider.LOG;
 
 @ApplicationScoped
 public class InitialTriageVitalsService {
@@ -73,11 +76,26 @@ public class InitialTriageVitalsService {
                 .orElseThrow(() -> new WebApplicationException("Patient not found", 404));
     }*/
 
-    public InitialTriageVitalsDTO getInitialTriageVitalWhereVisitId(Long visitId) {
-        return initialTriageVitalsRepository.find("visit.id", visitId)
-                .singleResultOptional()  // Get the single result as an Optional
-                .map(InitialTriageVitalsDTO::new)  // Convert the entity to the DTO
-                .orElseThrow(() -> new WebApplicationException("Patient not found", 404));  // Handle not found case
+    public List<InitialTriageVitalsDTO> getInitialTriageVitalsByVisitId(Long visitId) {
+        // Fetch the list of initial triage vitals by visitId
+        List<InitialTriageVitalsDTO> result = initialTriageVitalsRepository
+                .find("visit.id", visitId)
+                .list()  // Fetch the result as a List
+                .stream()  // Convert the result into a stream for further transformation
+                .map(InitialTriageVitalsDTO::new)  // Map each entity to a DTO
+                .toList();  // Collect the mapped entities into a list
+
+        if (result.isEmpty()) {
+            // If no results found, log the error and throw a 404 exception
+            String errorMessage = String.format("No InitialTriageVitals found for visitId: %d", visitId);
+            LOG.error(errorMessage);
+            throw new WebApplicationException(errorMessage, Response.Status.NOT_FOUND);
+        }
+
+        // Return the list of DTOs
+        return result;
     }
+
+
 
 }

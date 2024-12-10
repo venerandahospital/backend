@@ -6,13 +6,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class PatientVisitRequest {
 
 
-    @Schema(example = "1")
+    @Schema(example = "51")
     public Long patientId;
 
-    @Schema(example = "outpatient")
+    @Schema(example = "admission")
     public String visitType; // e.g., "outpatient or inpatient"
 
-    @Schema(example = "Return review")
+    @Schema(example = "Review")
     public String visitReason;
 
     //////////////////////////// Medical Details ///////////////////////////////

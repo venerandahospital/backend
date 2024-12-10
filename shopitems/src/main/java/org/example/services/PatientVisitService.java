@@ -4,10 +4,14 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.example.domains.Patient;
 import org.example.domains.PatientVisit;
+import org.example.domains.repositories.PatientRepository;
 import org.example.domains.repositories.PatientVisitRepository;
 import org.example.services.payloads.requests.PatientVisitRequest;
+import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
 import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.PatientVisitDTO;
 
@@ -16,52 +20,67 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.quarkus.arc.ComponentsProvider.LOG;
+
 @ApplicationScoped
 public class PatientVisitService {
 
     @Inject
     PatientVisitRepository patientVisitRepository;
 
+    @Inject
+    PatientRepository patientRepository;
+
     public static final String NOT_FOUND = "Not found!";
+
+    public Long patientRequestedId;
 
     /**
      * Creates a new PatientVisit for the specified patient ID.
      */
     @Transactional
     public PatientVisitDTO createNewPatientVisit(PatientVisitRequest request) {
-        // Fetch the patient by ID from the database
+        // Fetch the patient
         Patient patient = Patient.findById(request.patientId);
         if (patient == null) {
-            throw new IllegalArgumentException(NOT_FOUND);  // Handle patient not found
+            throw new IllegalArgumentException("Patient not found for ID: " + request.patientId);
         }
 
-        // Create a new PatientVisit object
+        //Generate unique visit number
+        int lastVisitNumber = generateVisitNo(request.patientId);
+        int newVisitNumber = lastVisitNumber + 1;
+
+        // Ensure visitNumber is unique
+        boolean exists = patientVisitRepository.find("patient.id = ?1 and visitNumber = ?2", request.patientId, newVisitNumber)
+                .firstResultOptional()
+                .isPresent();
+        if (exists) {
+            throw new IllegalArgumentException("Duplicate visitNumber: " + newVisitNumber + " for patient ID " + request.patientId);
+        }
+
+        // Create a new visit
         PatientVisit patientVisit = new PatientVisit();
         patientVisit.visitDate = LocalDate.now();
         patientVisit.visitTime = LocalTime.now();
         patientVisit.visitReason = request.visitReason;
         patientVisit.visitType = request.visitType;
-
-        // Generate the visit number
-        int lastVisitNumber = generateVisitNos(request.patientId);
-        patientVisit.visitNumber = lastVisitNumber + 1;  // Generate next visit number
-        patientVisit.visitName = "Visit " + patientVisit.visitNumber;
+        patientVisit.visitNumber = newVisitNumber;
+        patientVisit.visitName = "Visit 0" + newVisitNumber;
         patientVisit.patient = patient;
 
-        // Persist the new patient visit
+        // Persist visit
         patientVisitRepository.persist(patientVisit);
 
-        // Convert the PatientVisit entity to a PatientVisitDTO
         return new PatientVisitDTO(patientVisit);
     }
-
+    
 
     /**
      * Generates the next visit number for a given patient by fetching the highest existing visit number.
      */
     @Transactional
     public int generateVisitNo(Long patientId) {
-        return patientVisitRepository.find("patient.id", patientId)
+        return patientVisitRepository.find("patient.id = ?1", Sort.descending("visitNumber"), patientId)
                 .list()  // Sort by visit number in descending order
                 .stream()
                 .map(patientVisit -> patientVisit.visitNumber)  // Map to visit number
@@ -70,12 +89,13 @@ public class PatientVisitService {
     }
     @Transactional
     public int generateVisitNos(Long patientId) {
-        return patientVisitRepository.find("patient.id", Sort.descending("visitNumber"), patientId)  // Sort by visit number in descending order
-                .list()  // Retrieve the sorted list
-                .stream()
-                .map(patientVisit -> patientVisit.visitNumber)  // Map to visit number
-                .findFirst()  // Get the highest visit number, if exists
-                .orElse(0);  // Return 0 if no visit found
+        // Query the highest visit number for the given patient
+        Integer highestVisitNumber = patientVisitRepository.find("patient.id = ?1", Sort.descending("visitNumber"), patientId)
+                .project(Integer.class) // Fetch the `visitNumber` as Integer
+                .firstResult(); // Get the first result (highest visit number)
+
+        // If no visits exist, default to 0; otherwise, add 1
+        return (highestVisitNumber != null ? highestVisitNumber : 0) + 1;
     }
 
     @Transactional
@@ -95,6 +115,26 @@ public class PatientVisitService {
                 .stream()
                 .map(PatientVisitDTO::new)
                 .toList();
+    }
+
+    public List<PatientVisitDTO> getVisitByPatientId(Long patientId) {
+        // Fetch the list of initial triage vitals by visitId
+        List<PatientVisitDTO> result = patientVisitRepository
+                .find("patient.id", patientId)
+                .list()  // Fetch the result as a List
+                .stream()  // Convert the result into a stream for further transformation
+                .map(PatientVisitDTO::new)  // Map each entity to a DTO
+                .toList();  // Collect the mapped entities into a list
+
+        if (result.isEmpty()) {
+            // If no results found, log the error and throw a 404 exception
+            String errorMessage = String.format("No patient visits found for patientId: %d", patientId);
+            LOG.error(errorMessage);
+            throw new WebApplicationException(errorMessage, Response.Status.NOT_FOUND);
+        }
+
+        // Return the list of DTOs
+        return result;
     }
 
 

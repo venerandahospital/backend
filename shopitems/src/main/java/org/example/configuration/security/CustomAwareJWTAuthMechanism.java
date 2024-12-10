@@ -69,6 +69,11 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/course/Patient-management/create-new-treatmentRequest") ||
                 request.path().contains("/course/Patient-management/create-new-Recommendation") ||
                 request.path().contains("/course/Patient-management/create-new-VitalsMonitoring") ||
+                request.path().contains("/course/Patient-management/get-Initial-TriageVitals-visit-by-id") ||
+                request.path().contains("/course/Patient-management/get-patient-Visit-List-by-id") ||
+
+
+
 
 
 

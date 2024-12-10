@@ -25,7 +25,7 @@ public class PatientVisit extends PanacheEntity {
     @Column
     public String visitType; // e.g., "outpatient or inpatient"
 
-    @Column(unique = true)
+    @Column(nullable = false)
     public int visitNumber;  // A unique identifier for each visit within a patient’s records
 
     @Column

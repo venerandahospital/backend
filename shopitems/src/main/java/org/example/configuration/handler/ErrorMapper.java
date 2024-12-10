@@ -17,13 +17,11 @@ import java.time.LocalDateTime;
 
 public class ErrorMapper {
 
-
     static final String STATIC_FILES = "./static/error-logs/";
 
     private static final Logger LOG = LoggerFactory.getLogger(ErrorMapper.class.getName());
 
     ErrorMapper() {
-
     }
 
     @Provider
@@ -40,7 +38,6 @@ public class ErrorMapper {
             if (!Files.exists(targetLocation)) {
                 try {
                     Files.createDirectories(targetLocation);
-
                 } catch (IOException ex) {
                     LOG.error("Exception {}!", ex.getMessage());
                 }
@@ -64,7 +61,7 @@ public class ErrorMapper {
         @Override
         public Response toResponse(Exception exception) {
 
-            LOG.error(exception.getMessage());
+            LOG.error("Exception encountered: {}", exception.getMessage());
 
             int code = 500;
             if (exception instanceof WebApplicationException webApplicationException) {
@@ -73,10 +70,17 @@ public class ErrorMapper {
 
             appendToFile(exception);
 
+            // Safely handle null values by providing a default message.
+            String errorMessage = exception.getMessage() != null ? exception.getMessage() : "Unknown error occurred.";
+            String stackTrace = exception.getStackTrace() != null ? exception.getStackTrace().toString() : "No stack trace available.";
+
             return Response.status(code)
-                    .entity(Json.createObjectBuilder().add("error", exception.getMessage()).add("code", code).build())
+                    .entity(Json.createObjectBuilder()
+                            .add("error", errorMessage)
+                            .add("stack", stackTrace)
+                            .add("code", code)
+                            .build())
                     .build();
         }
-
     }
 }

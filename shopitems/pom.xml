@@ -41,6 +41,16 @@
         <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
 
+
+
+
+
+
+
+
+
+
+
     <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
     <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
     <dependency>
@@ -62,11 +72,7 @@
         <version>5.2.2</version> <!-- Adjust the version as needed -->
     </dependency>
 
-    <dependency>
-        <groupId>com.google.firebase</groupId>
-        <artifactId>firebase-admin</artifactId>
-        <version>9.1.1</version> <!-- Use the latest version -->
-    </dependency>
+
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-hibernate-orm-panache</artifactId>
