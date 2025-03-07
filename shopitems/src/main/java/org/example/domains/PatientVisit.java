@@ -3,6 +3,8 @@ package org.example.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -34,31 +36,40 @@ public class PatientVisit extends PanacheEntity {
     @Column
     public String visitName;
 
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate visitLastUpdatedDate;
+
+
     //////////////////////////// Medical Details ///////////////////////////////
 
-    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TreatmentRequested> treatmentRequested = new ArrayList<>(); // Private list
 
-    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProcedureRequested> ProceduresRequested = new ArrayList<>(); // Private list
 
-    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InitialTriageVitals> initialTriageVitals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VitalsMonitoringChart> vitalsMonitoringChart = new ArrayList<>();  // Private list
 
-    @OneToOne(mappedBy = "visit", fetch = FetchType.EAGER)  // One-to-one relationship
-    private Consultation consultation;  // A single Consultation for the visit
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Consultation> consultation = new ArrayList<>(); ;  // A single Consultation for the visit
 
-    @OneToOne(mappedBy = "visit", fetch = FetchType.EAGER)  // One-to-one relationship
-    private Recommendation recommendation;  // A single recommendation for the visit
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recommendation> recommendation = new ArrayList<>(); ;  // A single recommendation for the visit
 
-    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InPatientTreatment> inPatientTreatments = new ArrayList<>();  // Private list
 
-    @OneToOne(mappedBy = "visit", fetch = FetchType.EAGER)  // One-to-one relationship
-    private ReferralForm referralForm;  // A single referral form for the visit
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReferralForm> referralForm = new ArrayList<>(); ;  // A single referral form for the visit
+
+    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Invoice> invoice = new ArrayList<>(); ;  // A single invoice for the visit
 
     // Getters and Setters for private fields
 
@@ -95,19 +106,28 @@ public class PatientVisit extends PanacheEntity {
         this.vitalsMonitoringChart = vitalsMonitoringChart;
     }
 
-    public Consultation getConsultation() {
+    public List<Consultation> getConsultation() {
         return consultation;
     }
 
-    public void setConsultation(Consultation consultation) {
+    public void setConsultation(List<Consultation> consultation) {
         this.consultation = consultation;
     }
 
-    public Recommendation getRecommendation() {
+    public List<Invoice> getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(List<Invoice> invoice) {
+        this.invoice = invoice;
+    }
+
+
+    public List<Recommendation> getRecommendation() {
         return recommendation;
     }
 
-    public void setRecommendation(Recommendation recommendation) {
+    public void setRecommendation(List<Recommendation> recommendation) {
         this.recommendation = recommendation;
     }
 
@@ -119,11 +139,11 @@ public class PatientVisit extends PanacheEntity {
         this.inPatientTreatments = inPatientTreatments;
     }
 
-    public ReferralForm getReferralForm() {
+    public List<ReferralForm> getReferralForm() {
         return referralForm;
     }
 
-    public void setReferralForm(ReferralForm referralForm) {
+    public void setReferralForm(List<ReferralForm> referralForm) {
         this.referralForm = referralForm;
     }
 
@@ -135,4 +155,5 @@ public class PatientVisit extends PanacheEntity {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
+
 }

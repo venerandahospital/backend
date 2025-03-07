@@ -22,11 +22,13 @@ public class PatientDTO {
     public String nextOfKinName;
     public String nextOfKinContact;
     public String relationship;
+    public Long patientGroupId;
     public String nextOfKinAddress;
     public List<PatientVisitDTO> patientVisits;
 
     public PatientDTO(Patient patient) {
         this.id = patient.id;
+        this.patientGroupId = patient.patientGroup!= null ? patient.patientGroup.id : null;
         this.patientFirstName = patient.patientFirstName;
         this.patientSecondName = patient.patientSecondName;
         this.patientAddress = patient.patientAddress;

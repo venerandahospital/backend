@@ -9,6 +9,8 @@ import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.Patient;
+import org.example.domains.PatientGroup;
+import org.example.domains.repositories.PatientGroupRepository;
 import org.example.domains.repositories.PatientRepository;
 import org.example.services.payloads.requests.PatientRequest;
 import org.example.services.payloads.requests.PatientUpdateRequest;
@@ -26,13 +28,22 @@ public class PatientService {
     @Inject
     DeletedPatientNosService deletedPatientNosService;
 
+    @Inject
+    PatientGroupRepository patientGroupRepository;
+
 
     public static final String NOT_FOUND = "Not found!";
 
     @Transactional
     public PatientDTO createNewPatient(PatientRequest request) {
         // Create new Patient entity and set basic information
+        PatientGroup patientGroup = patientGroupRepository.findById(request.patientGroupId);
+        if (patientGroup == null) {
+            throw new IllegalArgumentException("patientGroup not found for ID: " + request.patientGroupId);
+        }
+
         Patient patient = new Patient();
+        patient.patientGroup = patientGroup;
         patient.patientFirstName = request.patientFirstName;
         patient.patientSecondName = request.patientSecondName;
         patient.patientAddress = request.patientAddress;
@@ -57,7 +68,7 @@ public class PatientService {
             patient.patientNo = deletedPatientNumberInQue;
         }
 
-        patient.patientFileNo = "VMD00" + patient.patientNo;
+        patient.patientFileNo = "VMD" + patient.patientNo;
 
         // Persist the new Patient entity
         patientRepository.persist(patient);
@@ -88,7 +99,13 @@ public class PatientService {
                 .orElseThrow(() -> new WebApplicationException("Patient not found", 404));
     }
 
-    public Patient updatePatientById(Long id, PatientUpdateRequest request) {
+    public PatientDTO updatePatientById(Long id, PatientUpdateRequest request) {
+
+        PatientGroup patientGroup = patientGroupRepository.findById(request.patientGroupId);
+        if (patientGroup == null) {
+            throw new IllegalArgumentException("patientGroup not found for ID: " + request.patientGroupId);
+        }
+
         return patientRepository.findByIdOptional(id)
                 .map(patient -> {
 
@@ -98,17 +115,17 @@ public class PatientService {
                     patient.patientContact = request.patientContact;
                     patient.patientGender = request.patientGender;
                     patient.patientAge = request.patientAge;
-                    patient.patientProfilePic = request.patientProfilePic;
+                    patient.patientGroup = patientGroup;
                     patient.nextOfKinName = request.nextOfKinName;
                     patient.nextOfKinContact = request.nextOfKinContact;
                     patient.relationship = request.relationship;
-                    patient.nextOfKinAddress = request.NextOfKinAddress;
+                    patient.nextOfKinAddress = request.nextOfKinAddress;
                     patient.patientDateOfBirth = request.patientDateOfBirth;
                     patient.patientLastUpdatedDate = LocalDate.now();
 
                     patientRepository.persist(patient);
 
-                    return patient;
+                    return new PatientDTO(patient);
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 
@@ -135,6 +152,7 @@ public class PatientService {
 
     @Transactional
     public Response deletePatientById(Long id) {
+
         Patient patient = patientRepository.findById(id);
 
         if (patient == null) {

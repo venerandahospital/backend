@@ -1,8 +1,11 @@
 package org.example.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "ProcedureRequested")
@@ -18,6 +21,9 @@ public class ProcedureRequested extends PanacheEntity {
     @JoinColumn(nullable = false)
     public Procedure procedure;
 
+    @Column(nullable = false)
+    public String procedureRequestedType;
+
     // Quantity of lab tests requested
     @Column(nullable = false)
     public int quantity;
@@ -31,7 +37,7 @@ public class ProcedureRequested extends PanacheEntity {
     public BigDecimal totalAmount;
 
     @Column
-    public String Report;
+    public String report;
 
     // Name or ID of the person who ordered the lab test
     @Column
@@ -40,5 +46,17 @@ public class ProcedureRequested extends PanacheEntity {
     // Name or ID of the person who performed or is responsible for the lab test
     @Column
     public String doneBy;
+
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate dateOfProcedure;
+
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate updateDate;
+
+    @Column
+    public LocalTime timeOfProcedure;
+
 }
 

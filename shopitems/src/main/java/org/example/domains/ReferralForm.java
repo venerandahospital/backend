@@ -68,7 +68,7 @@ public class ReferralForm extends PanacheEntity {
     public String referringDoctorPhoneNumber;
 
     // One recommendation is associated with one visit
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)  // Foreign key to link to the PatientVisit
     public PatientVisit visit;  // Link to the specific visit this recommendation is related to
 }

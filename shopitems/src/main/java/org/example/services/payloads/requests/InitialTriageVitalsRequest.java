@@ -1,5 +1,6 @@
 package org.example.services.payloads.requests;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -12,12 +13,21 @@ import java.time.LocalTime;
 public class InitialTriageVitalsRequest {
 
     // Blood Pressure (BP) in mmHg (e.g., 120/80)
-    @Schema(example = "120/90")
-    public String bloodPressure;  // Blood Pressure in "Systolic/Diastolic" format
+    @Schema(example = "120")
+    public Double systolic;  // Blood Pressure in "Systolic/Diastolic" format
+
+    @Schema(example = "90")
+    public Double diastolic;  // Blood Pressure in "Systolic/Diastolic" format
 
     // Body Temperature in Celsius (e.g., 37.2°C)
     @Schema(example = "36")
     public Double temperature;  // Temperature in Celsius
+
+    @Schema(example = "Triage")
+    public String station;
+
+    @Schema(example = "Triage")
+    public String takenBy;
 
     // Weight of the patient in kilograms (e.g., 70 kg)
     @Schema(example = "70")
@@ -35,11 +45,17 @@ public class InitialTriageVitalsRequest {
     @Schema(example = "75")
     public Integer heartRate;  // Heart rate in beats per minute (bpm)
 
+    @Schema(example = "75")
+    public Double pulseRate;  // Heart rate in beats per minute (bpm)
+
     // Respiratory Rate (RR) in breaths per minute (e.g., 18 breaths/min)
     @Schema(example = "18")
     public Integer respiratoryRate;  // Respiratory rate in breaths per minute
 
-    // Foreign key to link initial vitals with a specific patient visit
-    @Schema(example = "1")
-    public Long visitId;  // The visit the initial vitals belong to
+
+    @Schema(example = "1994/02/24")
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate dateTaken;  // Matches the "dd/MM/yyyy" format in JSON
+
+    public LocalTime timeTaken;
 }

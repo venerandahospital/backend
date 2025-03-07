@@ -15,7 +15,10 @@ import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.services.InitialTriageVitalsService;
 import org.example.services.payloads.requests.InitialTriageVitalsRequest;
+import org.example.services.payloads.requests.InitialVitalUpdateRequest;
+import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
+import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.statics.StatusTypes;
 
 import java.util.List;
@@ -31,12 +34,12 @@ public class InitialTriageVitalsController {
     InitialTriageVitalsService initialTriageVitalsService;
 
     @POST
-    @Path("create-new-InitialTriageVitals")
+    @Path("create-new-InitialTriageVitals/{id}")
     @Transactional
     @Operation(summary = "new-InitialTriageVitals", description = "new-InitialTriageVitals")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
-    public Response createInitialTriageVitalsVisit(InitialTriageVitalsRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,initialTriageVitalsService.createNewInitialTriageVitals(request) )).build();
+    public Response createInitialTriageVitalsVisit(@PathParam("id") Long id,InitialTriageVitalsRequest request){
+        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,initialTriageVitalsService.createNewInitialTriageVitals(id, request) )).build();
     }
 
     @GET
@@ -54,12 +57,33 @@ public class InitialTriageVitalsController {
     @Path("get-Initial-TriageVitals-visit-by-id/{id}")
     @Operation(summary = "Get InitialTriageVitals where visit id", description = "Get InitialTriageVitals where visit id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
-    public Response getInitialTriageVitalsById(@PathParam("id") Long visitId) {
+    public Response getInitialTriageVitalsById(@PathParam("id") Long id) {
         // Call the service method to get a list of InitialTriageVitalsDTO for the given visitId
-        List<InitialTriageVitalsDTO> initialTriageVitals = initialTriageVitalsService.getInitialTriageVitalsByVisitId(visitId);
+        List<InitialTriageVitalsDTO> initialTriageVitals = initialTriageVitalsService.getInitialTriageVitalsByVisitId(id);
 
         // Return a successful response with the list of DTOs
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, initialTriageVitals)).build();
     }
+
+    @PUT
+    @Path("update-vital/{id}")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "Update vital", description = "Update vital")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
+    public Response updateVital(@PathParam("id") Long id, InitialVitalUpdateRequest request){
+        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,initialTriageVitalsService.updateInitialVitalById(id, request) )).build();
+    }
+
+    @DELETE
+    @Path("/delete-vital-by-id/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete vital by id", description = "delete vital by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteVitalById(@PathParam("id") Long id){
+        return initialTriageVitalsService.deleteVitalById(id);
+    }
+
 
 }

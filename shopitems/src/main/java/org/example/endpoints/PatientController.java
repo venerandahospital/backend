@@ -41,7 +41,7 @@ public class PatientController {
     @Operation(summary = "Create New Patient", description = "Creates a new patient and returns the patient's details.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
     public Response createPatient(PatientRequest request) {
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label, patientService.createNewPatient(request))).build();
+        return Response.ok(new ResponseMessage(StatusTypes.PATIENT_CREATED_SUCCESSFULLY.label, patientService.createNewPatient(request))).build();
     }
 
 
@@ -95,9 +95,9 @@ public class PatientController {
     //@RolesAllowed({"ADMIN","CUSTOMER"})
     @Transactional
     @Operation(summary = "Update patient", description = "Update patient")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Patient.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
     public Response updatePatient(@PathParam("id") Long id, PatientUpdateRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,patientService.updatePatientById(id, request) )).build();
+        return Response.ok(new ResponseMessage(ActionMessages.PATIENT_UPDATED_SUCCESSFULLY.label,patientService.updatePatientById(id, request) )).build();
     }
 
     /*@PUT

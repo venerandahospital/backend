@@ -8,6 +8,8 @@ import org.example.domains.repositories.ConsultationRepository;
 import org.example.services.payloads.requests.ConsultationRequest;
 import org.example.services.payloads.responses.dtos.ConsultationDTO;
 
+import java.math.BigDecimal;
+
 @ApplicationScoped
 public class ConsultationService {
 
@@ -24,6 +26,7 @@ public class ConsultationService {
         }
 
         Consultation consultation = new Consultation();
+        consultation.consultationFee = BigDecimal.valueOf(10000.00);
         consultation.clinicalExamination = request.clinicalExamination;
         consultation.differentialDiagnosis = request.differentialDiagnosis;
         consultation.diagnosis = request.diagnosis;

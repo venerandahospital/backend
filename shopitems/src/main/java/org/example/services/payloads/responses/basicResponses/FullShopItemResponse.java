@@ -15,6 +15,8 @@ public class FullShopItemResponse {
 
     public String description;
 
+    public String unitOfMeasure;
+
     public LocalDate creationDate;
 
     public String number;

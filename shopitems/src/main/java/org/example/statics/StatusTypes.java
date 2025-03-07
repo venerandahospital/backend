@@ -8,6 +8,8 @@ public enum StatusTypes {
     ALLOWED_CREDIT("Allowed on Credit".toUpperCase()),
     BILLED("Billed".toUpperCase()),
     CREATED("Created".toUpperCase()),
+    REQUESTED("Requested Successfully".toUpperCase()),
+    PATIENT_CREATED_SUCCESSFULLY("Patient Created successfully".toUpperCase()),
     CLOSED("Closed".toUpperCase()),
     CLOSED_AND_APPROVED("Closed and Approved".toUpperCase()),
     COMPLETED("Completed".toUpperCase()),
@@ -35,6 +37,7 @@ public enum StatusTypes {
     REVERSED("Reversed".toUpperCase()),
     RUNNING("Running".toUpperCase()),
     SENT("Sent".toUpperCase()),
+    CONFLICT("Already exists".toUpperCase()),
     TRANSFERRED("Transferred".toUpperCase());
 
     public final String label;

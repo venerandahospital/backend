@@ -14,7 +14,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.services.ProcedureService;
+import org.example.services.payloads.requests.PatientGroupUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequest;
+import org.example.services.payloads.responses.dtos.PatientGroupDTO;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 import org.example.statics.StatusTypes;
 
@@ -49,6 +51,38 @@ public class ProcedureController {
         List<ProcedureDTO> procedureList = procedureService.getAllProcedures();
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureList)).build();
     }
+
+    @GET
+    @Path("get-all-labTest-procedures")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "get all labTest procedures", description = "get all labTest procedures")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
+    public Response getAllLabTestProcedures(){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,procedureService.getLabTestProcedures() )).build();
+    }
+
+    @GET
+    @Path("get-all-scan-procedures")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "get all scan procedures", description = "get all scan procedures")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
+    public Response getAllScanProcedures(){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,procedureService.getScanProcedures() )).build();
+    }
+
+
+    @GET
+    @Path("get-Other-Procedures")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "get Other Procedures", description = "get Other Procedures")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
+    public Response getOtherProcedures(){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,procedureService.getOtherProcedures() )).build();
+    }
+
 
 
 }

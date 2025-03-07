@@ -6,6 +6,9 @@ public enum ActionMessages {
 
     UPDATED("Updated Successfully!"),
 
+
+    PATIENT_UPDATED_SUCCESSFULLY("Patient Updated Successfully!"),
+
     DELETED("Deleted Successfully!"),
 
     REMOVED("Removed Successfully!"),

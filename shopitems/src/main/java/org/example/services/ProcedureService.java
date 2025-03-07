@@ -11,6 +11,7 @@ import org.example.services.payloads.requests.ProcedureRequest;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ProcedureService {
@@ -33,6 +34,18 @@ public class ProcedureService {
     @Transactional
     public ProcedureDTO createNewProcedure(ProcedureRequest request) {
 
+        // Check if a procedure with the same name and type already exists
+        boolean exists = Procedure.find(
+                "procedureName = ?1 and procedureType = ?2",
+                request.procedureName,
+                request.procedureType
+        ).firstResultOptional().isPresent();
+
+        if (exists) {
+            throw new IllegalArgumentException("Procedure with name '" + request.procedureName
+                    + "' and type '" + request.procedureType + "' already exists.");
+        }
+
         // Map request to entity
         Procedure procedure = new Procedure();
         procedure.procedureType = request.procedureType;
@@ -42,13 +55,12 @@ public class ProcedureService {
         procedure.unitSellingPrice = request.unitSellingPrice;
         procedure.unitCostPrice = request.unitCostPrice;
 
-        // Add items to the lab test
-
-        // Persist the lab test
+        // Persist the new procedure
         procedureRepository.persist(procedure);
 
         return new ProcedureDTO(procedure);
     }
+
 
     /**
      * Validates the LabTestRequest for mandatory fields.
@@ -84,4 +96,47 @@ public class ProcedureService {
                 .map(ProcedureDTO::new)
                 .toList();
     }
+
+    public List<ProcedureDTO> getLabTestProcedures(){
+        List<Procedure> labTests = Procedure.find(
+                "procedureType = ?1 ORDER BY id DESC",
+                "LabTest"
+        ).list();
+
+        // Convert ProcedureRequested entities to ProcedureDTO
+        return labTests.stream()
+                .map(ProcedureDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProcedureDTO> getScanProcedures(){
+        List<Procedure> scans = Procedure.find(
+                "procedureType = ?1 ORDER BY id DESC",
+                "imaging"
+        ).list();
+
+        // Convert ProcedureRequested entities to ProcedureDTO
+        return scans.stream()
+                .map(ProcedureDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<ProcedureDTO> getOtherProcedures() {
+        List<Procedure> otherProcedures = Procedure.find(
+                "procedureType NOT IN (?1, ?2) ORDER BY id DESC",
+                "imaging", "LabTest"
+        ).list();
+
+        // Convert Procedure entities to ProcedureDTO
+        return otherProcedures.stream()
+                .map(ProcedureDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
 }

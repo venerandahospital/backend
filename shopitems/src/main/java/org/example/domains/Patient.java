@@ -2,10 +2,7 @@ package org.example.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +18,10 @@ public class Patient extends PanacheEntity {
 
     @Column(unique = true,nullable = false)
     public String patientSecondName;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    public PatientGroup patientGroup;
 
     @Column
     public String patientAddress;
@@ -71,7 +72,7 @@ public class Patient extends PanacheEntity {
 
     ///////////////////// Patient Visits //////////////////////////
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     //public List<PatientVisit> patientVisits = new ArrayList<>(); // Initialize to an empty list
     private final List<PatientVisit> patientVisits = new ArrayList<>();
 
@@ -80,6 +81,9 @@ public class Patient extends PanacheEntity {
     }
 
 
+    public Long getId(){
+        return id;
+    }
 
 
 

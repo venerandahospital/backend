@@ -8,19 +8,18 @@ public class ProcedureRequestedRequest {
     public int quantity;
 
     @Schema(example = "1")
-    public Long visitID;
-
-    @Schema(example = "1")
     public Long procedureId;
 
     @Schema(example = "Low HB")
-    public String Report;
+    public String report;
 
     @Schema(example = "Dr.Judith")
     public String orderedBy;
 
     @Schema(example = "collin muwanguzi")
     public String doneBy;
+
+
 
 
 

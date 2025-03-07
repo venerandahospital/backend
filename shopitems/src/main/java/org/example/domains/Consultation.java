@@ -3,12 +3,17 @@ package org.example.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Consultation extends PanacheEntity {
 
     // A brief medical history of the patient (e.g., "Has a history of hypertension, diabetes")
     @Column(columnDefinition = "TEXT")
     public String medicalHistory;
+
+    @Column
+    public BigDecimal consultationFee;
 
     // Clinical examination findings (e.g., "Normal physical examination", "Swelling in the left ankle")
     @Column(columnDefinition = "TEXT")
@@ -23,7 +28,7 @@ public class Consultation extends PanacheEntity {
     public String diagnosis;
 
     // One recommendation is associated with one visit
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)  // Foreign key to link to the PatientVisit
     public PatientVisit visit;  // Link to the specific visit this recommendation is related to
 

@@ -6,14 +6,19 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.*;
 import org.example.domains.repositories.InitialTriageVitalsRepository;
 import org.example.domains.repositories.PatientVisitRepository;
 import org.example.services.payloads.requests.InitialTriageVitalsRequest;
+import org.example.services.payloads.requests.InitialVitalUpdateRequest;
+import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
 import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.PatientVisitDTO;
+import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,33 +38,43 @@ public class InitialTriageVitalsService {
      * Creates a new InitialTriageVitals for the specified patient ID.
      */
     @Transactional
-    public InitialTriageVitalsDTO createNewInitialTriageVitals(InitialTriageVitalsRequest request) {
+    public InitialTriageVitalsDTO createNewInitialTriageVitals(Long id, InitialTriageVitalsRequest request) {
         // Fetch the patient by ID from the database
-        PatientVisit patientVisit = PatientVisit.findById(request.visitId);
+        PatientVisit patientVisit = PatientVisit.findById(id);
         if (patientVisit == null) {
             throw new IllegalArgumentException(NOT_FOUND);  // Handle patient not found
         }
 
-        // Create a new PatientVisit object
+        // Create a new InitialTriageVitals object
         InitialTriageVitals initialTriageVitals = new InitialTriageVitals();
-        initialTriageVitals.dateTaken = LocalDate.now();
-        initialTriageVitals.timeTaken = LocalTime.now();
+        initialTriageVitals.dateTaken = request.dateTaken;
+        initialTriageVitals.timeTaken = request.timeTaken;
         initialTriageVitals.spO2 = request.spO2;
+        initialTriageVitals.station = request.station;
         initialTriageVitals.height = request.height;
         initialTriageVitals.heartRate = request.heartRate;
         initialTriageVitals.weight = request.weight;
         initialTriageVitals.temperature = request.temperature;
-        initialTriageVitals.bloodPressure = request.bloodPressure;
+        initialTriageVitals.systolic = request.systolic;
+        initialTriageVitals.diastolic = request.diastolic;
+        initialTriageVitals.pulseRate = request.pulseRate;
+        initialTriageVitals.takenBy = request.takenBy;
+
+        // Calculate Mean Arterial Pressure (MAP)
+        initialTriageVitals.map = request.diastolic + (request.systolic - request.diastolic) / 3.0;
+
         initialTriageVitals.respiratoryRate = request.respiratoryRate;
+        initialTriageVitals.bloodPressure = request.systolic + "/" + request.diastolic;
 
         initialTriageVitals.visit = patientVisit;
 
-        // Persist the new patient visit
+        // Persist the new initial triage vitals
         initialTriageVitalsRepository.persist(initialTriageVitals);
 
-        // Convert the PatientVisit entity to a PatientVisitDTO
+        // Convert the InitialTriageVitals entity to an InitialTriageVitalsDTO
         return new InitialTriageVitalsDTO(initialTriageVitals);
     }
+
 
     @Transactional
     public List<InitialTriageVitalsDTO> getAllInitialTriageVitals() {
@@ -76,25 +91,91 @@ public class InitialTriageVitalsService {
                 .orElseThrow(() -> new WebApplicationException("Patient not found", 404));
     }*/
 
-    public List<InitialTriageVitalsDTO> getInitialTriageVitalsByVisitId(Long visitId) {
-        // Fetch the list of initial triage vitals by visitId
-        List<InitialTriageVitalsDTO> result = initialTriageVitalsRepository
-                .find("visit.id", visitId)
-                .list()  // Fetch the result as a List
-                .stream()  // Convert the result into a stream for further transformation
-                .map(InitialTriageVitalsDTO::new)  // Map each entity to a DTO
-                .toList();  // Collect the mapped entities into a list
 
-        if (result.isEmpty()) {
-            // If no results found, log the error and throw a 404 exception
-            String errorMessage = String.format("No InitialTriageVitals found for visitId: %d", visitId);
-            LOG.error(errorMessage);
-            throw new WebApplicationException(errorMessage, Response.Status.NOT_FOUND);
+
+    public List<InitialTriageVitalsDTO> getInitialTriageVitalsByVisitId(Long visitId) {
+        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        List<InitialTriageVitals> initialTriageVitals = InitialTriageVitals.find(
+                "visit.id = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
+                visitId
+        ).list();
+
+        // Convert the results to a list of ProcedureRequestedDTO
+        return initialTriageVitals.stream()
+                .map(InitialTriageVitalsDTO::new)
+                .toList();
+    }
+
+    public InitialTriageVitalsDTO updateInitialVitalById(Long id, InitialVitalUpdateRequest request) {
+
+        return initialTriageVitalsRepository.findByIdOptional(id)
+                .map(initialTriageVitals -> {
+
+                    initialTriageVitals.dateTaken = request.dateTaken;
+                    initialTriageVitals.timeTaken = request.timeTaken;
+                    initialTriageVitals.spO2 = request.spO2;
+                    initialTriageVitals.station = request.station;
+                    initialTriageVitals.height = request.height;
+                    initialTriageVitals.heartRate = request.heartRate;
+                    initialTriageVitals.weight = request.weight;
+                    initialTriageVitals.temperature = request.temperature;
+                    initialTriageVitals.systolic = request.systolic;
+                    initialTriageVitals.diastolic = request.diastolic;
+                    initialTriageVitals.pulseRate = request.pulseRate;
+                    initialTriageVitals.takenBy = request.takenBy;
+
+                    // Calculate Mean Arterial Pressure (MAP)
+                    initialTriageVitals.map = request.diastolic + (request.systolic - request.diastolic) / 3.0;
+
+                    initialTriageVitals.respiratoryRate = request.respiratoryRate;
+                    initialTriageVitals.bloodPressure = request.systolic + "/" + request.diastolic;
+
+                    initialTriageVitalsRepository.persist(initialTriageVitals);
+
+                    return new InitialTriageVitalsDTO(initialTriageVitals);
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+    }
+
+    @Transactional
+    public Response deleteVitalById(Long id) {
+
+        InitialTriageVitals initialTriageVitals = initialTriageVitalsRepository.findById(id);
+
+        if (initialTriageVitals == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
         }
 
-        // Return the list of DTOs
-        return result;
+        initialTriageVitalsRepository.delete(initialTriageVitals);
+
+        return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

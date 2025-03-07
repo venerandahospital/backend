@@ -1,7 +1,9 @@
 package org.example.services.payloads.responses.dtos;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import org.example.domains.Item;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class ItemDTO {
     public Long id;
@@ -12,9 +14,11 @@ public class ItemDTO {
     public BigDecimal costPrice;
     public BigDecimal sellingPrice;
     public String unitOfMeasure;
+    public Integer stockAtHand;
 
     public ItemDTO(Item item) {
         this.id = item.id;
+        this.stockAtHand = item.stockAtHand;
         this.number = item.number;
         this.category = item.category;
         this.title = item.title;

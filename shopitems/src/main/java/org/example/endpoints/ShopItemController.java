@@ -26,7 +26,7 @@ import java.util.List;
 @Path("/shop-item")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Shop Management Module", description = "Shop Management")
+@Tag(name = "Hospital Management Module", description = "Hospital Management")
 public class ShopItemController {
 
 
@@ -99,7 +99,7 @@ public class ShopItemController {
 
     @PUT
     @Path("{id}")
-    @RolesAllowed({"ADMIN","AGENT"})
+   // @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))

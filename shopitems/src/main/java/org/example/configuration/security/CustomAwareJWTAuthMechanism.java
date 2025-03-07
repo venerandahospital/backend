@@ -71,15 +71,75 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/course/Patient-management/create-new-VitalsMonitoring") ||
                 request.path().contains("/course/Patient-management/get-Initial-TriageVitals-visit-by-id") ||
                 request.path().contains("/course/Patient-management/get-patient-Visit-List-by-id") ||
+                request.path().contains("/course/Patient-management/get-procedure-Requested-with-type-LabTest-by-visit-id") ||
+                
+                request.path().contains("/course/Patient-management/create-new-payment") ||
+                request.path().contains("/course/Patient-management/get-ultrasound-scan-by-visit-id") ||
 
+                request.path().contains("/course/Patient-management/get-total-cost-of-all-procedures-by-visit-id/") ||
 
+                request.path().contains("/course/Patient-management/get-total-cost-of-all-procedures-v2-by-visit-id") ||
 
+                request.path().contains("/course/Patient-management/get-other-procedures-by-visit-id") ||
 
+                request.path().contains("/course/Patient-management/create-new-Invoice") ||
 
+                request.path().contains("/course/Patient-management/get-total-cost-of-every-service-by-visit-id") ||
 
+                request.path().contains("/course/Patient-management/get-all-invoices") ||
 
+                request.path().contains("/course/shop-item/") ||
+
+                request.path().contains("/course/Patient-management/create-new-store") ||
+
+                request.path().contains("/course/Patient-management/get-all-stores") ||
+
+                request.path().contains("/course/Patient-management/get-payment-List-by-visit-id/") ||
+
+                request.path().contains("/course/Patient-management/get-all-patient-groups") ||
+
+                request.path().contains("/course/Patient-management/update-patient-group/") ||
+
+                request.path().contains("/course/Patient-management/create-new-patient-group") ||
+
+                request.path().contains("/course/Patient-management/update-vital/") ||
+
+                request.path().contains("/course/Patient-management/delete-vital-by-id/") ||
 
                 request.path().contains("/course/Patient-management/create-new-patient") ||
+
+                request.path().contains("/course/Patient-management/get-patient-group/") ||
+
+                request.path().contains("/course/Patient-management/get-patient-group-by-id/") ||
+
+                request.path().contains("/course/Patient-management/update-invoice") ||
+
+                request.path().contains("/course/Patient-management/invoice/generate-pdf") ||
+
+                request.path().contains("/course/Patient-management/get-treatment-requested-by-visit-id") ||
+
+                request.path().contains("/course/shop-item/receive-new-stock") ||
+
+                request.path().contains("/get-all-labTest-procedures") ||
+
+                request.path().contains("/delete-requested-procedure-by-id/{id}") ||
+
+                request.path().contains("create-new-procedure-requested/{id}") ||
+
+                request.path().contains("get-all-scan-procedures") ||
+
+                request.path().contains("get-Other-Procedures") ||
+
+
+
+
+
+
+
+                request.path().contains("/course/Patient-management/get-total-cost-of-all-lab-tests") ||
+
+
+                request.path().contains("/course/Patient-management/create-new-patient-with-group-id") ||
                 request.path().contains("/course/Patient-management/get-patient-with-max-number") ||
                 request.path().contains("/course/Patient-management/delete-patient-by-id/") ||
 

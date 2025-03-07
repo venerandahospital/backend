@@ -20,10 +20,11 @@ public class PatientVisitDTO {
     public List<TreatmentRequestedDTO> treatmentRequested;
     public List<InitialTriageVitalsDTO> initialTriageVitals;
     public List<VitalsMonitoringChartDTO> vitalsMonitoringChart;
-    public ConsultationDTO consultation;
-    public RecommendationDTO recommendation;
+    public List<ConsultationDTO> consultation;
+    public List<InvoiceDTO> invoice;
+    public List<RecommendationDTO> recommendation;
     public List<InPatientTreatmentDTO> inPatientTreatments;
-    public ReferralFormDTO referralForm;
+    public List<ReferralFormDTO> referralForm;
 
     // Constructor
     public PatientVisitDTO(PatientVisit patientVisit) {
@@ -43,6 +44,12 @@ public class PatientVisitDTO {
                         .map(TreatmentRequestedDTO::new)
                         .collect(Collectors.toList()) : null;
 
+        //this.patientId = patientVisit.patient != null ? patientVisit.patient.id : null;
+
+
+       // this.invoiceId = patientVisit.getInvoice() != null ? patientVisit.getInvoice().id : null;
+
+
         this.proceduresRequested = patientVisit.getProceduresRequested() != null ?
                 patientVisit.getProceduresRequested().stream()
                         .map(ProcedureRequestedDTO::new)
@@ -55,26 +62,44 @@ public class PatientVisitDTO {
                         .collect(Collectors.toList()) : null;
 
 
-       // this.initialTriageVitals = patientVisit.getInitialTriageVitals().stream().map(InitialTriageVitalsDTO::new).toList();
+        // this.initialTriageVitals = patientVisit.getInitialTriageVitals().stream().map(InitialTriageVitalsDTO::new).toList();
 
         this.vitalsMonitoringChart = patientVisit.getVitalsMonitoringChart() != null ?
                 patientVisit.getVitalsMonitoringChart().stream()
                         .map(VitalsMonitoringChartDTO::new)
                         .collect(Collectors.toList()) : null;
 
+
+
         this.consultation = patientVisit.getConsultation() != null ?
-                new ConsultationDTO(patientVisit.getConsultation()) : null;
+                patientVisit.getConsultation().stream()
+                        .map(ConsultationDTO::new)
+                        .collect(Collectors.toList()) : null;
+
+
+        this.invoice = patientVisit.getInvoice() != null ?
+                patientVisit.getInvoice().stream()
+                        .map(InvoiceDTO::new)
+                        .collect(Collectors.toList()) : null;
+
 
         this.recommendation = patientVisit.getRecommendation() != null ?
-                new RecommendationDTO(patientVisit.getRecommendation()) : null;
+                patientVisit.getRecommendation().stream()
+                        .map(RecommendationDTO::new)
+                        .collect(Collectors.toList()) : null;
+
 
         this.inPatientTreatments = patientVisit.getInPatientTreatments() != null ?
                 patientVisit.getInPatientTreatments().stream()
                         .map(InPatientTreatmentDTO::new)
                         .collect(Collectors.toList()) : null;
 
+
         this.referralForm = patientVisit.getReferralForm() != null ?
-                new ReferralFormDTO(patientVisit.getReferralForm()) : null;
+                patientVisit.getReferralForm().stream()
+                        .map(ReferralFormDTO::new)
+                        .collect(Collectors.toList()) : null;
+
     }
 
     // Getters (for accessing the public fields)
@@ -85,6 +110,7 @@ public class PatientVisitDTO {
     public Long getPatientId() {
         return patientId;
     }
+
 
     public LocalDate getVisitDate() {
         return visitDate;
@@ -110,8 +136,6 @@ public class PatientVisitDTO {
         return visitName;
     }
 
-
-
     public List<TreatmentRequestedDTO> getTreatmentRequested() {
         return treatmentRequested;
     }
@@ -128,11 +152,15 @@ public class PatientVisitDTO {
         return vitalsMonitoringChart;
     }
 
-    public ConsultationDTO getConsultation() {
+    public List<ConsultationDTO> getConsultation() {
         return consultation;
     }
 
-    public RecommendationDTO getRecommendation() {
+    public List<InvoiceDTO> getInvoice() {
+        return invoice;
+    }
+
+    public List<RecommendationDTO> getRecommendation() {
         return recommendation;
     }
 
@@ -140,7 +168,7 @@ public class PatientVisitDTO {
         return inPatientTreatments;
     }
 
-    public ReferralFormDTO getReferralForm() {
+    public List<ReferralFormDTO> getReferralForm() {
         return referralForm;
     }
 }

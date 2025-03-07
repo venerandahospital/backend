@@ -15,7 +15,7 @@ public class PatientRequest {
     @Schema(example = "Cryton")
     public String patientSecondName;
 
-    @Schema(example = "Bugogo")
+    @Schema(example = "Bugogo Village, kyegegya")
     public String patientAddress;
 
     @Schema(example = "256784411848")
@@ -27,8 +27,8 @@ public class PatientRequest {
     @Schema(example = "28")
     public BigDecimal patientAge;
 
-    @Schema(example = "24/02/1994")
-    @JsonbDateFormat(value = "dd/MM/yyyy")
+    @Schema(example = "1994/02/24")
+    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate patientDateOfBirth;  // Matches the "dd/MM/yyyy" format in JSON
 
     @Schema(example = "Cryton")
@@ -47,4 +47,10 @@ public class PatientRequest {
 
     @Schema(example = "Kampala")
     public String nextOfKinAddress;
+
+    @Schema(example = "52")
+    public Long patientGroupId;
+
+
+
 }

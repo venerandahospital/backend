@@ -46,11 +46,6 @@
 
 
 
-
-
-
-
-
     <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
     <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
     <dependency>
@@ -164,6 +159,7 @@
                 </compilerArgs>
             </configuration>
         </plugin>
+
         <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${surefire-plugin.version}</version>

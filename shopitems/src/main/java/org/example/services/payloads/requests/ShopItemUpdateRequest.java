@@ -23,4 +23,7 @@ public class ShopItemUpdateRequest {
 
     @Schema(example = "https://euro.montbell.com/products/prod_img/zoom/z_2301368_bric.jpg")
     public String image;
+
+    @Schema(example = "50")
+    public Integer reOrderLevel;
 }

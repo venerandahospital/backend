@@ -10,6 +10,7 @@ import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
 import org.example.services.payloads.responses.dtos.TreatmentRequestedDTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ApplicationScoped
 public class TreatmentRequestService {
@@ -21,11 +22,17 @@ public class TreatmentRequestService {
     public TreatmentRequestedDTO createNewTreatmentRequested(TreatmentRequestedRequest request) {
         // Fetch the PatientVisit and Item in one go
         PatientVisit patientVisit = PatientVisit.findById(request.visitID);
+
         Item item = Item.findById(request.itemId);
 
         // Throw exception if either of them is not found
         if (patientVisit == null || item == null) {
-            throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+            throw new IllegalArgumentException("patient or item NOT FOUND"); // Handle not found error
+        }
+
+        // Throw exception if either of them is not found
+        if (request.quantity > item.stockAtHand) {
+            throw new IllegalArgumentException("Stock at hand is insufficient. Please stock more or order less.");
         }
 
         // Check if a TreatmentRequested with the same item and visit already exists
@@ -53,6 +60,19 @@ public class TreatmentRequestService {
             treatmentRequestedRepository.persist(treatmentRequested);
             return new TreatmentRequestedDTO(treatmentRequested);
         }
+    }
+
+
+    public List<TreatmentRequestedDTO> getTreatmentRequestedByVisit(Long visitId) {
+        List<TreatmentRequested> treatmentGive = TreatmentRequested.find(
+                "visit.id = ?1 ORDER BY id DESC",
+                visitId
+        ).list();
+
+        // Convert the results to a list of TreatmentRequestedDTO
+        return treatmentGive.stream()
+                .map(TreatmentRequestedDTO::new)
+                .toList();
     }
 
 }

@@ -33,10 +33,30 @@ public class Item extends PanacheEntity {
     public String image;
 
     @Column
+    public Integer stockAtHand;
+
+    @Column
+    public Integer reOrderLevel;
+
+    @Column
     public String unitOfMeasure;
+
+    @Column
+    public String brand;
+
+    @Column
+    public String packaging;
 
     @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate creationDate;
+
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate expiryDate;
+
+
+
+
 
 }

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public class ShopItemParametersRequest {
 
-    @QueryParam("category")
+    @QueryParam("invoiceId")
     public String category;
 
     @QueryParam("title")

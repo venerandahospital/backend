@@ -16,7 +16,9 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
+import org.example.domains.Invoice;
 import org.example.domains.Item;
+import org.example.domains.Stock;
 import org.example.domains.repositories.ItemRepository;
 import org.example.services.payloads.requests.ShopItemParametersRequest;
 import org.example.services.payloads.requests.ShopItemRequest;
@@ -24,6 +26,7 @@ import org.example.services.payloads.requests.ShopItemUpdateRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -53,16 +56,38 @@ public class ShopItemService {
         shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
         shopItem.description = request.description;
-        shopItem.costPrice = request.costPrice;
-        shopItem.sellingPrice = request.sellingPrice;
+        shopItem.costPrice = BigDecimal.valueOf(0);
+        shopItem.sellingPrice = BigDecimal.valueOf(0);
         shopItem.image = request.image;
+        shopItem.stockAtHand = 0;
+        shopItem.unitOfMeasure = request.unitOfMeasure;
+        shopItem.reOrderLevel = request.reOrderLevel;
 
         shopItem.creationDate = LocalDate.now();
+        //shopItem.expiryDate = request.expiryDate;
 
         shopItemRepository.persist(shopItem);
+
         return shopItem;
 
     }
+
+
+    public void updateItemStockAtHand(Stock stock, Item item) {
+
+        // Update the invoice fields
+        item.stockAtHand = stock.newQuantity ;
+        item.expiryDate = stock.expiryDate;
+        item.costPrice = stock.unitCostPrice;
+        item.sellingPrice = stock.unitSellingPrice;
+        item.brand = stock.brand;
+        item.packaging = stock.packaging;
+
+        // Persist the updated invoice
+        shopItemRepository.persist(item);
+    }
+
+
 
 
     @Transactional
@@ -86,7 +111,7 @@ public class ShopItemService {
                     createCell("Category"),
                     createCell("Title"),
                     createCell("Description"),
-                    createCell("Price"),
+                    createCell("CostPrice"),
                     createCell("Creation Date")
 
             };
@@ -96,13 +121,13 @@ public class ShopItemService {
                 table.addCell(cell);
             }
 
-            for (FullShopItemResponse shopItem : getShopItemsAdvancedFilter(request)) {
-                table.addCell(createCell(shopItem.number));
-                table.addCell(createCell(shopItem.category));
-                table.addCell(createCell(shopItem.title));
-                table.addCell(createCell(shopItem.description));
-                table.addCell(createCell("$" + shopItem.price.toString()));
-                table.addCell(createCell(shopItem.creationDate.toString()));
+            for (FullShopItemResponse Item : getShopItemsAdvancedFilter(request)) {
+                table.addCell(createCell(Item.number));
+                table.addCell(createCell(Item.category));
+                table.addCell(createCell(Item.title));
+                table.addCell(createCell(Item.description));
+                table.addCell(createCell("$" + Item.costPrice.toString()));
+                table.addCell(createCell(Item.creationDate.toString()));
             }
 
             document.add(table);
@@ -125,124 +150,101 @@ public class ShopItemService {
     }
 
 
-    ///// now generating excell sheet ////////////////////////////
 
-    /*public Response generateExcelFile(List<ShopItem> shopItems) {
-            try (Workbook workbook = new XSSFWorkbook()) {
-                Sheet sheet = workbook.createSheet("Shop Items");
+    public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
+        StringJoiner whereClause = getStringJoiner(request);
 
-                // Create headers
-                Row headerRow = (Row) sheet.createRow(0);
-                headerRow.createCell(0).setCellValue("Number");
-                headerRow.createCell(1).setCellValue("Category");
-                headerRow.createCell(2).setCellValue("Title");
-                headerRow.createCell(3).setCellValue("Description");
-                headerRow.createCell(4).setCellValue("Price");
-                headerRow.createCell(5).setCellValue("Image");
-                headerRow.createCell(6).setCellValue("Creation Date");
+        String sql = """
+                 
+                    SELECT
+                    id,
+                    category,
+                    number,
+                    image,
+                    title,
+                    costPrice,
+                    sellingPrice,
+                    creationDate,
+                    unitOfMeasure,
+                    description
+                    FROM item
+                    %s
+                    ORDER BY creationDate DESC;
+                    """.formatted(whereClause);
 
-                // Populate data
-                int rowNum = 1;
-                for (ShopItem item : shopItems) {
-                    Row row = (Row) sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(item.number);
-                    row.createCell(1).setCellValue(item.category);
-                    row.createCell(2).setCellValue(item.title);
-                    row.createCell(3).setCellValue(item.description);
-                    row.createCell(4).setCellValue(item.price.doubleValue());
-                    row.createCell(5).setCellValue(item.image);
-                    row.createCell(6).setCellValue(item.creationDate.toString());
-                }
+        return client.query(sql)
+                .execute()
+                .onItem()
+                .transformToMulti(rows -> Multi.createFrom().iterable(rows))
+                .onItem()
+                .transform(this::from)
+                .collect().asList().await()
+                .indefinitely();
 
-                // Create a temporary file
-                File tempFile = File.createTempFile("shop_items", ".xlsx");
-
-                // Save the Excel file to the temporary file
-                try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
-                    workbook.write(outputStream);
-                }
-
-                // Create a response with the temporary file as an entity
-                Response.ResponseBuilder response = Response.ok(tempFile);
-                response.header("Content-Disposition", "attachment; filename=shop_items.xlsx");
-                response.header("Content-Length", String.valueOf(tempFile.length()));
-                response.type(MediaType.APPLICATION_OCTET_STREAM);
-
-                // Delete the temporary file after it's downloaded
-                tempFile.deleteOnExit();
-
-                return response.build();
-            } catch (IOException | java.io.IOException e) {
-                // Handle exceptions
-                e.printStackTrace();
-                return Response.serverError().entity("Error generating Excel file").build();
-            }
-        }*/
-
-
-   /* public Response generatePdf() {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Document document = new Document();
-            PdfWriter.getInstance(document, baos);
-
-            document.open();
-            document.add(new Paragraph("Hello, PDF from Quarkus!"));
-
-            document.close();
-
-            byte[] pdfBytes = baos.toByteArray();
-
-            return Response.ok(pdfBytes)
-                    .header("Content-Disposition", "attachment; filename=quarkus_pdf.pdf")
-                    .build();
-        } catch (DocumentException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
+    private FullShopItemResponse from(Row row){
 
-    @Transactional
-    public Response generateAndReturnPdf() {
-        List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
+        FullShopItemResponse response = new FullShopItemResponse();
+        response.id = row.getLong("id");
+        response.description = row.getString("description");
+        response.image = row.getString("image");
+        response.number = row.getString("number");
+        response.category = row.getString("category");
+        response.title = row.getString("title");
+        response.costPrice = row.getBigDecimal("costPrice");
+        response.sellingPrice = row.getBigDecimal("sellingPrice");
+        response.unitOfMeasure = row.getString("unitOfMeasure");
+        response.creationDate = row.getLocalDate("creationDate");
 
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        return response;
+    }
 
-            Document document = new Document();
-            PdfWriter.getInstance(document, baos);
-            document.open();
+    private FullShopItemResponse fullShopItemDTO(Item Item){
+        FullShopItemResponse response = new FullShopItemResponse();
+        response.id = Item.id;
+        response.number = Item.number;
+        response.costPrice = Item.costPrice;
+        response.sellingPrice = Item.sellingPrice;
+        response.description = Item.description;
+        response.category = Item.category;
+        response.unitOfMeasure = Item.unitOfMeasure;
+        response.title = Item.title;
+        response.creationDate =Item.creationDate;
+        response.image = Item.image;
 
-            // Add content to the PDF
-            for (ShopItem shopItem : shopItems) {
-                Paragraph paragraph = new Paragraph();
-                paragraph.add("Number: " + shopItem.number);
-                paragraph.add("\n");
-                paragraph.add("Category: " + shopItem.category);
-                paragraph.add("\n");
-                paragraph.add("Title: " + shopItem.title);
-                paragraph.add("\n");
-                paragraph.add("Description: " + shopItem.description);
-                paragraph.add("\n");
-                paragraph.add("Price: $" + shopItem.price.toString());
-                paragraph.add("\n");
-                paragraph.add("\n"); // Add space between items
-                document.add(paragraph);
-            }
+        return response;
+    }
 
-            document.close();
+    private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
+        AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
 
-            byte[] pdfBytes = baos.toByteArray();
-
-            return Response.ok(new ByteArrayInputStream(pdfBytes))
-                    .header("Content-Disposition", "attachment; filename=shop_items.pdf")
-                    .type("application/pdf")
-                    .build();
-        } catch (DocumentException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        List<String> conditions = new ArrayList<>();
+        if (request.category != null && !request.category.isEmpty()) {
+            conditions.add("category = '" + request.category + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
         }
-    }*/
 
+        if (request.title != null && !request.title.isEmpty()) {
+            conditions.add("title = '" + request.title + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        if (request.datefrom != null && request.dateto != null) {
+            conditions.add("creationDate BETWEEN '" + request.datefrom + "' AND '" + request.dateto + "'");
+            hasSearchCriteria.set(Boolean.TRUE);
+        }
+
+        StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
+
+        conditions.forEach(whereClause::add);
+
+        if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
+            whereClause.add("1 = 1");
+        }
+
+        return whereClause;
+    }
 
 
 
@@ -293,6 +295,7 @@ public class ShopItemService {
                     shopItem.description = request.description;
                     shopItem.category = request.category;
                     shopItem.image = request.image;
+                    shopItem.reOrderLevel = request.reOrderLevel;
 
                     shopItemRepository.persist(shopItem);
 
@@ -301,96 +304,6 @@ public class ShopItemService {
     }
 
 
-
-    public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
-           StringJoiner whereClause = getStringJoiner(request);
-
-            String sql = """
-                                   
-                    SELECT
-                    id,
-                    category,
-                    number,
-                    image,
-                    title,
-                    price,
-                    creationDate,
-                    description
-                    FROM shopitem
-                    %s
-                    ORDER BY creationDate DESC;                             
-                    """.formatted(whereClause);
-
-            return client.query(sql)
-                    .execute()
-                    .onItem()
-                    .transformToMulti(rows -> Multi.createFrom().iterable(rows))
-                    .onItem()
-                    .transform(this::from)
-                    .collect().asList().await()
-                    .indefinitely();
-
-        }
-
-    private FullShopItemResponse from(Row row){
-
-        FullShopItemResponse response = new FullShopItemResponse();
-        response.id = row.getLong("id");
-        response.description = row.getString("description");
-        response.image = row.getString("image");
-        response.number = row.getString("number");
-        response.category = row.getString("category");
-        response.title = row.getString("title");
-        response.price = row.getBigDecimal("price");
-        response.creationDate = row.getLocalDate("creationDate");
-
-        return response;
-    }
-
-    private FullShopItemResponse fullShopItemDTO(Item shopItem){
-        FullShopItemResponse response = new FullShopItemResponse();
-        response.id = shopItem.id;
-        response.number = shopItem.number;
-        response.costPrice = shopItem.costPrice;
-        response.sellingPrice = shopItem.sellingPrice;
-        response.description = shopItem.description;
-        response.category = shopItem.category;
-        response.title = shopItem.title;
-        response.creationDate = shopItem.creationDate;
-        response.image = shopItem.image;
-
-        return response;
-    }
-
-    private StringJoiner getStringJoiner(ShopItemParametersRequest request) {
-        AtomicReference<Boolean> hasSearchCriteria = new AtomicReference<>(Boolean.FALSE);
-
-        List<String> conditions = new ArrayList<>();
-        if (request.category != null && !request.category.isEmpty()) {
-            conditions.add("category = '" + request.category + "'");
-            hasSearchCriteria.set(Boolean.TRUE);
-        }
-
-        if (request.title != null && !request.title.isEmpty()) {
-            conditions.add("title = '" + request.title + "'");
-            hasSearchCriteria.set(Boolean.TRUE);
-        }
-
-        if (request.datefrom != null && request.dateto != null) {
-            conditions.add("creationDate BETWEEN '" + request.datefrom + "' AND '" + request.dateto + "'");
-            hasSearchCriteria.set(Boolean.TRUE);
-        }
-
-        StringJoiner whereClause = new StringJoiner(" AND ", "WHERE ", "");
-
-        conditions.forEach(whereClause::add);
-
-        if (Boolean.FALSE.equals(hasSearchCriteria.get())) {
-            whereClause.add("1 = 1");
-        }
-
-        return whereClause;
-    }
 
 
         private StringJoiner getStringJoinerSimplified(ShopItemParametersRequest request) {

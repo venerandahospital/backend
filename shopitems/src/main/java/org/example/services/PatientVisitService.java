@@ -8,13 +8,17 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.domains.Patient;
 import org.example.domains.PatientVisit;
+import org.example.domains.ProcedureRequested;
 import org.example.domains.repositories.PatientRepository;
 import org.example.domains.repositories.PatientVisitRepository;
+import org.example.services.payloads.requests.PatientVisitUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
 import org.example.services.payloads.responses.dtos.PatientDTO;
+import org.example.services.payloads.responses.dtos.PatientGroupDTO;
 import org.example.services.payloads.responses.dtos.PatientVisitDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -31,6 +35,9 @@ public class PatientVisitService {
     @Inject
     PatientRepository patientRepository;
 
+    @Inject
+    InvoiceService invoiceService;
+
     public static final String NOT_FOUND = "Not found!";
 
     public Long patientRequestedId;
@@ -39,23 +46,23 @@ public class PatientVisitService {
      * Creates a new PatientVisit for the specified patient ID.
      */
     @Transactional
-    public PatientVisitDTO createNewPatientVisit(PatientVisitRequest request) {
+    public PatientVisitDTO createNewPatientVisit(Long id, PatientVisitRequest request) {
         // Fetch the patient
-        Patient patient = Patient.findById(request.patientId);
+        Patient patient = Patient.findById(id);
         if (patient == null) {
-            throw new IllegalArgumentException("Patient not found for ID: " + request.patientId);
+            throw new IllegalArgumentException("Patient not found for ID: " + id);
         }
 
         //Generate unique visit number
-        int lastVisitNumber = generateVisitNo(request.patientId);
+        int lastVisitNumber = generateVisitNo(id);
         int newVisitNumber = lastVisitNumber + 1;
 
         // Ensure visitNumber is unique
-        boolean exists = patientVisitRepository.find("patient.id = ?1 and visitNumber = ?2", request.patientId, newVisitNumber)
+        boolean exists = patientVisitRepository.find("patient.id = ?1 and visitNumber = ?2", id, newVisitNumber)
                 .firstResultOptional()
                 .isPresent();
         if (exists) {
-            throw new IllegalArgumentException("Duplicate visitNumber: " + newVisitNumber + " for patient ID " + request.patientId);
+            throw new IllegalArgumentException("Duplicate visitNumber: " + newVisitNumber + " for patient ID " + id);
         }
 
         // Create a new visit
@@ -68,8 +75,11 @@ public class PatientVisitService {
         patientVisit.visitName = "Visit 0" + newVisitNumber;
         patientVisit.patient = patient;
 
+
         // Persist visit
         patientVisitRepository.persist(patientVisit);
+
+        invoiceService.createInvoice(patientVisit.id);
 
         return new PatientVisitDTO(patientVisit);
     }
@@ -135,6 +145,21 @@ public class PatientVisitService {
 
         // Return the list of DTOs
         return result;
+    }
+
+
+    public PatientVisitDTO updatePatientVisitById(Long id, PatientVisitUpdateRequest request) {
+        return patientVisitRepository.findByIdOptional(id)
+                .map(patientVisit -> {
+
+                    patientVisit.visitType = request.visitType;
+                    patientVisit.visitReason = request.visitReason;
+                    patientVisit.visitLastUpdatedDate = LocalDate.now();
+
+                    patientVisitRepository.persist(patientVisit);
+
+                    return new PatientVisitDTO(patientVisit);
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 
 

@@ -6,9 +6,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class PatientVisitRequest {
 
 
-    @Schema(example = "51")
-    public Long patientId;
-
     @Schema(example = "admission")
     public String visitType; // e.g., "outpatient or inpatient"
 
