@@ -13,10 +13,10 @@ import java.util.List;
 public class Patient extends PanacheEntity {
 
     ///////////////////// patient data//////////////////////////
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     public String patientFirstName;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     public String patientSecondName;
 
     @ManyToOne
@@ -76,10 +76,10 @@ public class Patient extends PanacheEntity {
     //public List<PatientVisit> patientVisits = new ArrayList<>(); // Initialize to an empty list
     private final List<PatientVisit> patientVisits = new ArrayList<>();
 
+
     public List<PatientVisit> getPatientVisits() {
         return patientVisits;
     }
-
 
     public Long getId(){
         return id;

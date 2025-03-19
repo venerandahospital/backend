@@ -18,6 +18,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
 import org.example.domains.Invoice;
 import org.example.domains.Item;
+import org.example.domains.Procedure;
 import org.example.domains.Stock;
 import org.example.domains.repositories.ItemRepository;
 import org.example.services.payloads.requests.ShopItemParametersRequest;
@@ -31,10 +32,13 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
 import org.example.services.payloads.responses.basicResponses.FullShopItemResponse;
+import org.example.services.payloads.responses.dtos.ItemDTO;
+import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -82,6 +86,27 @@ public class ShopItemService {
         item.sellingPrice = stock.unitSellingPrice;
         item.brand = stock.brand;
         item.packaging = stock.packaging;
+
+        // Persist the updated invoice
+        shopItemRepository.persist(item);
+    }
+
+    public void updateItemStockAtHandAfterSelling(Integer quantity, Item item) {
+
+        // Update the invoice fields
+
+        item.stockAtHand = item.stockAtHand-quantity;
+
+        // Persist the updated invoice
+        shopItemRepository.persist(item);
+    }
+
+
+    public void updateItemStockAtHandAfterDeleting(Integer quantity, Item item) {
+
+        // Update the invoice fields
+
+        item.stockAtHand = item.stockAtHand + quantity;
 
         // Persist the updated invoice
         shopItemRepository.persist(item);
@@ -265,6 +290,26 @@ public class ShopItemService {
         shopItemRepository.deleteAll();
 
     }
+
+    public List<ItemDTO> getDrugItems(){
+        List<Item> items = Item.find(
+                "category = ?1 ORDER BY id DESC",
+                "drug"
+        ).list();
+
+        // Convert ProcedureRequested entities to ProcedureDTO
+        return items.stream()
+                .map(ItemDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
+
     public void deleteShopItemById(Long id){
         Item shopItem = shopItemRepository.findById(id);
         shopItem.delete();

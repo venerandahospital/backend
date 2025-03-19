@@ -35,12 +35,12 @@ public class PaymentController {
 
 
     @POST
-    @Path("create-new-payment")
+    @Path("create-new-payment/{id}")
     @Transactional
     @Operation(summary = "new-payment", description = "new-payment")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PaymentDTO.class)))
-    public Response createNewPayment(PaymentRequest request) {
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label, paymentsService.createNewPayment(request))).build();
+    public Response createNewPayment(@PathParam("id") Long visitId, PaymentRequest request) {
+        return paymentsService.createNewPayment(visitId,request);
     }
 
     @GET
@@ -53,6 +53,16 @@ public class PaymentController {
 
         // Return a successful response with the list of DTOs
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, paymentList)).build();
+    }
+
+    @DELETE
+    @Path("/delete-payment-id/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete payment by id", description = "delete payment by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deletePaymentById(@PathParam("id") Long id){
+        return paymentsService.deletePayment(id);
     }
 
 

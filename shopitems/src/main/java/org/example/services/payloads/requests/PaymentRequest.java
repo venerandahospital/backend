@@ -5,11 +5,7 @@ import java.math.BigDecimal;
 
 public class PaymentRequest {
 
-    @Schema(example = "1")
-    public Long visitId;
 
-    @Schema(example = "202")
-    public Long invoiceId;
 
     @Schema(example = "15000.00")
     public BigDecimal amountToPay;

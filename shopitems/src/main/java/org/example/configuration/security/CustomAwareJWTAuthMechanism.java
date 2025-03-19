@@ -126,11 +126,17 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
 
                 request.path().contains("create-new-procedure-requested/{id}") ||
 
+                request.path().contains("/course/Patient-management/get-total-cost-of-every-service-by-patient-id/") ||
+
+                request.path().contains("/course/Patient-management/delete-payment-id/") ||
+
+
+
+
+
                 request.path().contains("get-all-scan-procedures") ||
 
                 request.path().contains("get-Other-Procedures") ||
-
-
 
 
 
@@ -151,8 +157,6 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/course/shop-item/add-new-Items") ||
                 request.path().contains("/course/shop-item/search") ||
                 request.path().contains("/shop-item/generate-pdf") ||
-
-
 
 
                 request.path().contains("/user-login")) {

@@ -32,13 +32,14 @@ public class TreatmentRequestedController {
     TreatmentRequestService treatmentRequestService;
 
     @POST
-    @Path("create-new-treatmentRequest")
+    @Path("create-new-treatmentRequest/{id}")
     @Transactional
     @Operation(summary = "new-treatmentRequest", description = "new-treatmentRequest")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = TreatmentRequestedDTO.class)))
-    public Response createNewTreatmentRequested(TreatmentRequestedRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,treatmentRequestService.createNewTreatmentRequested(request) )).build();
+    public Response createNewTreatmentRequested(@PathParam("id") Long visitId, TreatmentRequestedRequest request){
+        return treatmentRequestService.createNewTreatmentRequested(visitId, request);
     }
+
 
     @GET
     @Path("get-treatment-requested-by-visit-id/{id}")
@@ -49,5 +50,15 @@ public class TreatmentRequestedController {
 
         // Return a successful response with the list of DTOs
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, treatmentRequested)).build();
+    }
+
+    @DELETE
+    @Path("/delete-requested-treatment-by-id/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete requested treatment by id", description = "delete requested treatment by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteRequestedTreatmentById(@PathParam("id") Long id){
+        return treatmentRequestService.deleteTreatmentRequestById(id);
     }
 }

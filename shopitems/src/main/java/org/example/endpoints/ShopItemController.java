@@ -20,6 +20,8 @@ import org.example.services.payloads.requests.ShopItemRequest;
 import org.example.configuration.handler.*;
 import org.example.services.payloads.requests.ShopItemUpdateRequest;
 import org.example.services.payloads.responses.basicResponses.ShopItemResponse;
+import org.example.services.payloads.responses.dtos.ItemDTO;
+import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 import java.util.List;
 
@@ -96,6 +98,19 @@ public class ShopItemController {
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
 
     }
+
+
+    @GET
+    @Path("get-drugs")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "get drugs", description = "get drugs")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemDTO.class)))
+    public Response getDrugs(){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getDrugItems() )).build();
+    }
+
+
 
     @PUT
     @Path("{id}")

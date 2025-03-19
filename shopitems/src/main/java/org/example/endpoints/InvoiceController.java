@@ -65,6 +65,22 @@ public class InvoiceController {
     }
 
     @GET
+    @Path("get-total-cost-of-every-service-by-patient-id/{id}")
+    @Operation(summary = "Get total cost of every service by patient ID", description = "Retrieve the total costs of every service for a given visit ID.")
+    @APIResponse(
+            description = "Successful",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = ResponseMessage.class))
+    )
+    public Response getTotalCostOfEveryServicePatientId(@PathParam("id") Long patientId) {
+        // Call the updated service method
+        Map<String, BigDecimal> totalCostOfEveryServiceByPatientId = invoiceService.getTotalPatientBalanceDue(patientId);
+
+        // Return a successful response with the Map
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, totalCostOfEveryServiceByPatientId)).build();
+    }
+
+    @GET
     @Transactional
     @Path("/get-all-invoices")
     // @RolesAllowed({"ADMIN"})
@@ -87,9 +103,7 @@ public class InvoiceController {
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InvoiceDTO.class)))
     @APIResponse(description = "Invoice not found", responseCode = "404")
     public Response updateInvoice(@PathParam("id") Long id, InvoiceUpdateRequest request) {
-
-            InvoiceDTO updatedInvoice = invoiceService.updateInvoice(id, request);
-            return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label, updatedInvoice)).build();
+            return invoiceService.updateInvoice(id, request);
 
     }
 

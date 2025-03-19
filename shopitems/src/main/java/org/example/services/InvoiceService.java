@@ -29,12 +29,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.*;
 import org.example.domains.repositories.InvoiceRepository;
 import org.example.domains.repositories.PatientVisitRepository;
 import org.example.services.payloads.requests.InvoiceRequest;
 import org.example.services.payloads.requests.InvoiceUpdateRequest;
 import org.example.services.payloads.responses.dtos.InvoiceDTO;
+import org.example.services.payloads.responses.dtos.PaymentDTO;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -118,7 +120,7 @@ public class InvoiceService {
 
 
     @Transactional
-    public InvoiceDTO updateInvoice(Long invoiceId, InvoiceUpdateRequest request) {
+    public Response updateInvoice(Long invoiceId, InvoiceUpdateRequest request) {
         // Find the existing invoice
         Invoice invoice = Invoice.findById(invoiceId);
 
@@ -151,7 +153,10 @@ public class InvoiceService {
         // Persist the updated invoice
         invoiceRepository.persist(invoice);
 
-        return new InvoiceDTO(invoice);
+       // return new InvoiceDTO(invoice);
+
+        return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
+
     }
 
     @Transactional
@@ -310,6 +315,8 @@ public class InvoiceService {
 
         BigDecimal invoiceBalanceDue = invoiceWithVisitId.balanceDue;
 
+        Long invoiceId = invoiceWithVisitId.id;
+
 
         BigDecimal totalAmountDue = allInvoices.stream()
                 .map(invoice -> invoice.balanceDue)
@@ -325,6 +332,8 @@ public class InvoiceService {
         totalCostMap.put("OtherProcedureCost", otherProcedureTotalAmount);
         totalCostMap.put("ConsultationFee", consultationFee);
         totalCostMap.put("TreatmentTotalCost", treatmentTotalCost);
+        totalCostMap.put("InvoiceId", BigDecimal.valueOf(invoiceId));
+
 
         totalCostMap.put("InvoiceSubtotal", invoiceSubtotal);
 
@@ -342,6 +351,30 @@ public class InvoiceService {
 
         return totalCostMap;
     }
+
+
+    @Transactional
+    public Map<String, BigDecimal> getTotalPatientBalanceDue(Long patientId) {
+
+        List<Invoice> allInvoices = Invoice.find(
+                "patient.id = ?1 ORDER BY id DESC",
+                patientId
+        ).list();
+
+        BigDecimal totalAmountDue = allInvoices.stream()
+                .map(invoice -> invoice.balanceDue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Return as a map with keys for clarity
+        Map<String, BigDecimal> totalCostMap = new HashMap<>();
+
+        totalCostMap.put("TotalAmountDue", totalAmountDue);
+
+        return totalCostMap;
+    }
+
+
+
 
     public static Image getLogo() {
         try {

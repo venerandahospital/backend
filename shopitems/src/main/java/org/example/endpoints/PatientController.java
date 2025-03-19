@@ -41,7 +41,7 @@ public class PatientController {
     @Operation(summary = "Create New Patient", description = "Creates a new patient and returns the patient's details.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
     public Response createPatient(PatientRequest request) {
-        return Response.ok(new ResponseMessage(StatusTypes.PATIENT_CREATED_SUCCESSFULLY.label, patientService.createNewPatient(request))).build();
+        return patientService.createNewPatient(request);
     }
 
 

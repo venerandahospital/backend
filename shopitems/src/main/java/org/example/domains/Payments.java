@@ -41,11 +41,4 @@ public class Payments extends PanacheEntity {
     @Column
     public String notes;
 
-
-
-
-
-
-
-
 }

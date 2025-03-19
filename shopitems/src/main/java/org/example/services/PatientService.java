@@ -35,13 +35,53 @@ public class PatientService {
     public static final String NOT_FOUND = "Not found!";
 
     @Transactional
-    public PatientDTO createNewPatient(PatientRequest request) {
-        // Create new Patient entity and set basic information
-        PatientGroup patientGroup = patientGroupRepository.findById(request.patientGroupId);
-        if (patientGroup == null) {
-            throw new IllegalArgumentException("patientGroup not found for ID: " + request.patientGroupId);
+    public Response createNewPatient(PatientRequest request) {
+        // Validate the request
+        if (request.patientAge == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Patient Age cannot be null or empty", null))
+                    .build();
         }
 
+        if (request.patientGender == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Patient Gender cannot be null or empty", null))
+                    .build();
+        }
+
+
+        // Check if gender is either "female" or "male"
+        if (!request.patientGender.equalsIgnoreCase("female") && !request.patientGender.equalsIgnoreCase("male")) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Patient Gender must be either 'female' or 'male'", null))
+                    .build();
+        }
+
+
+
+        // Check if a patient with the same first and second names already exists
+        Patient existingPatient = patientRepository.findByFirstNameAndSecondName(
+                request.patientFirstName, request.patientSecondName);
+
+        if (existingPatient != null) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(new ResponseMessage("A patient with the same first and second names already exists", null))
+                    .build();
+        }
+
+
+
+        PatientGroup patientGroup = null;
+        if (request.patientGroupId != null) {
+            patientGroup = patientGroupRepository.findById(request.patientGroupId);
+            if (patientGroup == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("Patient group not found for ID: " + request.patientGroupId, null))
+                        .build();
+            }
+        }
+
+        // Create new Patient entity and set basic information
         Patient patient = new Patient();
         patient.patientGroup = patientGroup;
         patient.patientFirstName = request.patientFirstName;
@@ -68,16 +108,21 @@ public class PatientService {
             patient.patientNo = deletedPatientNumberInQue;
         }
 
+        // Generate patient file number
         patient.patientFileNo = "VMD" + patient.patientNo;
 
         // Persist the new Patient entity
         patientRepository.persist(patient);
 
         // Remove the deleted patient number from the queue
-        deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
+        if (deletedPatientNumberInQue != 0) {
+            deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
+        }
 
-        // Return a new PatientDTO from the saved Patient entity
-        return new PatientDTO(patient);
+        // Return a success response with the created PatientDTO
+        return Response.status(Response.Status.CREATED)
+                .entity(new ResponseMessage("Patient created successfully", new PatientDTO(patient)))
+                .build();
     }
     /*@Transactional
     public List<Patient> getAllPatients() {
@@ -99,23 +144,29 @@ public class PatientService {
                 .orElseThrow(() -> new WebApplicationException("Patient not found", 404));
     }
 
+    @Transactional
     public PatientDTO updatePatientById(Long id, PatientUpdateRequest request) {
-
-        PatientGroup patientGroup = patientGroupRepository.findById(request.patientGroupId);
-        if (patientGroup == null) {
-            throw new IllegalArgumentException("patientGroup not found for ID: " + request.patientGroupId);
+        // Find the patient group (only if patientGroupId is provided)
+        PatientGroup patientGroup;
+        if (request.patientGroupId != null) {
+            patientGroup = patientGroupRepository.findById(request.patientGroupId);
+            if (patientGroup == null) {
+                throw new IllegalArgumentException("Patient group not found for ID: " + request.patientGroupId);
+            }
+        } else {
+            patientGroup = null;
         }
 
         return patientRepository.findByIdOptional(id)
                 .map(patient -> {
-
+                    // Update patient fields
                     patient.patientFirstName = request.patientFirstName;
                     patient.patientSecondName = request.patientSecondName;
                     patient.patientAddress = request.patientAddress;
                     patient.patientContact = request.patientContact;
                     patient.patientGender = request.patientGender;
                     patient.patientAge = request.patientAge;
-                    patient.patientGroup = patientGroup;
+                    patient.patientGroup = patientGroup; // Can be null
                     patient.nextOfKinName = request.nextOfKinName;
                     patient.nextOfKinContact = request.nextOfKinContact;
                     patient.relationship = request.relationship;
@@ -123,10 +174,13 @@ public class PatientService {
                     patient.patientDateOfBirth = request.patientDateOfBirth;
                     patient.patientLastUpdatedDate = LocalDate.now();
 
+                    // Persist the updated patient
                     patientRepository.persist(patient);
 
+                    // Return the updated patient as a DTO
                     return new PatientDTO(patient);
-                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+                })
+                .orElseThrow(() -> new WebApplicationException("Patient not found for ID: " + id, Integer.parseInt(NOT_FOUND)));
     }
 
 

@@ -23,6 +23,7 @@ public class PatientDTO {
     public String nextOfKinContact;
     public String relationship;
     public Long patientGroupId;
+
     public String nextOfKinAddress;
     public List<PatientVisitDTO> patientVisits;
 
