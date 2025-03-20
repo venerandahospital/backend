@@ -18,8 +18,6 @@ import com.itextpdf.layout.property.*;
 
 import java.awt.*;
 
-import com.itextpdf.io.image.ImageData;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.HorizontalAlignment;
 
@@ -29,27 +27,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.*;
 import org.example.domains.repositories.InvoiceRepository;
 import org.example.domains.repositories.PatientVisitRepository;
-import org.example.services.payloads.requests.InvoiceRequest;
 import org.example.services.payloads.requests.InvoiceUpdateRequest;
 import org.example.services.payloads.responses.dtos.InvoiceDTO;
-import org.example.services.payloads.responses.dtos.PaymentDTO;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
-
-import static javax.swing.text.StyleConstants.setFontSize;
 
 @ApplicationScoped
 public class InvoiceService {
@@ -66,7 +59,7 @@ public class InvoiceService {
     private static final String NOT_FOUND = "Not found!";
 
     @Transactional
-    public InvoiceDTO createInvoice(Long visitId) {
+    public Invoice createInvoice(Long visitId) {
         // Check if the visit already has an invoice
         List<Invoice> existingInvoice = Invoice.find(
                 "visit.id = ?1 ORDER BY id DESC",
@@ -115,7 +108,7 @@ public class InvoiceService {
 
         //updateSubTotal(subTotalCalculated, visitId);
 
-        return new InvoiceDTO(invoice);
+        return invoice;
     }
 
 
@@ -125,19 +118,39 @@ public class InvoiceService {
         Invoice invoice = Invoice.findById(invoiceId);
 
         if (invoice == null) {
-            throw new IllegalArgumentException("Invoice not found.");
+            //throw new IllegalArgumentException("Invoice not found.");
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Invoice not found..",null))
+                    .build();
         }
 
-        // Update fields that can change
-        invoice.discount = request.discount != null ? request.discount : BigDecimal.valueOf(0.00);
-        invoice.tax = request.tax != null ? request.tax : BigDecimal.valueOf(0.00);
+// Set discount: if request.discount is null, assign it to 0.00
+        invoice.discount = (request.discount != null) ? request.discount : BigDecimal.valueOf(0.00);
+
+// Set tax: if request.tax is null, assign it to 0.00
+        invoice.tax = (request.tax != null) ? request.tax : BigDecimal.valueOf(0.00);
 
         // Recalculate subtotal, total amount, and balance due
         Map<String, BigDecimal> invoiceSubTotalMap = getInvoiceSubTotal(invoice.visit.id);
         BigDecimal subTotalCalculated = invoiceSubTotalMap.get("InvoiceSubtotal");
         invoice.subTotal = subTotalCalculated;
 
-        BigDecimal totalAmount = subTotalCalculated.add(request.tax).subtract(request.discount);
+        if (subTotalCalculated == null || subTotalCalculated.compareTo(BigDecimal.ZERO) <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("SubTotal Amount must be greater than zero.",null))
+                    .build();
+            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
+        }
+
+// Ensure subTotalCalculated is greater than the discount
+        if (subTotalCalculated.compareTo(request.discount) <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("SubTotal Amount must be greater than the discount.", null))
+                    .build();
+        }
+
+        BigDecimal totalAmountDiscounted = subTotalCalculated.subtract(request.discount);
+        BigDecimal totalAmount = totalAmountDiscounted.add(request.tax);
         invoice.totalAmount = totalAmount;
 
         invoice.amountPaid = paymentService.getTotalPaymentOfInvoice(invoiceId);
@@ -286,6 +299,46 @@ public class InvoiceService {
             throw new IllegalArgumentException("Visit not found.");
         }
 
+        // Check if the visit has an invoice
+        if (visit.invoice == null || visit.invoice.isEmpty()) {
+            // Create a new invoice
+            Invoice newInvoice = new Invoice();
+            newInvoice.visit = visit; // Associate the invoice with the visit
+            newInvoice.patient = visit.patient;
+            newInvoice.tin = "185 7564 3489";
+            newInvoice.notes = "Type in a brief note";
+            newInvoice.dateOfInvoice = LocalDate.now();
+            newInvoice.timeOfCreation = LocalTime.now();
+            newInvoice.toName = visit.patient.patientFirstName + " " + visit.patient.patientSecondName;
+            newInvoice.fromName = "VENERANDA MEDICAL";
+            newInvoice.fromAddress = "Bugogo Town Council-Kyegegwa District";
+            newInvoice.toAddress = "Bugogo Town Council-Kyegegwa District";
+            newInvoice.companyLogo = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2FAsset%201.png?alt=media&token=08b34d6a-0693-4dff-88b1-6e42b5c56f67";
+            newInvoice.documentTitle = "INVOICE";
+            newInvoice.invoicePlainNo = findMaxInvoiceNoReturnInt() + 1;
+            newInvoice.invoiceNo = "VMDINV-" + findMaxInvoiceNoReturnInt() + 1;
+            newInvoice.reference = generateRandomReferenceNo(20);
+            newInvoice.subTotal = invoiceSubtotal; // Initialize subtotal
+            newInvoice.discount = BigDecimal.ZERO; // Initialize discount
+            newInvoice.tax = BigDecimal.ZERO; // Initialize tax
+            newInvoice.totalAmount = invoiceSubtotal; // Initialize total amount
+            BigDecimal totalAmountPaid = paymentService.getTotalPaymentOfVisit(visitId);
+            newInvoice.amountPaid = totalAmountPaid; // Initialize amount paid
+            newInvoice.balanceDue = invoiceSubtotal.subtract(totalAmountPaid); // Initialize balance due
+
+            // Persist the new invoice
+            invoiceRepository.persist(newInvoice);
+
+            // Add the new invoice to the visit
+            if (visit.invoice == null) {
+                visit.invoice = new ArrayList<>();
+            }
+            visit.invoice.add(newInvoice);
+
+            // Update the visit in the repository
+            patientVisitRepository.persist(visit);
+        }
+
         // Return the patient associated with the visit
 
         //updateSubTotal(invoiceSubtotal, visitId);
@@ -295,7 +348,13 @@ public class InvoiceService {
 
         // Update the invoice fields
         invoiceUpdate.subTotal = invoiceSubtotal;
-        BigDecimal totalAmount = invoiceSubtotal.subtract(invoiceUpdate.discount.add(invoiceUpdate.tax));
+        //BigDecimal totalAmount = invoiceSubtotal.subtract(invoiceUpdate.discount.add(invoiceUpdate.tax));
+        //BigDecimal totalAmount = (invoiceSubtotal.subtract(invoiceUpdate.discount)).subtract(invoiceUpdate.tax);
+        BigDecimal totalAmountDiscounted = invoiceSubtotal.subtract(invoiceUpdate.discount);
+
+        BigDecimal totalAmount = totalAmountDiscounted.add(invoiceUpdate.tax);
+
+
         invoiceUpdate.totalAmount = totalAmount;
 
         invoiceUpdate.amountPaid = paymentService.getTotalPaymentOfInvoice(invoiceUpdate.id);
@@ -309,9 +368,16 @@ public class InvoiceService {
                 visit.getPatient().getId()
         ).list();
 
+
+
         Invoice invoiceWithVisitId = invoiceRepository.find(
                 "visit.id", visitId
         ).firstResult();
+
+        if (invoiceWithVisitId == null) {
+            throw new IllegalArgumentException("invoice not found.");
+
+        }
 
         BigDecimal invoiceBalanceDue = invoiceWithVisitId.balanceDue;
 
@@ -327,6 +393,8 @@ public class InvoiceService {
 
         // Return as a map with keys for clarity
         Map<String, BigDecimal> totalCostMap = new HashMap<>();
+
+
         totalCostMap.put("LabTestTotal", labTotalAmount);
         totalCostMap.put("UltrasoundTotal", ultrasoundTotalAmount);
         totalCostMap.put("OtherProcedureCost", otherProcedureTotalAmount);
@@ -350,6 +418,31 @@ public class InvoiceService {
 
 
         return totalCostMap;
+        //return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
+
+    }
+
+    @Transactional
+    public Response deleteInvoice(Long id) {
+        try {
+            // Execute the custom SQL query to delete the payment
+            int rowsDeleted = invoiceRepository.deleteInvoiceById(id);
+
+            // Check if any rows were deleted
+            if (rowsDeleted > 0) {
+                return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("invoice not found", null))
+                        .build();
+            }
+        } catch (Exception e) {
+            // Log the error and return a 500 response
+            System.err.println("Error deleting invoice: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage("Failed to delete invoice: " + e.getMessage(), null))
+                    .build();
+        }
     }
 
 
@@ -411,8 +504,12 @@ public class InvoiceService {
 
             // Ensure visit.invoice is not null and contains at least one invoice
             if (visit.invoice == null || visit.invoice.isEmpty()) {
-                throw new IllegalArgumentException("No invoice found for this visit.");
+                Invoice invoice = createInvoice(visitId); // Create a new invoice
+                visit.invoice.add(invoice); // Add invoice to visit (if applicable)
+                visit.persist(); // Save the changes
+
             }
+
 
             // Get the first invoice from the list (or handle multiple invoices as needed)
             Invoice invoice = visit.invoice.get(0); // Assuming visit.invoice is a List<Invoice>

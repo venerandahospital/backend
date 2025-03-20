@@ -17,6 +17,7 @@ import org.example.services.payloads.requests.InitialVitalUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequestedRequest;
 import org.example.services.payloads.requests.ProcedureRequestedUpdateRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
+import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
 import org.example.statics.StatusTypes;
 
@@ -102,9 +103,6 @@ public class ProcedureRequestedController {
     }
 
 
-
-
-
     @GET
     @Path("get-other-procedures-by-visit-id/{id}")
     @Operation(summary = "get-other-procedures-by-visit-id", description = "get-other-procedures-by-visit-id")
@@ -125,6 +123,17 @@ public class ProcedureRequestedController {
     @APIResponse(description = "Successful", responseCode = "200")
     public Response deleteRequestedProcedureById(@PathParam("id") Long id){
         return procedureRequestedService.deleteProcedureRequestById(id);
+    }
+
+
+    @GET
+    @Path("get-procedure-requested-by-id/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Operation(summary = "Get procedure requested", description = "Get procedure requested")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureRequestedDTO.class)))
+    public Response getProcedureRequestedById(@PathParam("id") Long id) {
+        ProcedureRequestedDTO procedureRequestedById = procedureRequestedService.getOtherRequestedProcedureById(id);
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureRequestedById)).build();
     }
 
 

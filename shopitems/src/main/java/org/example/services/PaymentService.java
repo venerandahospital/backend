@@ -148,6 +148,26 @@ public class PaymentService {
     }
 
 
+    @Transactional
+    public BigDecimal getTotalPaymentOfVisit(Long visitId) {
+        // Validate the invoice ID
+        if (visitId == null) {
+            throw new IllegalArgumentException("visitId ID cannot be null.");
+        }
+
+        // Fetch payments associated with the given invoice ID
+        List<Payments> paymentsMade = Payments.find(
+                "visit.id = ?1 ORDER BY id DESC",
+                visitId
+        ).list();
+
+        // Calculate the total amount paid or return BigDecimal.ZERO if no payments exist
+        return paymentsMade.stream()
+                .map(payment -> payment.amountToPay != null ? payment.amountToPay : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
     public List<PaymentDTO> getPaymentsByVisitId(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
         List<Payments> visitPayments = Payments.find(

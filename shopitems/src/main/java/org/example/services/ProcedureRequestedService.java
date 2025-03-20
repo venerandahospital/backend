@@ -16,6 +16,7 @@ import org.example.services.payloads.requests.InitialVitalUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequestedRequest;
 import org.example.services.payloads.requests.ProcedureRequestedUpdateRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
+import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
 
 import java.math.BigDecimal;
@@ -77,6 +78,12 @@ public class ProcedureRequestedService {
             proceduresRequestedRepository.persist(procedureRequested);
             return new ProcedureRequestedDTO(procedureRequested);
         }
+    }
+
+    public ProcedureRequestedDTO getOtherRequestedProcedureById(Long id) {
+        return proceduresRequestedRepository.findByIdOptional(id)
+                .map(ProcedureRequestedDTO::new)  // Convert Patient entity to PatientDTO
+                .orElseThrow(() -> new WebApplicationException("ProcedureRequested not found", 404));
     }
 
 

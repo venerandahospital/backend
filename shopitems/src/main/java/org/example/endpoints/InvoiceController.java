@@ -118,4 +118,14 @@ public class InvoiceController {
         return invoiceService.generateAndReturnInvoicePdf(visitId);
     }
 
+    @DELETE
+    @Path("/delete-invoice-id/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete invoice by id", description = "delete invoice by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteInvoiceById(@PathParam("id") Long id){
+        return invoiceService.deleteInvoice(id);
+    }
+
 }
