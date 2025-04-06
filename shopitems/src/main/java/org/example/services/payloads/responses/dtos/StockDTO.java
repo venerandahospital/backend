@@ -15,8 +15,8 @@ public class StockDTO {
     public BigDecimal totalCostPrice;
 
     public BigDecimal unitSellingPrice;
-    public Integer quantityAvailable;
-    public Integer newQuantity;
+    public BigDecimal quantityAvailable;
+    public BigDecimal newQuantity;
 
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate expiryDate;
@@ -82,19 +82,19 @@ public class StockDTO {
     }
 
 
-    public Integer getQuantityAvailable() {
+    public BigDecimal getQuantityAvailable() {
         return quantityAvailable;
     }
 
-    public void setQuantityAvailable(Integer quantityAvailable) {
+    public void setQuantityAvailable(BigDecimal quantityAvailable) {
         this.quantityAvailable = quantityAvailable;
     }
 
-    public Integer getNewQuantity() {
+    public BigDecimal getNewQuantity() {
         return newQuantity;
     }
 
-    public void setNewQuantity(Integer newQuantity) {
+    public void setNewQuantity(BigDecimal newQuantity) {
         this.newQuantity = newQuantity;
     }
 

@@ -39,7 +39,7 @@ public class InitialTriageVitalsController {
     @Operation(summary = "new-InitialTriageVitals", description = "new-InitialTriageVitals")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
     public Response createInitialTriageVitalsVisit(@PathParam("id") Long id,InitialTriageVitalsRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,initialTriageVitalsService.createNewInitialTriageVitals(id, request) )).build();
+        return initialTriageVitalsService.createNewInitialTriageVitals(id, request);
     }
 
     @GET

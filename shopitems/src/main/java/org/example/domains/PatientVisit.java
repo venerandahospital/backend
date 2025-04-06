@@ -75,7 +75,7 @@ public class PatientVisit extends PanacheEntity {
 
 
     public List<TreatmentRequested> getTreatmentRequested() {
-        return treatmentRequested;
+       return treatmentRequested;
     }
 
     public void setTreatmentRequested(List<TreatmentRequested> treatmentRequested) {

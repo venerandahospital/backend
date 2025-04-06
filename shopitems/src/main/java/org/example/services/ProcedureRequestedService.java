@@ -71,7 +71,7 @@ public class ProcedureRequestedService {
             procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(procedure.unitSellingPrice);
             procedureRequested.visit = patientVisit;
             procedureRequested.procedure = procedure;
-            procedureRequested.procedureRequestedType = procedure.procedureType;
+            procedureRequested.procedureRequestedType = procedure.category;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
             procedureRequested.timeOfProcedure = java.time.LocalTime.now();
 

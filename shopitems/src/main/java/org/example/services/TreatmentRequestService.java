@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.*;
+import org.example.domains.repositories.ItemRepository;
 import org.example.domains.repositories.TreatmentRequestedRepository;
 import org.example.services.payloads.requests.TreatmentRequestedRequest;
 import org.example.services.payloads.responses.dtos.TreatmentRequestedDTO;
@@ -22,12 +23,16 @@ public class TreatmentRequestService {
     @Inject
     ShopItemService itemService;
 
+    @Inject
+    ItemRepository itemRepository;
+
     public static final String NOT_FOUND = "Not found!";
 
     public Response createNewTreatmentRequested(Long id, TreatmentRequestedRequest request) {
         // Fetch the PatientVisit and Item in one go
         PatientVisit patientVisit = PatientVisit.findById(id);
         Item item = Item.findById(request.itemId);
+
 
         // Handle not found error
         if (patientVisit == null || item == null) {
@@ -37,17 +42,19 @@ public class TreatmentRequestService {
         }
 
         // Check if stock is sufficient
-        if (request.quantity > item.stockAtHand) {
+        if (BigDecimal.valueOf(request.quantity).compareTo(item.stockAtHand) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Stock at hand is insufficient. Please stock more or order less.", null))
+                    .entity(new ResponseMessage("Stock at hand is insufficient. Available: " +
+                            item.stockAtHand + ", Requested: " + request.quantity,
+                            "INSUFFICIENT_STOCK"))
                     .build();
         }
 
         // Check if a TreatmentRequested with the same item and visit already exists
         TreatmentRequested existingTreatment = TreatmentRequested.find(
-                "visit.id = ?1 and item.id = ?2",
+                "visit.id = ?1 and itemName = ?2",
                 patientVisit.id,
-                item.id
+                item.title
         ).firstResult();
 
         TreatmentRequestedDTO dto;
@@ -71,7 +78,7 @@ public class TreatmentRequestService {
             treatmentRequested.unitSellingPrice = item.sellingPrice;
             treatmentRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(item.sellingPrice);
             treatmentRequested.visit = patientVisit;
-            treatmentRequested.item = item;
+            treatmentRequested.itemName = item.title;
 
             treatmentRequestedRepository.persist(treatmentRequested);
             itemService.updateItemStockAtHandAfterSelling(request.quantity, item);
@@ -108,7 +115,10 @@ public class TreatmentRequestService {
 
         treatmentRequestedRepository.delete(treatmentRequested);
 
-        Item item = treatmentRequested.item;
+        String itemTitle = treatmentRequested.itemName;
+
+        Item item = itemRepository.find("title", itemTitle).firstResult();
+
 
         itemService.updateItemStockAtHandAfterDeleting(treatmentRequested.quantity, item);
 

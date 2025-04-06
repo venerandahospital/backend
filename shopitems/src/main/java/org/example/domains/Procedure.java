@@ -8,9 +8,6 @@ import java.math.BigDecimal;
 @Table(name = "ProcedureTable")
 public class Procedure extends PanacheEntity {
 
-    // Name of the lab test (e.g., "Complete Blood Count")
-    @Column(nullable = false)
-    public String procedureName;
 
     @Column(nullable = false)
     public String procedureType;
@@ -24,12 +21,18 @@ public class Procedure extends PanacheEntity {
     public String description;
 
     // Cost price for performing the test (amount in chard by the facility or hospital to perform the test)
-    @Column(nullable = false)
+    @Column
     public BigDecimal unitCostPrice;
 
     // Selling price for the test (the amount charged to the patient)
     @Column(nullable = false)
     public BigDecimal unitSellingPrice;
+
+
+    // Name of the lab test (e.g., "Complete Blood Count")
+    @Column
+    public String procedureName;
+
 
     // List of items used for performing this lab test
    /* @OneToMany(mappedBy = "labTest", fetch = FetchType.EAGER)

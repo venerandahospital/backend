@@ -6,7 +6,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,11 +17,11 @@ public class Stock extends PanacheEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)  // Auto-delete stock when item is deleted
     public Item item;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    public Store store;
+    @Column
+    public String store;
 
     @Column(nullable = false)
     public Integer quantityReceived;
@@ -35,10 +36,10 @@ public class Stock extends PanacheEntity {
     public BigDecimal unitSellingPrice;
 
     @Column(nullable = false)
-    public Integer quantityAvailable;
+    public BigDecimal quantityAvailable;
 
     @Column(nullable = false)
-    public Integer newQuantity;
+    public BigDecimal newQuantity;
 
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate receiveDate;

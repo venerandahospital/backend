@@ -17,6 +17,7 @@ import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.responses.dtos.PatientDTO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -37,7 +38,7 @@ public class PatientService {
     @Transactional
     public Response createNewPatient(PatientRequest request) {
         // Validate the request
-        if (request.patientAge == null) {
+        /*if (request.patientAge == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Patient Age cannot be null or empty", null))
                     .build();
@@ -47,15 +48,8 @@ public class PatientService {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Patient Gender cannot be null or empty", null))
                     .build();
-        }
+        }*/
 
-
-        // Check if gender is either "female" or "male"
-        if (!request.patientGender.equalsIgnoreCase("female") && !request.patientGender.equalsIgnoreCase("male")) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Patient Gender must be either 'female' or 'male'", null))
-                    .build();
-        }
 
 
 
@@ -124,6 +118,97 @@ public class PatientService {
                 .entity(new ResponseMessage("Patient created successfully", new PatientDTO(patient)))
                 .build();
     }
+
+
+    @Transactional
+    public Response createMultiplePatients(List<PatientRequest> requests) {
+        List<PatientDTO> createdPatients = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        for (PatientRequest request : requests) {
+            try {
+
+                // Check for existing patient
+                Patient existingPatient = patientRepository.findByFirstNameAndSecondName(
+                        request.patientFirstName, request.patientSecondName);
+                if (existingPatient != null) {
+                    errors.add("Duplicate patient: " + request.patientFirstName + " " + request.patientSecondName);
+                    continue;
+                }
+
+                // Check patient group
+                PatientGroup patientGroup = null;
+                if (request.patientGroupId != null) {
+                    patientGroup = patientGroupRepository.findById(request.patientGroupId);
+                    if (patientGroup == null) {
+                        errors.add("Invalid group ID for patient: " + request.patientFirstName + " " + request.patientSecondName);
+                        continue;
+                    }
+                }
+
+                // Create and populate Patient
+                Patient patient = new Patient();
+                patient.patientGroup = patientGroup;
+                patient.patientFirstName = request.patientFirstName;
+                patient.patientSecondName = request.patientSecondName;
+                patient.patientAddress = request.patientAddress;
+                patient.patientAge = request.patientAge;
+                patient.patientContact = request.patientContact;
+                patient.patientGender = request.patientGender;
+                patient.patientProfilePic = request.patientProfilePic;
+                patient.patientDateOfBirth = request.patientDateOfBirth;
+                patient.creationDate = LocalDate.now();
+
+                // Set next of kin info
+                patient.nextOfKinName = request.nextOfKinName;
+                patient.nextOfKinAddress = request.nextOfKinAddress;
+                patient.nextOfKinContact = request.nextOfKinContact;
+                patient.relationship = request.relationship;
+
+                // Assign patient number
+                int deletedPatientNumberInQue = deletedPatientNosService.findFirstDeletedPatientNo();
+                if (deletedPatientNumberInQue == 0) {
+                    patient.patientNo = findMaxPatientFileNoReturnInt() + 1;
+                } else {
+                    patient.patientNo = deletedPatientNumberInQue;
+                }
+
+                patient.patientFileNo = "VMD" + patient.patientNo;
+
+                patientRepository.persist(patient);
+
+                // Remove number from deleted queue
+                if (deletedPatientNumberInQue != 0) {
+                    deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
+                }
+
+                createdPatients.add(new PatientDTO(patient));
+
+            } catch (Exception ex) {
+                errors.add("Error creating patient: " + request.patientFirstName + " " + request.patientSecondName);
+            }
+        }
+
+        if (createdPatients.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("No patients created", errors))
+                    .build();
+        }
+
+        return Response.status(Response.Status.CREATED)
+                .entity(new ResponseMessage("Patients created successfully", createdPatients))
+                .build();
+    }
+
+
+
+
+
+
+
+
+
+
     /*@Transactional
     public List<Patient> getAllPatients() {
         return patientRepository.listAll(Sort.descending("patientNo"));

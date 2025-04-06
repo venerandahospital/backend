@@ -2,10 +2,7 @@ package org.example.endpoints;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -33,12 +30,12 @@ public class ConsultationController {
     ConsultationService consultationService;
 
     @POST
-    @Path("create-new-Consultation")
+    @Path("create-new-Consultation/{id}")
     @Transactional
     @Operation(summary = "new-Consultation", description = "new-Consultation")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ConsultationDTO.class)))
-    public Response createConsultation(ConsultationRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,consultationService.createNewConsultation(request) )).build();
+    public Response createConsultation(@PathParam("id") Long id, ConsultationRequest request){
+        return consultationService.createNewConsultation(id, request);
     }
 
 }

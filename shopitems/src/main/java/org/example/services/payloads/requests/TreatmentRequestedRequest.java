@@ -10,9 +10,6 @@ public class TreatmentRequestedRequest {
     public int quantity;
 
     @Schema(example = "1")
-    public Long visitID;
-
-    @Schema(example = "1")
     public Long itemId;
 
 }

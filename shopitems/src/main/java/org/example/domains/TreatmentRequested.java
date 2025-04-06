@@ -27,8 +27,7 @@ public class TreatmentRequested extends PanacheEntity {
     public BigDecimal totalAmount;
 
     // Reference to the specific lab test being requested
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    public Item item;
+    @Column(nullable = false)
+    public String itemName;
 
 }

@@ -4,10 +4,13 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.Procedure;
 import org.example.domains.repositories.ItemRepository;
 import org.example.domains.repositories.ProcedureRepository;
 import org.example.services.payloads.requests.ProcedureRequest;
+import org.example.services.payloads.responses.dtos.PaymentDTO;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 import java.util.List;
@@ -32,24 +35,26 @@ public class ProcedureService {
      * @return LabTestDTO representing the created lab test
      */
     @Transactional
-    public ProcedureDTO createNewProcedure(ProcedureRequest request) {
+    public Response createNewProcedure(ProcedureRequest request) {
 
         // Check if a procedure with the same name and type already exists
         boolean exists = Procedure.find(
-                "procedureName = ?1 and procedureType = ?2",
-                request.procedureName,
+                "category = ?1 and procedureType = ?2",
+                request.category,
                 request.procedureType
         ).firstResultOptional().isPresent();
 
         if (exists) {
-            throw new IllegalArgumentException("Procedure with name '" + request.procedureName
-                    + "' and type '" + request.procedureType + "' already exists.");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Procedure with name '" + request.procedureType
+                            + "' and category '" + request.category + "' already exists.", null))
+                    .build();
         }
 
         // Map request to entity
         Procedure procedure = new Procedure();
         procedure.procedureType = request.procedureType;
-        procedure.procedureName = request.procedureName;
+        procedure.procedureName = request.procedureType;
         procedure.category = request.category;
         procedure.description = request.description;
         procedure.unitSellingPrice = request.unitSellingPrice;
@@ -58,7 +63,9 @@ public class ProcedureService {
         // Persist the new procedure
         procedureRepository.persist(procedure);
 
-        return new ProcedureDTO(procedure);
+        //return new ProcedureDTO(procedure);
+        return Response.ok(new ResponseMessage("New Service created successfully", new ProcedureDTO(procedure))).build();
+
     }
 
 
@@ -72,9 +79,6 @@ public class ProcedureService {
             throw new IllegalArgumentException(INVALID_REQUEST);
         }
 
-        if (request.procedureName == null || request.procedureName.isBlank()) {
-            throw new IllegalArgumentException("Test name is required!");
-        }
         if (request.procedureType == null || request.procedureType.isBlank()) {
             throw new IllegalArgumentException("Test Type is required!");
         }
@@ -99,7 +103,7 @@ public class ProcedureService {
 
     public List<ProcedureDTO> getLabTestProcedures(){
         List<Procedure> labTests = Procedure.find(
-                "procedureType = ?1 ORDER BY id DESC",
+                "category = ?1 ORDER BY id DESC",
                 "LabTest"
         ).list();
 
@@ -111,7 +115,7 @@ public class ProcedureService {
 
     public List<ProcedureDTO> getScanProcedures(){
         List<Procedure> scans = Procedure.find(
-                "procedureType = ?1 ORDER BY id DESC",
+                "category = ?1 ORDER BY id DESC",
                 "imaging"
         ).list();
 
@@ -124,7 +128,7 @@ public class ProcedureService {
 
     public List<ProcedureDTO> getOtherProcedures() {
         List<Procedure> otherProcedures = Procedure.find(
-                "procedureType NOT IN (?1, ?2) ORDER BY id DESC",
+                "category NOT IN (?1, ?2) ORDER BY id DESC",
                 "imaging", "LabTest"
         ).list();
 

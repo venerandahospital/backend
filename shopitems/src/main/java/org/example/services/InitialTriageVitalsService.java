@@ -38,17 +38,23 @@ public class InitialTriageVitalsService {
      * Creates a new InitialTriageVitals for the specified patient ID.
      */
     @Transactional
-    public InitialTriageVitalsDTO createNewInitialTriageVitals(Long id, InitialTriageVitalsRequest request) {
+    public Response createNewInitialTriageVitals(Long id, InitialTriageVitalsRequest request) {
         // Fetch the patient by ID from the database
         PatientVisit patientVisit = PatientVisit.findById(id);
         if (patientVisit == null) {
-            throw new IllegalArgumentException(NOT_FOUND);  // Handle patient not found
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Patient visit not found for ID: " + id, null))
+                    .build();
         }
 
         // Create a new InitialTriageVitals object
         InitialTriageVitals initialTriageVitals = new InitialTriageVitals();
-        initialTriageVitals.dateTaken = request.dateTaken;
-        initialTriageVitals.timeTaken = request.timeTaken;
+
+        // Set dateTaken to today if it's null
+        initialTriageVitals.dateTaken = (request.dateTaken != null) ? request.dateTaken : LocalDate.now();
+        initialTriageVitals.timeTaken = (request.timeTaken != null) ? request.timeTaken : LocalTime.now();
+        
+        //initialTriageVitals.timeTaken = request.timeTaken;
         initialTriageVitals.spO2 = request.spO2;
         initialTriageVitals.station = request.station;
         initialTriageVitals.height = request.height;
@@ -59,21 +65,24 @@ public class InitialTriageVitalsService {
         initialTriageVitals.diastolic = request.diastolic;
         initialTriageVitals.pulseRate = request.pulseRate;
         initialTriageVitals.takenBy = request.takenBy;
-
-        // Calculate Mean Arterial Pressure (MAP)
-        initialTriageVitals.map = request.diastolic + (request.systolic - request.diastolic) / 3.0;
-
         initialTriageVitals.respiratoryRate = request.respiratoryRate;
-        initialTriageVitals.bloodPressure = request.systolic + "/" + request.diastolic;
+
+        // Ensure systolic and diastolic values are not null before calculating MAP
+        if (request.systolic == null || request.diastolic == null) {
+            initialTriageVitals.map = null;
+            initialTriageVitals.bloodPressure = "N/A";
+        }
 
         initialTriageVitals.visit = patientVisit;
 
         // Persist the new initial triage vitals
         initialTriageVitalsRepository.persist(initialTriageVitals);
 
-        // Convert the InitialTriageVitals entity to an InitialTriageVitalsDTO
-        return new InitialTriageVitalsDTO(initialTriageVitals);
+        return Response.status(Response.Status.CREATED)
+                .entity(new ResponseMessage("Patient vitals saved successfully", new InitialTriageVitalsDTO(initialTriageVitals)))
+                .build();
     }
+
 
 
     @Transactional

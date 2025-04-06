@@ -34,8 +34,8 @@ public class StockTakeRequest {
     @Schema(example = "REVIDOL")
     public String brand;
 
-    @Schema(example = "1")
-    public Long storeId;
+    @Schema(example = "main")
+    public String store;
 
     @Schema(example = "1x10")
     public String packaging;

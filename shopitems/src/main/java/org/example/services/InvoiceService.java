@@ -124,11 +124,20 @@ public class InvoiceService {
                     .build();
         }
 
-// Set discount: if request.discount is null, assign it to 0.00
-        invoice.discount = (request.discount != null) ? request.discount : BigDecimal.valueOf(0.00);
+        if (request.discount.compareTo(BigDecimal.ZERO) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Discount must be greater than zero.",null))
+                    .build();
+            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
+        }
 
-// Set tax: if request.tax is null, assign it to 0.00
-        invoice.tax = (request.tax != null) ? request.tax : BigDecimal.valueOf(0.00);
+        if (request.tax.compareTo(BigDecimal.ZERO) < 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Tax must be greater than zero.",null))
+                    .build();
+            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
+        }
+
 
         // Recalculate subtotal, total amount, and balance due
         Map<String, BigDecimal> invoiceSubTotalMap = getInvoiceSubTotal(invoice.visit.id);
@@ -162,6 +171,12 @@ public class InvoiceService {
 
         // Update optional fields
         invoice.notes = request.notes;
+
+        // Set discount: if request.discount is null, assign it to 0.00
+        invoice.discount = (request.discount != null) ? request.discount : BigDecimal.valueOf(0.00);
+
+// Set tax: if request.tax is null, assign it to 0.00
+        invoice.tax = (request.tax != null) ? request.tax : BigDecimal.valueOf(0.00);
 
         // Persist the updated invoice
         invoiceRepository.persist(invoice);
@@ -689,7 +704,7 @@ public class InvoiceService {
                         ? com.itextpdf.kernel.color.Color.WHITE
                         : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
 
-                itemsTable.addCell(createCell(treatmentRequested.item.title.toUpperCase(), 1, TextAlignment.LEFT)
+                itemsTable.addCell(createCell(treatmentRequested.itemName.toUpperCase(), 1, TextAlignment.LEFT)
                         .setFontSize(7)
                         .setBackgroundColor(rowColor)
                         .setBorder(Border.NO_BORDER)

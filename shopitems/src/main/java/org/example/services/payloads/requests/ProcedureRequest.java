@@ -6,13 +6,10 @@ import java.math.BigDecimal;
 
 public class ProcedureRequest {
 
-    @Schema(example = "urinalysis")
-    public String procedureName;
-
     @Schema(example = "LabTest")
     public String procedureType;
 
-    @Schema(example = "Biochemistry")
+    @Schema(example = "LabTest")
     public String category;
 
     @Schema(example = "check for pass cells")

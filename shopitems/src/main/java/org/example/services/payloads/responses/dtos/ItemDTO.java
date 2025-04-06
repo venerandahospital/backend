@@ -14,7 +14,7 @@ public class ItemDTO {
     public BigDecimal costPrice;
     public BigDecimal sellingPrice;
     public String unitOfMeasure;
-    public Integer stockAtHand;
+    public BigDecimal stockAtHand;
 
     public ItemDTO(Item item) {
         this.id = item.id;

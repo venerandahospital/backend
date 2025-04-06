@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.Invoice;
 import org.example.domains.Item;
 import org.example.domains.Procedure;
@@ -38,13 +39,14 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
 import org.example.services.payloads.responses.basicResponses.FullShopItemResponse;
 import org.example.services.payloads.responses.dtos.ItemDTO;
+import org.example.services.payloads.responses.dtos.PaymentDTO;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 @ApplicationScoped
 public class ShopItemService {
 
     @Inject
-    ItemRepository shopItemRepository;
+    ItemRepository itemRepository;
 
     @Inject
     MySQLPool client;
@@ -54,27 +56,59 @@ public class ShopItemService {
 
     private static final String NOT_FOUND = "Not found!";
 
+    @Transactional
     public Item addShopItem(ShopItemRequest request) {
         Item shopItem = new Item();
         shopItem.title = request.title;
         shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
+        shopItem.subCategory = request.subCategory;
         shopItem.description = request.description;
-        shopItem.costPrice = BigDecimal.valueOf(0);
-        shopItem.sellingPrice = BigDecimal.valueOf(0);
+        shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
+        shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
+        shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
+
         shopItem.image = request.image;
-        shopItem.stockAtHand = 0;
         shopItem.unitOfMeasure = request.unitOfMeasure;
         shopItem.reOrderLevel = request.reOrderLevel;
 
         shopItem.creationDate = LocalDate.now();
         //shopItem.expiryDate = request.expiryDate;
 
-        shopItemRepository.persist(shopItem);
+        itemRepository.persist(shopItem);
 
         return shopItem;
 
     }
+
+
+    @Transactional
+    public List<Item> addShopItems(List<ShopItemRequest> requests) {
+        List<Item> createdItems = new ArrayList<>();
+
+        for (ShopItemRequest request : requests) {
+            Item shopItem = new Item();
+            shopItem.title = request.title;
+            shopItem.number = userAuthService.generateRandomPassword(5);
+            shopItem.category = request.category;
+            shopItem.subCategory = request.subCategory;
+            shopItem.description = request.description;
+            shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
+            shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
+            shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
+
+            shopItem.image = request.image;
+            shopItem.unitOfMeasure = request.unitOfMeasure;
+            shopItem.reOrderLevel = request.reOrderLevel;
+            shopItem.creationDate = LocalDate.now();
+
+            itemRepository.persist(shopItem);
+            createdItems.add(shopItem);
+        }
+
+        return createdItems;
+    }
+
 
 
     public void updateItemStockAtHand(Stock stock, Item item) {
@@ -83,22 +117,24 @@ public class ShopItemService {
         item.stockAtHand = stock.newQuantity ;
         item.expiryDate = stock.expiryDate;
         item.costPrice = stock.unitCostPrice;
+
         item.sellingPrice = stock.unitSellingPrice;
         item.brand = stock.brand;
         item.packaging = stock.packaging;
 
         // Persist the updated invoice
-        shopItemRepository.persist(item);
+        itemRepository.persist(item);
     }
 
     public void updateItemStockAtHandAfterSelling(Integer quantity, Item item) {
 
         // Update the invoice fields
 
-        item.stockAtHand = item.stockAtHand-quantity;
+        item.stockAtHand = item.stockAtHand.subtract(BigDecimal.valueOf(quantity));
+
 
         // Persist the updated invoice
-        shopItemRepository.persist(item);
+        itemRepository.persist(item);
     }
 
 
@@ -106,19 +142,16 @@ public class ShopItemService {
 
         // Update the invoice fields
 
-        item.stockAtHand = item.stockAtHand + quantity;
+        item.stockAtHand = item.stockAtHand.add(BigDecimal.valueOf(quantity));
 
         // Persist the updated invoice
-        shopItemRepository.persist(item);
+        itemRepository.persist(item);
     }
-
-
 
 
     @Transactional
     public Response generateAndReturnPdf(ShopItemParametersRequest request) {
         //List<ShopItem> shopItems = shopItemRepository.listAll(Sort.ascending("category", "title"));
-
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -173,7 +206,6 @@ public class ShopItemService {
     private Cell createCell(String content) {
         return new Cell().add(content);
     }
-
 
 
     public List<FullShopItemResponse> getShopItemsAdvancedFilter(ShopItemParametersRequest request) {
@@ -274,20 +306,20 @@ public class ShopItemService {
 
 
     public List<Item> getAllShopItems() {
-        return shopItemRepository.listAll();
+        return itemRepository.listAll();
     }
 
     @Transactional
     public List<Item> listLatestFirst() {
-        return shopItemRepository.listAll(Sort.descending("creationDate"));
+        return itemRepository.listAll(Sort.descending("id"));
     }
 
     public Item getShopItemById(Long id){
-        return shopItemRepository.findById(id);
+        return itemRepository.findById(id);
     }
 
     public void deleteAllShopItems(){
-        shopItemRepository.deleteAll();
+        itemRepository.deleteAll();
 
     }
 
@@ -303,35 +335,36 @@ public class ShopItemService {
                 .collect(Collectors.toList());
     }
 
-
-
-
-
-
-
-
-    public void deleteShopItemById(Long id){
-        Item shopItem = shopItemRepository.findById(id);
-        shopItem.delete();
+    @Transactional
+    public Response deleteShopItemById(Long id){
+        Item item = itemRepository.findById(id);
+        if (item == null) {
+            //return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("item not found", null))
+                    .build();
+        }
+        itemRepository.delete(item);
+        return Response.ok(new ResponseMessage("Item Deleted successfully")).build();
     }
 
 
     public List<Item> searchItems(String category, String title) {
         if (category != null && title != null) {
-            return shopItemRepository.list("category = ?1 AND title = ?2", category, title);
+            return itemRepository.list("category = ?1 AND title = ?2", category, title);
         } else if (category != null) {
-            return shopItemRepository.list("category = ?1", category);
+            return itemRepository.list("category = ?1", category);
         } else if (title != null) {
-            return shopItemRepository.list("title = ?1", title);
+            return itemRepository.list("title = ?1", title);
         } else {
             // If both parameters are null or empty, return all items.
-            return shopItemRepository.listAll();
+            return itemRepository.listAll();
         }
     }
 
 
     public Item updateShopItemById(Long id, ShopItemUpdateRequest request) {
-        return shopItemRepository.findByIdOptional(id)
+        return itemRepository.findByIdOptional(id)
                 .map(shopItem -> {
 
                     shopItem.title = request.title;
@@ -339,16 +372,15 @@ public class ShopItemService {
                     shopItem.sellingPrice = request.sellingPrice;
                     shopItem.description = request.description;
                     shopItem.category = request.category;
+                    shopItem.subCategory = request.subCategory;
                     shopItem.image = request.image;
                     shopItem.reOrderLevel = request.reOrderLevel;
 
-                    shopItemRepository.persist(shopItem);
+                    itemRepository.persist(shopItem);
 
                     return shopItem;
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
-
-
 
 
         private StringJoiner getStringJoinerSimplified(ShopItemParametersRequest request) {

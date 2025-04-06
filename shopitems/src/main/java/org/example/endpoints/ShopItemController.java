@@ -61,6 +61,30 @@ public class ShopItemController {
         return Response.ok(new ResponseMessage(ActionMessages.SAVED.label,shopItemService.addShopItem(request))).build();
     }
 
+
+
+    @POST
+    @Path("/add-new-bulk-items")  // Tip: lowercase "items" for consistency
+//@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(
+            summary = "Add multiple shop items",
+            description = "Adds a list of new shop items."
+    )
+    @APIResponse(
+            description = "Successful",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = ShopItemResponse.class)) // You can use an array schema if needed
+    )
+    public Response addShopItems(List<ShopItemRequest> requests) {
+        return Response.ok(
+                new ResponseMessage(ActionMessages.SAVED.label, shopItemService.addShopItems(requests))
+        ).build();
+    }
+
+
+
+
     @GET
     @Path("/get-all-Items")
     @Transactional
@@ -107,7 +131,7 @@ public class ShopItemController {
     @Operation(summary = "get drugs", description = "get drugs")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemDTO.class)))
     public Response getDrugs(){
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getDrugItems() )).build();
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.listLatestFirst() )).build();
     }
 
 
@@ -123,14 +147,13 @@ public class ShopItemController {
     }
 
     @DELETE
-    @Path("{id}")
-    @RolesAllowed({"ADMIN"})
+    @Path("delete-item/{id}")
+    //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "delete shopItem by id ", description = "delete shopItem by id.")
     @APIResponse(description = "Successful", responseCode = "200")
     public Response deleteItemById(@PathParam("id") Long id){
-        shopItemService.deleteShopItemById(id);
-        return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
+        return shopItemService.deleteShopItemById(id);
 
     }
 

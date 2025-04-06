@@ -37,7 +37,7 @@ public class StockController {
     @Operation(summary = "receive-new-stock", description = "receive-new-stock")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = StockDTO.class)))
     public Response receiveNewStock(StockTakeRequest request) {
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label, stockService.receiveStock(request))).build();
+        return stockService.receiveStock(request);
     }
 
     @GET
@@ -47,6 +47,17 @@ public class StockController {
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = StockDTO.class)))
     public Response getAllStockReceives() {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,stockService.getAllStockReceives())).build();
+    }
+
+    @DELETE
+    @Path("delete-stock-received/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete stock received by id ", description = "delete stock received by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteStockReceivedById(@PathParam("id") Long id){
+        return stockService.deleteStockReceivedById(id);
+
     }
 
 }

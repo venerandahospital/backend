@@ -6,10 +6,13 @@ import java.math.BigDecimal;
 
 public class ShopItemUpdateRequest {
 
-    @Schema(example = "men's clothing")
+    @Schema(example = "drug")
     public String category;
 
-    @Schema(example = "Men Cotton Jacket")
+    @Schema(example = "anti-malarial")
+    public String subCategory;
+
+    @Schema(example = "Artesunate 60mg")
     public String title;
 
     @Schema(example = "Great outerwear jackets for Spring Autumn Winter, suitable for many occasions, such as working, hiking, camping, mountain rock climbing,")

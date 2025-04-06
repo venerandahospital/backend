@@ -2,38 +2,45 @@ package org.example.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Item extends PanacheEntity {
 
-    @Column(nullable = false)
+    @Column
     public String number;
 
-    @Column(nullable = false)
+    @Column
     public String category;
+
+    @Column
+    public String subCategory;
 
     @Column(nullable = false)
     public String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     public String description;
 
-    @Column(nullable = false)
+    @Column
     public BigDecimal costPrice;
 
-    @Column(nullable = false)
+    @Column
     public BigDecimal sellingPrice;
 
     @Column
     public String image;
 
     @Column
-    public Integer stockAtHand;
+    public BigDecimal stockAtHand;
 
     @Column
     public Integer reOrderLevel;
@@ -54,8 +61,6 @@ public class Item extends PanacheEntity {
     @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate expiryDate;
-
-
 
 
 

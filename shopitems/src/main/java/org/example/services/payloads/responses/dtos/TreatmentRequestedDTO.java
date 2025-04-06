@@ -8,7 +8,7 @@ public class TreatmentRequestedDTO {
     public int quantity;
     public BigDecimal unitSellingPrice;
     public BigDecimal totalAmount;
-    public ItemDTO item;
+    public String itemName;
 
 
     public TreatmentRequestedDTO(TreatmentRequested treatmentRequested) {
@@ -16,7 +16,7 @@ public class TreatmentRequestedDTO {
         this.quantity = treatmentRequested.quantity;
         this.unitSellingPrice = treatmentRequested.unitSellingPrice;
         this.totalAmount = treatmentRequested.totalAmount;
-        this.item = new ItemDTO(treatmentRequested.item);
+        this.itemName = treatmentRequested.itemName;
 
     }
 }

@@ -19,8 +19,4 @@ public class ConsultationRequest {
     @Schema(example = "pharyngitis")
     public String diagnosis;
 
-    // One recommendation is associated with one visit
-    @Schema(example = "1")
-    public Long visitId;  // Link to the specific visit this recommendation is related to
-
 }

@@ -38,7 +38,7 @@ public class ProcedureController {
     @Operation(summary = "new-procedure", description = "new-procedure")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
     public Response createNewProcedure(ProcedureRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.CREATED.label,procedureService.createNewProcedure(request) )).build();
+        return procedureService.createNewProcedure(request);
     }
 
     @GET

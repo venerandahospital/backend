@@ -90,6 +90,20 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
 
                 request.path().contains("/course/shop-item/") ||
 
+                request.path().contains("/course/shop-item/delete-item") ||
+                request.path().contains("/course/shop-item/delete-stock-received/") ||
+
+                request.path().contains("/course/shop-item/add-new-bulk-items") ||
+
+
+
+
+
+
+                request.path().contains("/course/hospital-management/delete") ||
+
+
+
                 request.path().contains("/course/Patient-management/create-new-store") ||
 
                 request.path().contains("/course/Patient-management/get-all-stores") ||
@@ -105,6 +119,11 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
                 request.path().contains("/course/Patient-management/update-vital/") ||
 
                 request.path().contains("/course/Patient-management/delete-vital-by-id/") ||
+
+                request.path().contains("/course/Patient-management/create-multiple-patients") ||
+
+
+
 
                 request.path().contains("/course/Patient-management/create-new-patient") ||
 

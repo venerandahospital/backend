@@ -17,7 +17,7 @@ public class PatientVisitDTO {
     public String visitReason;
     public String visitName;
     public List<ProcedureRequestedDTO> proceduresRequested;
-    public List<TreatmentRequestedDTO> treatmentRequested;
+   // public List<TreatmentRequestedDTO> treatmentRequested;
     public List<InitialTriageVitalsDTO> initialTriageVitals;
     public List<VitalsMonitoringChartDTO> vitalsMonitoringChart;
     public List<ConsultationDTO> consultation;
@@ -39,10 +39,10 @@ public class PatientVisitDTO {
 
         // Mapping lists with proper null check and stream processing
 
-        this.treatmentRequested = patientVisit.getTreatmentRequested() != null ?
+        /*this.treatmentRequested = patientVisit.getTreatmentRequested() != null ?
                 patientVisit.getTreatmentRequested().stream()
                         .map(TreatmentRequestedDTO::new)
-                        .collect(Collectors.toList()) : null;
+                        .collect(Collectors.toList()) : null;*/
 
         //this.patientId = patientVisit.patient != null ? patientVisit.patient.id : null;
 
@@ -136,9 +136,9 @@ public class PatientVisitDTO {
         return visitName;
     }
 
-    public List<TreatmentRequestedDTO> getTreatmentRequested() {
-        return treatmentRequested;
-    }
+    //public List<TreatmentRequestedDTO> getTreatmentRequested() {
+    //    return treatmentRequested;
+    //}
 
     public List<ProcedureRequestedDTO> getProceduresRequested() {
         return proceduresRequested;

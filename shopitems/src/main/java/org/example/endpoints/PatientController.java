@@ -44,6 +44,20 @@ public class PatientController {
         return patientService.createNewPatient(request);
     }
 
+    @POST
+    @Path("create-multiple-patients")
+    @Transactional
+    @Operation(summary = "Create Multiple Patients", description = "Creates multiple patients and returns the list of created patients.")
+    @APIResponse(
+            description = "Patients created successfully",
+            responseCode = "201",
+            content = @Content(schema = @Schema(implementation = PatientDTO.class))
+    )
+    public Response createMultiplePatients(List<PatientRequest> requests) {
+        return patientService.createMultiplePatients(requests);
+    }
+
+
 
     @GET
     @Transactional
