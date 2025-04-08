@@ -15,7 +15,10 @@ import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.services.ProcedureService;
 import org.example.services.payloads.requests.PatientGroupUpdateRequest;
+import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequest;
+import org.example.services.payloads.requests.ProcedureUpdateRequest;
+import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.PatientGroupDTO;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 import org.example.statics.StatusTypes;
@@ -40,6 +43,27 @@ public class ProcedureController {
     public Response createNewProcedure(ProcedureRequest request){
         return procedureService.createNewProcedure(request);
     }
+
+    @POST
+    @Path("create-bulk-procedures")
+    @Transactional
+    @Operation(
+            summary = "Create Bulk Procedures",
+            description = "Creates multiple new procedures in bulk. Skips duplicates based on category and procedureType."
+    )
+    @APIResponse(
+            description = "Bulk procedure creation result",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = ResponseMessage.class))
+    )
+    @APIResponse(
+            description = "Invalid request",
+            responseCode = "400"
+    )
+    public Response createBulkProcedures(List<ProcedureRequest> requests) {
+        return procedureService.createBulkProcedures(requests);
+    }
+
 
     @GET
     @Transactional
@@ -81,6 +105,27 @@ public class ProcedureController {
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
     public Response getOtherProcedures(){
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,procedureService.getOtherProcedures() )).build();
+    }
+
+    @DELETE
+    @Path("delete-service/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete service by id ", description = "delete service by id.")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteServiceById(@PathParam("id") Long id){
+        return procedureService.deleteServiceById(id);
+
+    }
+
+    @PUT
+    @Path("update-service/{id}")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "Update service", description = "Update service")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
+    public Response updateService(@PathParam("id") Long id, ProcedureUpdateRequest request){
+        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,procedureService.updateServiceById(id, request) )).build();
     }
 
 

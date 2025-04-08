@@ -261,19 +261,19 @@ public class InvoiceService {
     @Transactional
     public Map<String, BigDecimal> getInvoiceSubTotal(Long visitId) {
         List<ProcedureRequested> scanProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "imaging",
                 visitId
         ).list();
 
         List<ProcedureRequested> labTestsProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "LabTest",
                 visitId
         ).list();
 
         List<ProcedureRequested> otherProcedures = ProcedureRequested.find(
-                "procedureRequestedType NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
+                "category NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
                 "LabTest",
                 "imaging",
                 visitId
@@ -671,7 +671,7 @@ public class InvoiceService {
                         ? com.itextpdf.kernel.color.Color.WHITE
                         : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
 
-                itemsTable.addCell(createCell(procedureRequested.procedure.procedureName.toUpperCase(), 1, TextAlignment.LEFT)
+                itemsTable.addCell(createCell(procedureRequested.procedureRequestedType.toUpperCase(), 1, TextAlignment.LEFT)
                         .setFontSize(7)
                         .setBackgroundColor(rowColor)
                         .setBorder(Border.NO_BORDER)
@@ -935,7 +935,7 @@ public class InvoiceService {
             itemsTable.addHeaderCell("Total (UGX)");
 
             for (ProcedureRequested procedureRequested : invoice.visit.getProceduresRequested()) {
-                itemsTable.addCell(createCell(procedureRequested.procedure.procedureName, 3, TextAlignment.LEFT));
+                itemsTable.addCell(createCell(procedureRequested.procedureRequestedType, 3, TextAlignment.LEFT));
                 itemsTable.addCell(createCell(String.valueOf(procedureRequested.quantity), 3, TextAlignment.RIGHT));
                 itemsTable.addCell(createCell(String.valueOf(procedureRequested.unitSellingPrice), 3, TextAlignment.RIGHT));
                 itemsTable.addCell(createCell(String.valueOf(procedureRequested.totalAmount), 3, TextAlignment.RIGHT));

@@ -17,6 +17,7 @@ import org.example.services.payloads.requests.ProcedureRequestedRequest;
 import org.example.services.payloads.requests.ProcedureRequestedUpdateRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
 import org.example.services.payloads.responses.dtos.PatientDTO;
+import org.example.services.payloads.responses.dtos.PaymentDTO;
 import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
 
 import java.math.BigDecimal;
@@ -32,22 +33,34 @@ public class ProcedureRequestedService {
 
     public static final String NOT_FOUND = "Not found!";
 
-    public ProcedureRequestedDTO createNewProcedureRequested(Long visitID, ProcedureRequestedRequest request) {
+    public Response createNewProcedureRequested(Long visitID, ProcedureRequestedRequest request) {
         // Fetch the PatientVisit and Procedure in one go
         PatientVisit patientVisit = PatientVisit.findById(visitID);
 
         Procedure procedure = Procedure.findById(request.procedureId);
 
         // Throw exception if either of them is not found
-        if (patientVisit == null || procedure == null) {
-            throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+        if (patientVisit == null) {
+            //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("visit not found:"  + visitID, null))
+                    .build();
+        }
+
+        // Throw exception if either of them is not found
+        if (procedure == null) {
+            //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("procedure not found:"  + request.procedureId, null))
+                    .build();
         }
 
         // Check if a ProcedureRequested with the same procedure and visit already exists
         ProcedureRequested existingProcedureRequested = ProcedureRequested.find(
-                "visit.id = ?1 and procedure.id = ?2",
+                "visit.id = ?1 and procedureRequestedType  = ?2 and unitSellingPrice = ?3",
                 patientVisit.id,
-                procedure.id
+                procedure.procedureType,
+                request.unitSellingPrice
         ).firstResult();
 
         if (existingProcedureRequested != null) {
@@ -55,11 +68,13 @@ public class ProcedureRequestedService {
             // If it exists, increment the quantity and update the total amount
             existingProcedureRequested.quantity += 1;
             existingProcedureRequested.totalAmount = BigDecimal.valueOf(existingProcedureRequested.quantity)
-                    .multiply(existingProcedureRequested.unitSellingPrice);
+                    .multiply(request.unitSellingPrice);
 
             proceduresRequestedRepository.persist(existingProcedureRequested); // Persist the updated entity
 
-            return new ProcedureRequestedDTO(existingProcedureRequested);
+            //return new ProcedureRequestedDTO(existingProcedureRequested);
+            return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(existingProcedureRequested))).build();
+
         } else {
             // Otherwise, create a new ProcedureRequested record
             ProcedureRequested procedureRequested = new ProcedureRequested();
@@ -67,16 +82,19 @@ public class ProcedureRequestedService {
             procedureRequested.report = request.report;
             procedureRequested.orderedBy = request.orderedBy;
             procedureRequested.doneBy = request.doneBy;
-            procedureRequested.unitSellingPrice = procedure.unitSellingPrice;
-            procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(procedure.unitSellingPrice);
+            procedureRequested.unitSellingPrice = request.unitSellingPrice;
+            procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(request.unitSellingPrice);
             procedureRequested.visit = patientVisit;
-            procedureRequested.procedure = procedure;
-            procedureRequested.procedureRequestedType = procedure.category;
+            procedureRequested.procedureRequestedType = procedure.procedureType;
+            procedureRequested.category = procedure.category;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
             procedureRequested.timeOfProcedure = java.time.LocalTime.now();
 
             proceduresRequestedRepository.persist(procedureRequested);
-            return new ProcedureRequestedDTO(procedureRequested);
+
+            //return new ProcedureRequestedDTO(procedureRequested);
+            return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(procedureRequested))).build();
+
         }
     }
 
@@ -95,7 +113,6 @@ public class ProcedureRequestedService {
                     procedureRequested.doneBy = request.doneBy;
                     procedureRequested.orderedBy = request.orderedBy;
                     procedureRequested.report = request.report;
-                    procedureRequested.procedure = procedure;
                     procedureRequested.quantity = request.quantity;
                     procedureRequested.unitSellingPrice = procedure.unitSellingPrice;
                     procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(procedure.unitSellingPrice);
@@ -112,7 +129,7 @@ public class ProcedureRequestedService {
     public List<ProcedureRequestedDTO> getLabTestProceduresByVisit(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
         List<ProcedureRequested> labTestProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
                 "LabTest",
                 visitId
         ).list();
@@ -127,7 +144,7 @@ public class ProcedureRequestedService {
     public List<ProcedureRequestedDTO> getUltrasoundScanProceduresByVisit(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
         List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
                 "imaging",
                 visitId
         ).list();
@@ -142,7 +159,7 @@ public class ProcedureRequestedService {
     public List<ProcedureRequestedDTO> getNonLabTestNonUltrasoundProceduresByVisit(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is neither "LabTest" nor "Ultrasound" and visit ID matches, ordered descending
         List<ProcedureRequested> procedures = ProcedureRequested.find(
-                "procedureRequestedType NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
+                "category NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
                 "LabTest",
                 "imaging",
                 visitId
@@ -159,7 +176,7 @@ public class ProcedureRequestedService {
 
     public BigDecimal getLabTestProceduresAndSumByVisit(Long visitId) {
         List<ProcedureRequested> labTestProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "LabTest",
                 visitId
         ).list();
@@ -176,7 +193,7 @@ public class ProcedureRequestedService {
 
     public BigDecimal getScanProceduresAndSumByVisit(Long visitId) {
         List<ProcedureRequested> scanProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "imaging",
                 visitId
         ).list();
@@ -194,13 +211,13 @@ public class ProcedureRequestedService {
 
     public List<BigDecimal> getTotalCostOfProceduresAndSumByVisit(Long visitId) {
         List<ProcedureRequested> scanProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "Ultrasound",
                 visitId
         ).list();
 
         List<ProcedureRequested> labTestsProcedures = ProcedureRequested.find(
-                "procedureRequestedType = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
                 "LabTest",
                 visitId
         ).list();

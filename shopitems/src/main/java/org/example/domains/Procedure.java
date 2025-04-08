@@ -25,7 +25,7 @@ public class Procedure extends PanacheEntity {
     public BigDecimal unitCostPrice;
 
     // Selling price for the test (the amount charged to the patient)
-    @Column(nullable = false)
+    @Column
     public BigDecimal unitSellingPrice;
 
 

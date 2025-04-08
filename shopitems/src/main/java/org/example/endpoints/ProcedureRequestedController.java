@@ -43,7 +43,7 @@ public class ProcedureRequestedController {
     @Operation(summary = "new-procedureRequested", description = "new-procedureRequested")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureRequestedDTO.class)))
     public Response createNewProcedureRequested(@PathParam("id") Long id, ProcedureRequestedRequest request){
-        return Response.ok(new ResponseMessage(StatusTypes.REQUESTED.label,procedureRequestedService.createNewProcedureRequested(id, request) )).build();
+        return procedureRequestedService.createNewProcedureRequested(id, request);
     }
 
     @GET

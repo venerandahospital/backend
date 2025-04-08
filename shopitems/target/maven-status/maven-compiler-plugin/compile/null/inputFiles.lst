@@ -54,6 +54,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\pa
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\payloads\responses\dtos\ItemUsedDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\payloads\responses\dtos\ProcedureDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\payloads\responses\basicResponses\PatientVisitResponse.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\payloads\requests\ProcedureUpdateRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\domains\PatientGroup.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\configuration\security\JwtUtils.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\services\payloads\responses\dtos\InvoiceDTO.java

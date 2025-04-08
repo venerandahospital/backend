@@ -4,16 +4,27 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.domains.Item;
+import org.example.domains.PatientGroup;
 import org.example.domains.Procedure;
 import org.example.domains.repositories.ItemRepository;
 import org.example.domains.repositories.ProcedureRepository;
+import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequest;
+import org.example.services.payloads.requests.ProcedureUpdateRequest;
+
+import org.example.services.payloads.responses.dtos.PatientDTO;
 import org.example.services.payloads.responses.dtos.PaymentDTO;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -67,6 +78,74 @@ public class ProcedureService {
         return Response.ok(new ResponseMessage("New Service created successfully", new ProcedureDTO(procedure))).build();
 
     }
+
+    @Transactional
+    public Response createBulkProcedures(List<ProcedureRequest> requests) {
+        List<ProcedureDTO> createdProcedures = new ArrayList<>();
+        List<String> duplicates = new ArrayList<>();
+
+        for (ProcedureRequest request : requests) {
+            boolean exists = Procedure.find(
+                    "category = ?1 and procedureType = ?2",
+                    request.category,
+                    request.procedureType
+            ).firstResultOptional().isPresent();
+
+            if (exists) {
+                duplicates.add("Procedure with name '" + request.procedureType
+                        + "' and category '" + request.category + "' already exists.");
+                continue;
+            }
+
+            Procedure procedure = new Procedure();
+            procedure.procedureType = request.procedureType;
+            procedure.procedureName = request.procedureType;
+            procedure.category = request.category;
+            procedure.description = request.description;
+            procedure.unitSellingPrice = request.unitSellingPrice;
+            procedure.unitCostPrice = request.unitCostPrice;
+
+            procedureRepository.persist(procedure);
+            createdProcedures.add(new ProcedureDTO(procedure));
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("created", createdProcedures);
+        result.put("duplicates", duplicates);
+
+        return Response.ok(new ResponseMessage("Bulk procedure creation completed.", result)).build();
+    }
+
+
+
+    @Transactional
+    public ProcedureDTO updateServiceById(Long id, ProcedureUpdateRequest request) {
+
+        return procedureRepository.findByIdOptional(id)
+                .map(procedure -> {
+                    // Update procedure fields
+                    procedure.procedureType = request.procedureType;
+                    procedure.procedureName = request.procedureType;
+                    procedure.category = request.category;
+                    procedure.description = request.description;
+                    procedure.unitSellingPrice = request.unitSellingPrice;
+                    procedure.unitCostPrice = request.unitCostPrice;
+
+                    // Persist the updated procedure
+                    procedureRepository.persist(procedure);
+
+                    // Return the updated procedure as a DTO
+                    return new ProcedureDTO(procedure);
+                })
+                .orElseThrow(() ->
+                        new WebApplicationException("Procedure not found for ID: " + id, Response.Status.NOT_FOUND)
+                );
+    }
+
+
+
+
+
 
 
     /**
@@ -136,6 +215,19 @@ public class ProcedureService {
         return otherProcedures.stream()
                 .map(ProcedureDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Response deleteServiceById(Long id){
+        Procedure service = procedureRepository.findById(id);
+        if (service == null) {
+            //return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("service not found", null))
+                    .build();
+        }
+        procedureRepository.delete(service);
+        return Response.ok(new ResponseMessage("Service Deleted successfully")).build();
     }
 
 

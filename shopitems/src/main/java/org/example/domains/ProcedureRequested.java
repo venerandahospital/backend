@@ -16,13 +16,11 @@ public class ProcedureRequested extends PanacheEntity {
     @JoinColumn(nullable = false)
     public PatientVisit visit;
 
-    // Reference to the specific lab test being requested
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    public Procedure procedure;
-
     @Column(nullable = false)
     public String procedureRequestedType;
+
+    @Column(nullable = false)
+    public String category;
 
     // Quantity of lab tests requested
     @Column(nullable = false)

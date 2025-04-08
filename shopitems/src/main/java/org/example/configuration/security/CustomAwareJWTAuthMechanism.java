@@ -122,7 +122,9 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
 
                 request.path().contains("/course/Patient-management/create-multiple-patients") ||
 
+                request.path().contains("/course/Patient-management/delete-service") ||
 
+                request.path().contains("/course/Patient-management/update-service") ||
 
 
                 request.path().contains("/course/Patient-management/create-new-patient") ||
@@ -153,9 +155,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism 
 
                 request.path().contains("/course/Patient-management/get-procedure-requested-by-id/") ||
 
-
-
-
+                request.path().contains("/course/Patient-management/create-bulk-procedures") ||
 
 
 

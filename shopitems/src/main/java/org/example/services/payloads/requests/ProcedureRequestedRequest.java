@@ -2,6 +2,8 @@ package org.example.services.payloads.requests;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.math.BigDecimal;
+
 public class ProcedureRequestedRequest {
 
     @Schema(example = "1")
@@ -18,6 +20,9 @@ public class ProcedureRequestedRequest {
 
     @Schema(example = "collin muwanguzi")
     public String doneBy;
+
+    @Schema(example = "10000")
+    public BigDecimal unitSellingPrice;
 
 
 

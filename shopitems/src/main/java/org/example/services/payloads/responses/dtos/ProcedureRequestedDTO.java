@@ -15,8 +15,9 @@ public class ProcedureRequestedDTO {
     public String doneBy;
     public Long visitId;
     public LocalDate dateOfProcedure;
-    public LocalTime timeOfProcedure;    public ProcedureDTO procedure;
+    public LocalTime timeOfProcedure;
     public String procedureRequestedType;
+    public String category;
 
     // Constructor to map LabTestsRequested to LabTestsRequestedDTO
     public ProcedureRequestedDTO(ProcedureRequested procedureRequested) {
@@ -31,11 +32,11 @@ public class ProcedureRequestedDTO {
         this.report = procedureRequested.report;
         this.doneBy = procedureRequested.doneBy;
         this.procedureRequestedType = procedureRequested.procedureRequestedType;
+        this.category = procedureRequested.category;
 
         // Properly reference the instance variable for visit
         this.visitId = procedureRequested.visit != null ? procedureRequested.visit.id : null;
 
         // Map the LabTest entity to LabTestDTO
-        this.procedure = procedureRequested.procedure != null ? new ProcedureDTO(procedureRequested.procedure) : null;
     }
 }
