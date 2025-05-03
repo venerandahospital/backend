@@ -24,7 +24,7 @@ public class Stock extends PanacheEntity {
     public String store;
 
     @Column(nullable = false)
-    public Integer quantityReceived;
+    public BigDecimal quantityReceived;
 
     @Column(nullable = false)
     public BigDecimal unitCostPrice;

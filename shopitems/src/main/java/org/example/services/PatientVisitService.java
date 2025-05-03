@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.Patient;
 import org.example.domains.PatientVisit;
 import org.example.domains.ProcedureRequested;
@@ -13,10 +14,7 @@ import org.example.domains.repositories.PatientRepository;
 import org.example.domains.repositories.PatientVisitRepository;
 import org.example.services.payloads.requests.PatientVisitUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
-import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
-import org.example.services.payloads.responses.dtos.PatientDTO;
-import org.example.services.payloads.responses.dtos.PatientGroupDTO;
-import org.example.services.payloads.responses.dtos.PatientVisitDTO;
+import org.example.services.payloads.responses.dtos.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -69,7 +67,8 @@ public class PatientVisitService {
         PatientVisit patientVisit = new PatientVisit();
         patientVisit.visitDate = LocalDate.now();
         patientVisit.visitTime = LocalTime.now();
-        patientVisit.visitReason = request.visitReason;
+        patientVisit.visitReason = "Consultation";
+        patientVisit.visitStatus = "open";
         patientVisit.visitType = request.visitType;
         patientVisit.visitNumber = newVisitNumber;
         patientVisit.visitName = "Visit 0" + newVisitNumber;
@@ -146,6 +145,32 @@ public class PatientVisitService {
         // Return the list of DTOs
         return result;
     }
+
+    @Transactional
+    public Response getLatestVisitByPatientId(Long patientId) {
+        PatientVisit latestVisit = patientVisitRepository
+                .find("patient.id", Sort.descending("id"), patientId)
+                .firstResult();
+
+        PatientVisitDTO latestVisitDTO;
+
+        if (latestVisit == null) {
+            PatientVisitRequest defaultRequest = new PatientVisitRequest();
+            defaultRequest.visitType = "General Consultation";
+
+
+            // Create a new visit
+            latestVisitDTO = createNewPatientVisit(patientId, defaultRequest);
+        } else {
+            // Convert the found PatientVisit into DTO
+            latestVisitDTO = new PatientVisitDTO(latestVisit);
+        }
+
+        return Response.ok(new ResponseMessage("Patient visit fetched successfully", latestVisitDTO)).build();
+    }
+
+
+
 
 
     public PatientVisitDTO updatePatientVisitById(Long id, PatientVisitUpdateRequest request) {

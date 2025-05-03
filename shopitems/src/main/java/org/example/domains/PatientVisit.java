@@ -34,6 +34,9 @@ public class PatientVisit extends PanacheEntity {
     public String visitReason;
 
     @Column
+    public String visitStatus;
+
+    @Column
     public String visitName;
 
     @Column

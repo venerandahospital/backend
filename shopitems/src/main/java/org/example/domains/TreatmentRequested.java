@@ -16,7 +16,7 @@ public class TreatmentRequested extends PanacheEntity {
 
     // Quantity of lab tests requested
     @Column(nullable = false)
-    public int quantity;
+    public BigDecimal quantity;
 
     // Unit price of the lab test
     @Column(nullable = false)

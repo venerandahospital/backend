@@ -56,5 +56,8 @@ public class ProcedureRequested extends PanacheEntity {
     @Column
     public LocalTime timeOfProcedure;
 
+    @Column
+    public Long procedureId;
+
 }
 

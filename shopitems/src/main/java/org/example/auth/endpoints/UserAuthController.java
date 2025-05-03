@@ -20,6 +20,7 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.User;
 
 @Path("auth")
+
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Auth Management Module", description = "Auth process")

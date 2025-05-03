@@ -7,9 +7,12 @@ import java.math.BigDecimal;
 public class TreatmentRequestedRequest {
 
     @Schema(example = "1")
-    public int quantity;
+    public BigDecimal quantity;
 
     @Schema(example = "1")
     public Long itemId;
+
+    @Schema(example = "1")
+    public BigDecimal unitSellingPrice;
 
 }

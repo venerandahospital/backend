@@ -17,9 +17,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.UserAuthService;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.domains.Invoice;
 import org.example.domains.Item;
-import org.example.domains.Procedure;
 import org.example.domains.Stock;
 import org.example.domains.repositories.ItemRepository;
 import org.example.services.payloads.requests.ShopItemParametersRequest;
@@ -39,8 +37,8 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
 import org.example.services.payloads.responses.basicResponses.FullShopItemResponse;
 import org.example.services.payloads.responses.dtos.ItemDTO;
+import org.example.services.payloads.responses.dtos.ItemQuantityDto;
 import org.example.services.payloads.responses.dtos.PaymentDTO;
-import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 @ApplicationScoped
 public class ShopItemService {
@@ -126,27 +124,46 @@ public class ShopItemService {
         itemRepository.persist(item);
     }
 
-    public void updateItemStockAtHandAfterSelling(Integer quantity, Item item) {
+    public void updateItemStockAtHandAfterSelling(BigDecimal quantity, Item item) {
+        // Update the stock at hand
+        item.stockAtHand = item.stockAtHand.subtract(quantity);
 
-        // Update the invoice fields
-
-        item.stockAtHand = item.stockAtHand.subtract(BigDecimal.valueOf(quantity));
-
-
-        // Persist the updated invoice
+        // Persist the updated item
         itemRepository.persist(item);
     }
 
 
-    public void updateItemStockAtHandAfterDeleting(Integer quantity, Item item) {
 
-        // Update the invoice fields
 
-        item.stockAtHand = item.stockAtHand.add(BigDecimal.valueOf(quantity));
+    public Response updateItemStockAtHandAfterService(List<ItemQuantityDto> itemsUsed) {
+        for (ItemQuantityDto dto : itemsUsed) {
+            Item item = itemRepository.find("title = ?1", dto.itemName).firstResult();
 
-        // Persist the updated invoice
+            if (item != null) {
+                // Subtract the quantity from stockAtHand
+                item.stockAtHand = item.stockAtHand.subtract(BigDecimal.valueOf(dto.quantity));
+                itemRepository.persist(item);
+            } else {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("Item not found: " + dto.itemName, null))
+                        .build();
+            }
+        }
+
+        return Response.ok(new ResponseMessage("Items used updated successfully")).build();
+    }
+
+
+
+
+    public void updateItemStockAtHandAfterDeleting(BigDecimal quantity, Item item) {
+        // Update the stock at hand
+        item.stockAtHand = item.stockAtHand.add(quantity);
+
+        // Persist the updated item
         itemRepository.persist(item);
     }
+
 
 
     @Transactional
@@ -368,13 +385,14 @@ public class ShopItemService {
                 .map(shopItem -> {
 
                     shopItem.title = request.title;
-                    shopItem.costPrice = request.costPrice;
-                    shopItem.sellingPrice = request.sellingPrice;
                     shopItem.description = request.description;
                     shopItem.category = request.category;
                     shopItem.subCategory = request.subCategory;
                     shopItem.image = request.image;
                     shopItem.reOrderLevel = request.reOrderLevel;
+
+                    shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
+                    shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
 
                     itemRepository.persist(shopItem);
 

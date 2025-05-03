@@ -2,9 +2,10 @@ package org.example.statics;
 
 public enum RoleEnums {
 
-    ADMIN("Admin".toUpperCase()),
-    CUSTOMER("Customer".toUpperCase()),
-    AGENT("Agent".toUpperCase());
+    admin("Admin".toUpperCase()),
+    customer("Customer".toUpperCase()),
+    agent("Agent".toUpperCase()),
+    md("Md".toUpperCase());
 
     public final String label;
 

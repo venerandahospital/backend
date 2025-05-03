@@ -19,6 +19,7 @@ import org.example.services.payloads.responses.dtos.StockDTO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,22 +47,21 @@ public class StockService {
 
         Item item = itemRepository.findById(request.itemId);
         if (item == null) {
-            //throw new IllegalArgumentException("Item not found for ID: " + request.itemId);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Item not found for ID:" + request.itemId, null))
                     .build();
         }
 
         // Calculate unit cost
-        BigDecimal unitCost = request.totalCostPrice.divide(BigDecimal.valueOf(request.quantityReceived), RoundingMode.HALF_UP);
+        BigDecimal unitCost = request.totalCostPrice.divide(request.quantityReceived, RoundingMode.HALF_UP);
 
         Stock stock = new Stock();
         stock.item = item;
         stock.totalCostPrice = request.totalCostPrice;
         stock.quantityReceived = request.quantityReceived;
-        stock.unitCostPrice = unitCost; // Assuming unitCostPrice corresponds to unitCost
-        stock.quantityAvailable = item.stockAtHand; // Assuming all received stock is available initially
-        stock.newQuantity = BigDecimal.valueOf(request.quantityReceived).add(item.stockAtHand);
+        stock.unitCostPrice = unitCost;
+        stock.quantityAvailable = item.stockAtHand;
+        stock.newQuantity = request.quantityReceived.add(item.stockAtHand);
         stock.expiryDate = request.expiryDate;
         stock.brand = request.brand;
         stock.store = request.store;
@@ -71,10 +71,11 @@ public class StockService {
         if (request.unitSellingPrice != null && request.unitSellingPrice.compareTo(BigDecimal.ZERO) > 0) {
             stock.unitSellingPrice = request.unitSellingPrice;
         } else {
-            stock.unitSellingPrice = item.sellingPrice; // Retain the existing price
+            stock.unitSellingPrice = item.sellingPrice;
         }
 
-        stock.receiveDate = request.receiveDate; // Assuming stock is received on the current date
+        // ✅ If receiveDate is null, set it to today
+        stock.receiveDate = (request.receiveDate != null) ? request.receiveDate : LocalDate.now();
 
         // Persist the stock
         stockRepository.persist(stock);
@@ -82,11 +83,11 @@ public class StockService {
         // Update the item's stock at hand
         itemService.updateItemStockAtHand(stock, item);
 
-        // Return the StockDTO
-        //return new StockDTO(stock);
+        // Return the response
         return Response.ok(new ResponseMessage("New stock Received successfully", new StockDTO(stock))).build();
-
     }
+
+
 
 
     @Transactional
@@ -103,11 +104,9 @@ public class StockService {
                     .entity(new ResponseMessage("Stock not found", null))
                     .build();
         }
-
         Stock stock = stockOpt.get();
         Item item = stock.item;
-        BigDecimal quantity = BigDecimal.valueOf(stock.quantityReceived);
-
+        BigDecimal quantity = stock.quantityReceived;
 
         if (item.stockAtHand.compareTo(quantity) < 0) {
             return Response.status(Response.Status.BAD_REQUEST)

@@ -10,7 +10,7 @@ public class StockDTO {
 
     public Long id;
     public Long itemId;
-    public Integer quantityReceived;
+    public BigDecimal quantityReceived;
     public BigDecimal unitCostPrice;
     public BigDecimal totalCostPrice;
 
@@ -56,11 +56,11 @@ public class StockDTO {
     }
 
 
-    public Integer getQuantityReceived() {
+    public BigDecimal getQuantityReceived() {
         return quantityReceived;
     }
 
-    public void setQuantityReceived(Integer quantityReceived) {
+    public void setQuantityReceived(BigDecimal quantityReceived) {
         this.quantityReceived = quantityReceived;
     }
 

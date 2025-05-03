@@ -81,4 +81,14 @@ public class PatientVisitController {
     }
 
 
+    @GET
+    @Path("get-latest-patient-visit-by-patient-id/{id}")
+    @Operation(summary = "Get the latest patient visit by patient id", description = "Retrieve the most recent patient visit by patient id")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientVisitDTO.class)))
+    public Response getLatestPatientVisitByPatientId(@PathParam("id") Long patientId) {
+
+        return patientVisitService.getLatestVisitByPatientId(patientId);
+    }
+
+
 }

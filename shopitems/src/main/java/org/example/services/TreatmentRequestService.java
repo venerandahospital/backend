@@ -27,12 +27,10 @@ public class TreatmentRequestService {
     ItemRepository itemRepository;
 
     public static final String NOT_FOUND = "Not found!";
-
     public Response createNewTreatmentRequested(Long id, TreatmentRequestedRequest request) {
         // Fetch the PatientVisit and Item in one go
         PatientVisit patientVisit = PatientVisit.findById(id);
         Item item = Item.findById(request.itemId);
-
 
         // Handle not found error
         if (patientVisit == null || item == null) {
@@ -42,7 +40,7 @@ public class TreatmentRequestService {
         }
 
         // Check if stock is sufficient
-        if (BigDecimal.valueOf(request.quantity).compareTo(item.stockAtHand) > 0) {
+        if (request.quantity.compareTo(item.stockAtHand) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Stock at hand is insufficient. Available: " +
                             item.stockAtHand + ", Requested: " + request.quantity,
@@ -61,13 +59,11 @@ public class TreatmentRequestService {
 
         if (existingTreatment != null) {
             // If it exists, increment the quantity and update the total amount
-            existingTreatment.quantity += request.quantity;
-            existingTreatment.totalAmount = BigDecimal.valueOf(existingTreatment.quantity)
-                    .multiply(existingTreatment.unitSellingPrice);
+            existingTreatment.quantity = existingTreatment.quantity.add(request.quantity);
+            existingTreatment.totalAmount = existingTreatment.quantity.multiply(existingTreatment.unitSellingPrice);
             treatmentRequestedRepository.persist(existingTreatment);
 
             itemService.updateItemStockAtHandAfterSelling(request.quantity, item);
-
 
             dto = new TreatmentRequestedDTO(existingTreatment);
             return Response.ok(new ResponseMessage("Treatment request updated successfully", dto)).build();
@@ -76,7 +72,7 @@ public class TreatmentRequestService {
             TreatmentRequested treatmentRequested = new TreatmentRequested();
             treatmentRequested.quantity = request.quantity;
             treatmentRequested.unitSellingPrice = item.sellingPrice;
-            treatmentRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(item.sellingPrice);
+            treatmentRequested.totalAmount = request.quantity.multiply(item.sellingPrice);
             treatmentRequested.visit = patientVisit;
             treatmentRequested.itemName = item.title;
 
@@ -87,6 +83,7 @@ public class TreatmentRequestService {
             return Response.ok(new ResponseMessage("New treatment request created successfully", dto)).build();
         }
     }
+
 
 
 

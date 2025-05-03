@@ -13,6 +13,8 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>3.1.1.Final</quarkus.platform.version>
+    <quarkus.package.type>uber-jar</quarkus.package.type> <!-- This line -->
+
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0</surefire-plugin.version>
 </properties>
@@ -159,6 +161,21 @@
                 </compilerArgs>
             </configuration>
         </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.0</version> <!-- Correct version -->
+            <configuration>
+                <archive>
+                    <manifestEntries>
+                        <Main-Class>org.example.configuration.initializer.Initializer</Main-Class> <!-- Your main class -->
+                    </manifestEntries>
+                </archive>
+            </configuration>
+        </plugin>
+
+
 
         <plugin>
             <artifactId>maven-surefire-plugin</artifactId>

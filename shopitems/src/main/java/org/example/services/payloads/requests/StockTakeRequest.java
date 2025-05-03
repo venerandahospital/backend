@@ -12,7 +12,7 @@ public class StockTakeRequest {
     public Long itemId;
 
     @Schema(example = "5000")
-    public Integer quantityReceived;
+    public BigDecimal quantityReceived;
 
     @Schema(example = "200000")
     public BigDecimal totalCostPrice;

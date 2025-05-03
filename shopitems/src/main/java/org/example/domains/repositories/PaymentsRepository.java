@@ -17,7 +17,7 @@ public class PaymentsRepository implements PanacheRepository<Payments> {
     @Transactional
     public int deletePaymentById(Long id) {
         // Define the native SQL query
-        Query query = getEntityManager().createNativeQuery("DELETE FROM payments WHERE id = :id");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM Payments WHERE id = :id");
         query.setParameter("id", id);
 
         // Execute the query and return the number of rows affected

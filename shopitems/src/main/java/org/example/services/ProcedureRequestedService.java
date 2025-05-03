@@ -25,11 +25,15 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ProcedureRequestedService {
     @Inject
     ProcedureRequestedRepository proceduresRequestedRepository;
+
+    @Inject
+    ItemUsedService itemUsedService;
 
     public static final String NOT_FOUND = "Not found!";
 
@@ -55,6 +59,14 @@ public class ProcedureRequestedService {
                     .build();
         }
 
+        if (procedure.category == null) {
+            //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage(procedure.procedureName + " " + "Service has no category, please give it a category and try again", null))
+                    .build();
+        }
+
+
         // Check if a ProcedureRequested with the same procedure and visit already exists
         ProcedureRequested existingProcedureRequested = ProcedureRequested.find(
                 "visit.id = ?1 and procedureRequestedType  = ?2 and unitSellingPrice = ?3",
@@ -72,6 +84,9 @@ public class ProcedureRequestedService {
 
             proceduresRequestedRepository.persist(existingProcedureRequested); // Persist the updated entity
 
+            itemUsedService.performProcedure(request.procedureId);
+
+
             //return new ProcedureRequestedDTO(existingProcedureRequested);
             return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(existingProcedureRequested))).build();
 
@@ -80,17 +95,21 @@ public class ProcedureRequestedService {
             ProcedureRequested procedureRequested = new ProcedureRequested();
             procedureRequested.quantity = request.quantity;
             procedureRequested.report = request.report;
+            procedureRequested.procedureId = request.procedureId;
             procedureRequested.orderedBy = request.orderedBy;
             procedureRequested.doneBy = request.doneBy;
             procedureRequested.unitSellingPrice = request.unitSellingPrice;
             procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(request.unitSellingPrice);
             procedureRequested.visit = patientVisit;
             procedureRequested.procedureRequestedType = procedure.procedureType;
+
             procedureRequested.category = procedure.category;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
             procedureRequested.timeOfProcedure = java.time.LocalTime.now();
 
             proceduresRequestedRepository.persist(procedureRequested);
+
+            itemUsedService.performProcedure(request.procedureId);
 
             //return new ProcedureRequestedDTO(procedureRequested);
             return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(procedureRequested))).build();
@@ -103,6 +122,18 @@ public class ProcedureRequestedService {
                 .map(ProcedureRequestedDTO::new)  // Convert Patient entity to PatientDTO
                 .orElseThrow(() -> new WebApplicationException("ProcedureRequested not found", 404));
     }
+
+    public List<ProcedureRequestedDTO> getRequestedProceduresByVisitId(Long visitId) {
+        List<ProcedureRequested> requestedProcedures = proceduresRequestedRepository
+                .find("visit.id = ?1 ORDER BY id DESC", visitId)
+                .list();
+
+        return requestedProcedures.stream()
+                .map(ProcedureRequestedDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
 
 
     public ProcedureRequestedDTO updateProcedureRequestedById(Long id, ProcedureRequestedUpdateRequest request) {
@@ -159,9 +190,10 @@ public class ProcedureRequestedService {
     public List<ProcedureRequestedDTO> getNonLabTestNonUltrasoundProceduresByVisit(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is neither "LabTest" nor "Ultrasound" and visit ID matches, ordered descending
         List<ProcedureRequested> procedures = ProcedureRequested.find(
-                "category NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
+                "category NOT IN (?1, ?2, ?3) and visit.id = ?4 ORDER BY id DESC",
                 "LabTest",
                 "imaging",
+                "consultation",
                 visitId
         ).list();
 
@@ -235,6 +267,7 @@ public class ProcedureRequestedService {
     }
 
 
+    @SuppressWarnings("resource")
     @Transactional
     public Response deleteProcedureRequestById(Long id) {
 
@@ -246,6 +279,8 @@ public class ProcedureRequestedService {
         }
 
         proceduresRequestedRepository.delete(procedureRequested);
+
+        itemUsedService.restoreStockOnProcedureDelete(procedureRequested.procedureId);
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }

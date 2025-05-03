@@ -9,7 +9,7 @@ import org.example.domains.User;
 import org.example.domains.repositories.UserRepository;
 import org.example.statics.RoleEnums;
 
-import static org.example.statics.RoleEnums.ADMIN;
+import static org.example.statics.RoleEnums.admin;
 
 public class Initializer {
 
@@ -22,8 +22,8 @@ public class Initializer {
         if (Boolean.FALSE.equals(userRepository.usernameExists("admin"))){
             User adminUser = new User();
             adminUser.username = "admin";
-            adminUser.profilePic = "https://storyset.com/illustration/medicine/bro#92B1E3FF&hide=&hide=complete";
-            adminUser.role = RoleEnums.ADMIN.label;
+            adminUser.profilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fpic.PNG?alt=media&token=56906e62-65aa-4f2b-bc1a-60d5df63839c";
+            adminUser.role = RoleEnums.admin.label;
             adminUser.email = "admin@vmd.com";
             adminUser.password = BcryptUtil.bcryptHash("Hope@91991245");
 

@@ -1,5 +1,6 @@
 package org.example.endpoints;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -15,9 +16,13 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.ShoppingCart;
 import org.example.services.ItemUsedService;
 import org.example.services.payloads.requests.ItemUsedRequest;
+import org.example.services.payloads.requests.ProcedureUpdateRequest;
 import org.example.services.payloads.responses.basicResponses.ItemUsedResponse;
 import org.example.services.payloads.responses.basicResponses.ShoppingCartResponse;
 import org.example.services.payloads.responses.dtos.ItemUsedDTO;
+import org.example.services.payloads.responses.dtos.PatientDTO;
+
+import java.util.List;
 
 @Path("Patient-management")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,32 +35,39 @@ public class ItemUsedController {
     ItemUsedService itemUsedService;
 
     @POST
-    @Path("/add-to-item-used")
+    @Path("/add-itemUsed")
     //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "add a new item used to make lab test", description = "add a new item used to make lab test.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemUsedDTO.class)))
     public Response addItemUsedToLabTest(ItemUsedRequest request) {
-        return Response.ok(new ResponseMessage(ActionMessages.SAVED.label,itemUsedService.addToItemUsedToLabTest(request))).build();
+        return Response.ok(new ResponseMessage(ActionMessages.SAVED.label,itemUsedService.addItemUsed(request))).build();
     }
 
     @GET
-    @Path("/get-used-items/{id}")
-    @Transactional
-    @Operation(summary = "get all lab used items", description = "get all lab used items.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemUsedResponse.class)))
-    public Response getUsedItems(@PathParam("id") Long labTestId) {
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,itemUsedService.getCart(labTestId))).build();
+    @Path("/items-used/{procedureId}")
+    //@RolesAllowed({"ADMIN"})
+    @Operation(summary = "Get items used in a procedure", description = "Returns all items used in the given procedure, ordered descending by ID.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemUsedDTO.class)))
+    public Response getItemsUsedByProcedure(@PathParam("procedureId") Long procedureId) {
+        List<ItemUsedDTO> items = itemUsedService.getItemsUsedByProcedure(procedureId);
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, items)).build();
     }
 
-    @GET
-    @Path("/get-All-used-items/{id}")
+
+    @DELETE
+    @Path("/delete-item-used-id/{id}")
+    //@RolesAllowed({"ADMIN"})
     @Transactional
-    @Operation(summary = "get all used items", description = "get all used items.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemUsedResponse.class)))
-    public Response getAllUsedItems(@PathParam("id") Long labTestId) {
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,itemUsedService.getAllCart(labTestId))).build();
+    @Operation(summary = "delete item used by id", description = "delete item used by id")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteItemUsedById(@PathParam("id") Long id){
+        return itemUsedService.deleteItemUsed(id);
     }
+
+
+
+
 
 
 }

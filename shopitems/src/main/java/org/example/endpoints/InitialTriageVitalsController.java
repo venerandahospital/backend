@@ -72,7 +72,7 @@ public class InitialTriageVitalsController {
     @Operation(summary = "Update vital", description = "Update vital")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InitialTriageVitalsDTO.class)))
     public Response updateVital(@PathParam("id") Long id, InitialVitalUpdateRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,initialTriageVitalsService.updateInitialVitalById(id, request) )).build();
+        return initialTriageVitalsService.updateInitialVitalById(id, request);
     }
 
     @DELETE

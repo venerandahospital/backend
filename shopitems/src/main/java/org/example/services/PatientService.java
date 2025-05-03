@@ -16,6 +16,7 @@ import org.example.services.payloads.requests.PatientRequest;
 import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.responses.dtos.PatientDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,9 @@ public class PatientService {
         patient.patientAge = request.patientAge;
         patient.patientContact = request.patientContact;
         patient.patientGender = request.patientGender;
-        patient.patientProfilePic = request.patientProfilePic;
+
+//        patient.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
+
         patient.patientDateOfBirth = request.patientDateOfBirth;
         patient.creationDate = LocalDate.now();
 
@@ -117,6 +120,15 @@ public class PatientService {
         return Response.status(Response.Status.CREATED)
                 .entity(new ResponseMessage("Patient created successfully", new PatientDTO(patient)))
                 .build();
+    }
+
+
+    public void updateTotalAmountDue(Patient patient, BigDecimal totalAmountDue){
+
+        patient.totalAmountDue = totalAmountDue;
+
+        patientRepository.persist(patient);
+
     }
 
 

@@ -29,4 +29,7 @@ public class ShopItemUpdateRequest {
 
     @Schema(example = "50")
     public Integer reOrderLevel;
+
+    @Schema(example = "50")
+    public BigDecimal stockAtHand;
 }

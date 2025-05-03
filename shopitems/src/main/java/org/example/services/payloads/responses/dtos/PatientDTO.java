@@ -23,6 +23,7 @@ public class PatientDTO {
     public String nextOfKinContact;
     public String relationship;
     public Long patientGroupId;
+    public BigDecimal totalAmountDue;
 
     public String nextOfKinAddress;
     public List<PatientVisitDTO> patientVisits;
@@ -45,6 +46,7 @@ public class PatientDTO {
         this.nextOfKinName = patient.nextOfKinName;
         this.nextOfKinContact = patient.nextOfKinContact;
         this.relationship = patient.relationship;
+        this.totalAmountDue = patient.totalAmountDue;
         this.nextOfKinAddress = patient.nextOfKinAddress;
         this.patientVisits = patient.getPatientVisits().stream().map(PatientVisitDTO::new).toList();
     }

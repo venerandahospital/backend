@@ -21,6 +21,7 @@ import org.example.configuration.handler.*;
 import org.example.services.payloads.requests.ShopItemUpdateRequest;
 import org.example.services.payloads.responses.basicResponses.ShopItemResponse;
 import org.example.services.payloads.responses.dtos.ItemDTO;
+import org.example.services.payloads.responses.dtos.ItemQuantityDto;
 import org.example.services.payloads.responses.dtos.ProcedureDTO;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class ShopItemController {
 
     @POST
     @Path("/add-new-bulk-items")  // Tip: lowercase "items" for consistency
-//@RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(
             summary = "Add multiple shop items",
@@ -83,6 +84,19 @@ public class ShopItemController {
     }
 
 
+
+
+    @PUT
+    @Path("/update-bulk-items-after-service-order")  // Tip: lowercase "items" for consistency
+    @Transactional
+    @Operation(summary = "Add multiple items", description = "Adds a list of new items.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class)) // You can use an array schema if needed
+    )
+    public Response updateItemsAfterServiceOrder(List<ItemQuantityDto> requests) {
+        return Response.ok(
+                new ResponseMessage(ActionMessages.SAVED.label, shopItemService.updateItemStockAtHandAfterService(requests))
+        ).build();
+    }
 
 
     @GET
@@ -137,7 +151,7 @@ public class ShopItemController {
 
 
     @PUT
-    @Path("{id}")
+    @Path("update-item/{id}")
    // @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")

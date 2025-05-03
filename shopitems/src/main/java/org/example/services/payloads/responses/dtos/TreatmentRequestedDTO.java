@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 public class TreatmentRequestedDTO {
     public Long id;
-    public int quantity;
+    public BigDecimal quantity;
     public BigDecimal unitSellingPrice;
     public BigDecimal totalAmount;
     public String itemName;

@@ -136,6 +136,21 @@ public class ProcedureRequestedController {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureRequestedById)).build();
     }
 
+    @GET
+    @Path("get-all-procedures-requested-by-visit-id/{id}")
+    @Operation(summary = "Get all procedures requested on visit", description = "Get all procedure requested")
+    @APIResponse(
+            description = "Successful",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = ProcedureRequestedDTO.class))
+    )
+    public Response getAllProceduresRequestedByVisitId(@PathParam("id") Long visitId) {
+        List<ProcedureRequestedDTO> procedureRequestedByVisitId = procedureRequestedService.getRequestedProceduresByVisitId(visitId);
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureRequestedByVisitId)).build();
+    }
+
+
+
 
 
 

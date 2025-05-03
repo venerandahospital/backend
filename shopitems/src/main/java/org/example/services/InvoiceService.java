@@ -37,6 +37,7 @@ import org.example.services.payloads.responses.dtos.InvoiceDTO;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
@@ -55,6 +56,9 @@ public class InvoiceService {
 
     @Inject
     PaymentService paymentService;
+
+    @Inject
+    PatientService patientService;
 
     private static final String NOT_FOUND = "Not found!";
 
@@ -111,33 +115,32 @@ public class InvoiceService {
         return invoice;
     }
 
-
     @Transactional
     public Response updateInvoice(Long invoiceId, InvoiceUpdateRequest request) {
         // Find the existing invoice
         Invoice invoice = Invoice.findById(invoiceId);
 
         if (invoice == null) {
-            //throw new IllegalArgumentException("Invoice not found.");
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Invoice not found..",null))
+                    .entity(new ResponseMessage("Invoice not found.", null))
                     .build();
         }
 
-        if (request.discount.compareTo(BigDecimal.ZERO) < 0) {
+        if (request.discount != null && request.discount.compareTo(BigDecimal.ZERO) < 0) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Discount must be greater than zero.",null))
+                    .entity(new ResponseMessage("Discount must be greater than or equal to zero.", null))
                     .build();
-            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
         }
 
-        if (request.tax.compareTo(BigDecimal.ZERO) < 0) {
+        if (request.tax != null && request.tax.compareTo(BigDecimal.ZERO) < 0) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Tax must be greater than zero.",null))
+                    .entity(new ResponseMessage("Tax must be greater than or equal to zero.", null))
                     .build();
-            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
         }
 
+        // Assign 0.00 if discount or tax are null
+        BigDecimal discount = (request.discount != null) ? request.discount : invoice.discount;
+        BigDecimal tax = (request.tax != null) ? request.tax : invoice.tax;
 
         // Recalculate subtotal, total amount, and balance due
         Map<String, BigDecimal> invoiceSubTotalMap = getInvoiceSubTotal(invoice.visit.id);
@@ -146,46 +149,38 @@ public class InvoiceService {
 
         if (subTotalCalculated == null || subTotalCalculated.compareTo(BigDecimal.ZERO) <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("SubTotal Amount must be greater than zero.",null))
+                    .entity(new ResponseMessage("SubTotal Amount must be greater than zero.", null))
                     .build();
-            //throw new IllegalArgumentException("Amount to pay must be greater than zero.");
         }
 
-// Ensure subTotalCalculated is greater than the discount
-        if (subTotalCalculated.compareTo(request.discount) <= 0) {
+        // Ensure subTotalCalculated is greater than the discount
+        if (subTotalCalculated.compareTo(discount) <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("SubTotal Amount must be greater than the discount.", null))
                     .build();
         }
 
-        BigDecimal totalAmountDiscounted = subTotalCalculated.subtract(request.discount);
-        BigDecimal totalAmount = totalAmountDiscounted.add(request.tax);
+        // Now it's safe to subtract and add
+        BigDecimal totalAmountDiscounted = subTotalCalculated.subtract(discount);
+        BigDecimal totalAmount = totalAmountDiscounted.add(tax);
         invoice.totalAmount = totalAmount;
 
         invoice.amountPaid = paymentService.getTotalPaymentOfInvoice(invoiceId);
-        invoice.balanceDue = totalAmount.subtract(paymentService.getTotalPaymentOfInvoice(invoiceId));
+        invoice.balanceDue = totalAmount.subtract(invoice.amountPaid);
 
-        // Update the new fields
+        // Update other fields
         invoice.upDateOfInvoice = LocalDate.now();
         invoice.updateTimeOfCreation = LocalTime.now();
-
-        // Update optional fields
         invoice.notes = request.notes;
+        invoice.discount = discount;
+        invoice.tax = tax;
 
-        // Set discount: if request.discount is null, assign it to 0.00
-        invoice.discount = (request.discount != null) ? request.discount : BigDecimal.valueOf(0.00);
-
-// Set tax: if request.tax is null, assign it to 0.00
-        invoice.tax = (request.tax != null) ? request.tax : BigDecimal.valueOf(0.00);
-
-        // Persist the updated invoice
+        // Persist
         invoiceRepository.persist(invoice);
 
-       // return new InvoiceDTO(invoice);
-
         return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
-
     }
+
 
     @Transactional
     public void updateInvoiceAmountPaid(Invoice invoice) {
@@ -212,6 +207,24 @@ public class InvoiceService {
                 .map(InvoiceDTO::new)
                 .toList();
     }
+
+    @Transactional
+    public Response getInvoiceByVisitId(Long visitId) {
+        Invoice invoice = invoiceRepository.find("visit.id", visitId)
+                .firstResult();
+
+        if (invoice == null) {
+            //throw new WebApplicationException("Invoice not found for visitId: " + visitId, 404);
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Invoice not found for visitId: " + visitId, null))
+                    .build();
+        }
+
+       // return new InvoiceDTO(invoice);
+        return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
+
+    }
+
 
     @Transactional
     public int findMaxInvoiceNoReturnInt() {
@@ -272,19 +285,33 @@ public class InvoiceService {
                 visitId
         ).list();
 
-        List<ProcedureRequested> otherProcedures = ProcedureRequested.find(
-                "category NOT IN (?1, ?2) and visit.id = ?3 ORDER BY id DESC",
-                "LabTest",
-                "imaging",
-                visitId
+        List<ProcedureRequested> consultationProcedures = ProcedureRequested.find(
+                "category = ?1 and visit.id = ?2 ORDER BY id DESC",
+                "consultation", // category filter for 'consultation'
+                visitId         // Visit ID filter
         ).list();
+
+
+
+        List<ProcedureRequested> otherProcedures = ProcedureRequested.find(
+                "category NOT IN (?1, ?2, ?3) and visit.id = ?4 ORDER BY id DESC",
+                "LabTest",      // First category to exclude
+                "imaging",      // Second category to exclude
+                "consultation", // Third category to exclude
+                visitId         // Visit ID filter
+        ).list();
+
 
         List<TreatmentRequested> treatmentGive = TreatmentRequested.find(
                 "visit.id = ?1 ORDER BY id DESC",
                 visitId
         ).list();
 
-        BigDecimal consultationFee = checkIfConsultationWasDone(visitId);
+       // BigDecimal consultationFee = checkIfConsultationWasDone(visitId);
+
+        BigDecimal consultationFee = consultationProcedures.stream()
+                .map(procedureRequested -> procedureRequested.totalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal ultrasoundTotalAmount = scanProcedures.stream()
                 .map(procedureRequested -> procedureRequested.totalAmount)
@@ -404,6 +431,9 @@ public class InvoiceService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
+        patientService.updateTotalAmountDue(visit.patient, totalAmountDue);
+
+
 
 
         // Return as a map with keys for clarity
@@ -486,6 +516,31 @@ public class InvoiceService {
 
     public static Image getLogo() {
         try {
+            // Load the image as a stream from the classpath
+            InputStream logoStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("logo.png");
+
+            if (logoStream == null) {
+                throw new RuntimeException("Logo image not found in classpath.");
+            }
+
+            byte[] imageBytes = logoStream.readAllBytes(); // Java 9+; use IOUtils for Java 8
+            ImageData imageData = ImageDataFactory.create(imageBytes);
+
+            Image logo = new Image(imageData);
+            logo.scaleToFit(80, 80);
+            logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            return logo;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load the logo image.", e);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+   /* public static Image getLogo() {
+        try {
             // Replace with your logo path or URL
             String logoPath = "src/main/resources/logo.png"; // Local file
             // String logoPath = "https://example.com/logo.png"; // External URL
@@ -504,7 +559,8 @@ public class InvoiceService {
         } catch (IOException | MalformedURLException e) {
             throw new RuntimeException("Failed to load the logo image.", e);
         }
-    }
+    }*/
+
 
 
 
@@ -524,7 +580,6 @@ public class InvoiceService {
                 visit.persist(); // Save the changes
 
             }
-
 
             // Get the first invoice from the list (or handle multiple invoices as needed)
             Invoice invoice = visit.invoice.get(0); // Assuming visit.invoice is a List<Invoice>
@@ -581,10 +636,16 @@ public class InvoiceService {
                     .add(new Paragraph("BUGOGO VILLAGE, KYEGEGWA").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
                     .add(new Paragraph(invoice.visit.patient.patientFirstName.toUpperCase() + " " + invoice.visit.patient.patientSecondName.toUpperCase())
                             .setFontSize(7).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph(invoice.visit.patient.patientAddress.toUpperCase())
-                            .setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph()
+                             .add(Optional.ofNullable(invoice.visit.patient.patientAddress)
+                                  .map(String::toUpperCase)
+                                  .orElse(""))
+                                  .setFontSize(7)
+                                  .setTextAlignment(TextAlignment.LEFT)
+                            )
+
                     .setBorder(Border.NO_BORDER)
-            );
+                    );
 
             headerTable.addCell(new Cell()
                     .add(new Paragraph("NUMBER: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
@@ -710,11 +771,12 @@ public class InvoiceService {
                         .setBorder(Border.NO_BORDER)
                         .setBorderBottom(new SolidBorder(1)));
 
-                itemsTable.addCell(createCell(String.valueOf(treatmentRequested.quantity), 1, TextAlignment.RIGHT)
+                itemsTable.addCell(createCell(treatmentRequested.quantity.toString(), 1, TextAlignment.RIGHT)
                         .setFontSize(7)
                         .setBackgroundColor(rowColor)
                         .setBorder(Border.NO_BORDER)
                         .setBorderBottom(new SolidBorder(1)));
+
 
                 itemsTable.addCell(createCell(String.valueOf(treatmentRequested.unitSellingPrice), 1, TextAlignment.RIGHT)
                         .setFontSize(7)

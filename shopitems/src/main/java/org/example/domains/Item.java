@@ -2,10 +2,7 @@ package org.example.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,7 +58,6 @@ public class Item extends PanacheEntity {
     @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate expiryDate;
-
 
 
 }

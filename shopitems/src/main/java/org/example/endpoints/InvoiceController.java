@@ -95,9 +95,27 @@ public class InvoiceController {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, invoiceList)).build();
     }
 
+
+
+    @GET
+    @Transactional
+    @Path("/get-invoice-by-visit-id/{visitId}")
+    // @RolesAllowed({"ADMIN"})
+    @Operation(summary = "Get invoice by visit ID", description = "Retrieve a single invoice based on visit ID")
+    @APIResponse(
+            description = "Successful",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = InvoiceDTO.class))
+    )
+    public Response getInvoiceByVisitId(@PathParam("visitId") Long visitId) {
+
+        return invoiceService.getInvoiceByVisitId(visitId);
+    }
+
+
     @PUT
     @Path("update-invoice/{id}")
-//@RolesAllowed({"ADMIN", "CUSTOMER"})
+    //@RolesAllowed({"ADMIN", "CUSTOMER"})
     @Transactional
     @Operation(summary = "Update invoice", description = "Update an existing invoice by ID.")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InvoiceDTO.class)))

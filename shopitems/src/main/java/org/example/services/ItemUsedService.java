@@ -1,14 +1,18 @@
 package org.example.services;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.configuration.handler.ResponseMessage;
 import org.example.domains.*;
 import org.example.domains.repositories.ItemUsedRepository;
 import org.example.services.payloads.requests.ItemUsedRequest;
 import org.example.services.payloads.responses.basicResponses.ItemUsedResponse;
 import org.example.services.payloads.responses.dtos.ItemUsedDTO;
+import org.example.services.payloads.responses.dtos.PaymentDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,32 +26,111 @@ public class ItemUsedService {
 
     private static final String NOT_FOUND = "Not found!";
 
-
-    public ItemUsedDTO addToItemUsedToLabTest(ItemUsedRequest request) {
-        Procedure labTest = Procedure.findById(request.labTestId);
+    @Transactional
+    public ItemUsedDTO addItemUsed(ItemUsedRequest request) {
+        Procedure procedure = Procedure.findById(request.procedureId);
         Item item = Item.findById(request.itemId);
 
-        if (labTest == null || item == null) {
-            throw new WebApplicationException("LabTest or Item not found", Response.Status.NOT_FOUND);
+        if (procedure == null || item == null) {
+            throw new WebApplicationException("Item or Procedure not found", Response.Status.NOT_FOUND);
         }
 
-        ItemUsed itemUsed = ItemUsed.find("labTest = ?1 and item = ?2", labTest, item).firstResult();
+        // Fixed line: use raw field names, not nested entity paths
+        ItemUsed existing = ItemUsed.find("procedureId = ?1 and itemId = ?2", request.procedureId, request.itemId).firstResult();
 
-        if (itemUsed == null) {
-            itemUsed = new ItemUsed();
-            itemUsed.labTest = labTest;
-            itemUsed.item = item;
-            itemUsed.quantity = 1;
-            itemUsed.total = item.sellingPrice.multiply(BigDecimal.valueOf(itemUsed.quantity)); // Assuming `unitPrice` exists
-            itemUsed.persist();
-        } else {
-            itemUsed.quantity += 1;
-            itemUsed.total = item.sellingPrice.multiply(BigDecimal.valueOf(itemUsed.quantity)); // Recalculate total
-            itemUsed.persist();
+        if (existing != null) {
+            throw new WebApplicationException("Item already used in this procedure", Response.Status.CONFLICT);
         }
 
-        // Return DTO
+        // Create new item-usage entry
+        ItemUsed itemUsed = new ItemUsed();
+        itemUsed.procedureName = procedure.procedureName;
+        itemUsed.itemName = item.title;
+        itemUsed.procedureId = procedure.id;
+        itemUsed.itemId = item.id;
+        itemUsed.quantityUsed = BigDecimal.valueOf(request.quantityUsed);
+        itemUsed.persist();
+
         return new ItemUsedDTO(itemUsed);
+
+    }
+
+
+    public List<ItemUsedDTO> getItemsUsedByProcedure(Long procedureId) {
+        List<ItemUsed> itemsUsed = ItemUsed
+                .find("procedureId = ?1 ORDER BY id DESC", procedureId)
+                .list();
+
+        return itemsUsed.stream()
+                .map(ItemUsedDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Transactional
+    public Response performProcedure(Long procedureId) {
+        Procedure procedure = Procedure.findById(procedureId);
+        if (procedure == null) {
+            //throw new IllegalArgumentException("Procedure not found.");
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Procedure not found."))
+                    .build();
+        }
+
+        List<ItemUsed> usedItems = ItemUsed.list("procedureId", procedure.id);
+
+        for (ItemUsed usage : usedItems) {
+            Item item = Item.findById(usage.itemId);
+
+            if (item == null) {
+               // throw new IllegalStateException("Item not found for usage record.");
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("Item not found for usage record."))
+                        .build();
+            }
+
+            if (item.stockAtHand.compareTo(usage.quantityUsed) < 0) {
+                //throw new IllegalStateException("Not enough stock for item: " + item.title);
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Not enough stock for item: " + item.title, null))
+                        .build();
+            }
+
+            item.stockAtHand = item.stockAtHand.subtract(usage.quantityUsed);
+            item.persist();
+        }
+
+        return Response.ok(new ResponseMessage("Item stock updated after procedure done successfully")).build();
+    }
+
+
+    @Transactional
+    public Response restoreStockOnProcedureDelete(Long procedureId) {
+        Procedure procedure = Procedure.findById(procedureId);
+        if (procedure == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Procedure not found."))
+                    .build();
+        }
+
+        List<ItemUsed> usedItems = ItemUsed.list("procedureId", procedure.id);
+
+        for (ItemUsed usage : usedItems) {
+            Item item = Item.findById(usage.itemId);
+
+            if (item == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(new ResponseMessage("Item not found for usage record."))
+                        .build();
+            }
+
+            // Add back the used quantity
+            item.stockAtHand = item.stockAtHand.add(usage.quantityUsed);
+            item.persist();
+        }
+
+        return Response.ok(new ResponseMessage("Stock restored after procedure deletion")).build();
     }
 
 
@@ -67,24 +150,25 @@ public class ItemUsedService {
         return new ItemUsedDTO(itemUsed);
     }
 
+    @Transactional
+    public Response deleteItemUsed(Long id){
+        ItemUsed itemUsed = ItemUsed.findById(id); // correct: call on your entity
 
-    public ItemUsedResponse getAllCart(Long labTestId) {
-        // Retrieve all shopping cart items for the user
-        List<ItemUsed> cartItems = ItemUsed.find("labTest.id", labTestId).list();
+        if (itemUsed == null) {
+            //throw new WebApplicationException("ItemUsed with id " + id + " not found", 404);
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("ItemUsed with id" + " " + id + " " +"not found"))
+                    .build();
+        }
 
-        // Extract the ShopItem objects from the ShoppingCart entries
-        List<Item> shopItems = cartItems.stream()
-                .map(cartItem -> cartItem.item)
-                .collect(Collectors.toList());
+        itemUsed.delete(); // directly call delete on the entity
 
-        // Calculate the total quantity by summing the quantity field of each cart item
-        int totalQuantity = cartItems.stream()
-                .mapToInt(cartItem -> cartItem.quantity)
-                .sum();
-
-        // Return the list of ShopItems and the total quantity as a CartResponse object
-        return new ItemUsedResponse(shopItems, totalQuantity);
+        return Response.ok(new ResponseMessage("Item Used Deleted Successfully")).build();
     }
+
+
+
+
 
 
 }

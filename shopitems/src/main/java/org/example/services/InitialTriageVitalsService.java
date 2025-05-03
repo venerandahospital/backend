@@ -15,10 +15,7 @@ import org.example.services.payloads.requests.InitialTriageVitalsRequest;
 import org.example.services.payloads.requests.InitialVitalUpdateRequest;
 import org.example.services.payloads.requests.PatientUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
-import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
-import org.example.services.payloads.responses.dtos.PatientDTO;
-import org.example.services.payloads.responses.dtos.PatientVisitDTO;
-import org.example.services.payloads.responses.dtos.ProcedureRequestedDTO;
+import org.example.services.payloads.responses.dtos.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -67,11 +64,15 @@ public class InitialTriageVitalsService {
         initialTriageVitals.takenBy = request.takenBy;
         initialTriageVitals.respiratoryRate = request.respiratoryRate;
 
+
+
         // Ensure systolic and diastolic values are not null before calculating MAP
         if (request.systolic == null || request.diastolic == null) {
             initialTriageVitals.map = null;
             initialTriageVitals.bloodPressure = "N/A";
         }
+
+        initialTriageVitals.bloodPressure = request.systolic +"/"+ request.diastolic;
 
         initialTriageVitals.visit = patientVisit;
 
@@ -115,13 +116,14 @@ public class InitialTriageVitalsService {
                 .toList();
     }
 
-    public InitialTriageVitalsDTO updateInitialVitalById(Long id, InitialVitalUpdateRequest request) {
+    public Response updateInitialVitalById(Long id, InitialVitalUpdateRequest request) {
 
         return initialTriageVitalsRepository.findByIdOptional(id)
                 .map(initialTriageVitals -> {
 
-                    initialTriageVitals.dateTaken = request.dateTaken;
-                    initialTriageVitals.timeTaken = request.timeTaken;
+                    initialTriageVitals.dateTaken = (request.dateTaken != null) ? request.dateTaken : LocalDate.now();
+                    initialTriageVitals.timeTaken = (request.timeTaken != null) ? request.timeTaken : LocalTime.now();
+
                     initialTriageVitals.spO2 = request.spO2;
                     initialTriageVitals.station = request.station;
                     initialTriageVitals.height = request.height;
@@ -141,7 +143,9 @@ public class InitialTriageVitalsService {
 
                     initialTriageVitalsRepository.persist(initialTriageVitals);
 
-                    return new InitialTriageVitalsDTO(initialTriageVitals);
+                    //return new InitialTriageVitalsDTO(initialTriageVitals);
+                    return Response.ok(new ResponseMessage("Vital Updated successfully", new InitialTriageVitalsDTO(initialTriageVitals))).build();
+
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 

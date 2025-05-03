@@ -106,6 +106,7 @@ public class ProcedureService {
             procedure.unitCostPrice = request.unitCostPrice;
 
             procedureRepository.persist(procedure);
+
             createdProcedures.add(new ProcedureDTO(procedure));
         }
 

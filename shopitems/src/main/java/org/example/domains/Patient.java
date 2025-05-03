@@ -36,6 +36,9 @@ public class Patient extends PanacheEntity {
     public BigDecimal patientAge;
 
     @Column
+    public BigDecimal totalAmountDue;
+
+    @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate patientDateOfBirth;
 

@@ -3,6 +3,8 @@ package org.example.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ProcedureTable")
@@ -34,16 +36,4 @@ public class Procedure extends PanacheEntity {
     public String procedureName;
 
 
-    // List of items used for performing this lab test
-   /* @OneToMany(mappedBy = "labTest", fetch = FetchType.EAGER)
-    private List<ItemUsed> itemsUsed = new ArrayList<>();
-
-    public List<ItemUsed> getItemsUsed() {
-        return itemsUsed;
-    }
-
-    // Setter for itemsUsed
-    public void setItemsUsed(List<ItemUsed> itemsUsed) {
-        this.itemsUsed = itemsUsed;
-    }*/
 }

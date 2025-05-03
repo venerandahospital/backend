@@ -32,7 +32,7 @@ public class UserService {
         User user = new User();
         user.username = request.username;
         user.email = request.email;
-        user.role = RoleEnums.CUSTOMER.label;
+        user.role = RoleEnums.admin.label;
         user.password = BcryptUtil.bcryptHash(request.password);
         user.profilePic = request.profilePic;
 
@@ -112,6 +112,8 @@ public class UserService {
                     return user;
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
+
+
 
 
     //////////////////////////////////////role section //////////////////////////////////
