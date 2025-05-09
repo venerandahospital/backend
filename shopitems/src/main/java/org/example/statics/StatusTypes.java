@@ -12,6 +12,7 @@ public enum StatusTypes {
     PATIENT_CREATED_SUCCESSFULLY("Patient Created successfully".toUpperCase()),
     CLOSED("Closed".toUpperCase()),
     CLOSED_AND_APPROVED("Closed and Approved".toUpperCase()),
+    VISIT_CLOSED("Visit Closed".toUpperCase()),
     COMPLETED("Completed".toUpperCase()),
     DEACTIVATED("De-activated".toUpperCase()),
     DECLINED("Declined".toUpperCase()),

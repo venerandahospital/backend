@@ -16,6 +16,8 @@ public class PatientVisitDTO {
     public Integer visitNumber;
     public String visitReason;
     public String visitName;
+    public String visitStatus;
+
     public List<ProcedureRequestedDTO> proceduresRequested;
    // public List<TreatmentRequestedDTO> treatmentRequested;
     public List<InitialTriageVitalsDTO> initialTriageVitals;
@@ -36,6 +38,8 @@ public class PatientVisitDTO {
         this.visitNumber = patientVisit.visitNumber;
         this.visitReason = patientVisit.visitReason;
         this.visitName = patientVisit.visitName;
+        this.visitStatus = patientVisit.visitStatus;
+
 
         // Mapping lists with proper null check and stream processing
 

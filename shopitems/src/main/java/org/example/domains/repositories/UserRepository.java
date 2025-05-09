@@ -55,14 +55,14 @@ public class UserRepository implements PanacheRepository<User> {
     }
 
     public List<User> getAllAdmins() {
-        return list("role", RoleEnums.ADMIN.label);
+        return list("role", RoleEnums.admin.label);
     }
 
     public List<User> getAllCustomers() {
-        return list("role", RoleEnums.CUSTOMER.label);
+        return list("role", RoleEnums.customer.label);
     }
 
     public List<User> getAllAgents() {
-        return list("role", RoleEnums.AGENT.label);
+        return list("role", RoleEnums.agent.label);
     }
 }

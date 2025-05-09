@@ -12,6 +12,7 @@ import org.example.domains.PatientVisit;
 import org.example.domains.ProcedureRequested;
 import org.example.domains.repositories.PatientRepository;
 import org.example.domains.repositories.PatientVisitRepository;
+import org.example.services.payloads.requests.PatientVisitStatusUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
 import org.example.services.payloads.responses.dtos.*;
@@ -179,6 +180,19 @@ public class PatientVisitService {
 
                     patientVisit.visitType = request.visitType;
                     patientVisit.visitReason = request.visitReason;
+                    patientVisit.visitLastUpdatedDate = LocalDate.now();
+
+                    patientVisitRepository.persist(patientVisit);
+
+                    return new PatientVisitDTO(patientVisit);
+                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+    }
+
+    public PatientVisitDTO updatePatientVisitStatusById(Long id, PatientVisitStatusUpdateRequest request) {
+        return patientVisitRepository.findByIdOptional(id)
+                .map(patientVisit -> {
+
+                    patientVisit.visitStatus = request.visitStatus;
                     patientVisit.visitLastUpdatedDate = LocalDate.now();
 
                     patientVisitRepository.persist(patientVisit);

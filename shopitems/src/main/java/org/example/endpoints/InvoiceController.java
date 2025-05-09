@@ -13,13 +13,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.domains.PatientVisit;
 import org.example.services.InvoiceService;
-import org.example.services.PaymentService;
 import org.example.services.payloads.requests.*;
 import org.example.services.payloads.responses.dtos.InvoiceDTO;
-import org.example.services.payloads.responses.dtos.PatientDTO;
-import org.example.services.payloads.responses.dtos.PaymentDTO;
 import org.example.statics.StatusTypes;
 
 import java.math.BigDecimal;

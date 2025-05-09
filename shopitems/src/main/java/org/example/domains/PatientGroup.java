@@ -13,7 +13,7 @@ public class PatientGroup extends PanacheEntity {
     @Column(unique = true,nullable = false)
     public String groupName;
 
-    @Column(nullable = false)
+    @Column(unique = true,nullable = false)
     public String groupNameShortForm;
 
     @Column

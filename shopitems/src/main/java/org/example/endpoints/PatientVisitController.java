@@ -17,6 +17,7 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.services.PatientVisitService;
 import org.example.services.payloads.requests.PatientGroupUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitRequest;
+import org.example.services.payloads.requests.PatientVisitStatusUpdateRequest;
 import org.example.services.payloads.requests.PatientVisitUpdateRequest;
 import org.example.services.payloads.responses.dtos.InitialTriageVitalsDTO;
 import org.example.services.payloads.responses.dtos.PatientDTO;
@@ -66,7 +67,15 @@ public class PatientVisitController {
         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,patientVisitService.updatePatientVisitById(id, request) )).build();
     }
 
-
+    @PUT
+    @Path("update-patient-visit-status/{id}")
+    //@RolesAllowed({"ADMIN","CUSTOMER"})
+    @Transactional
+    @Operation(summary = "Update patient visit status", description = "Update patient visit status")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientVisitDTO.class)))
+    public Response updatePatientVisitStatus(@PathParam("id") Long id, PatientVisitStatusUpdateRequest request){
+        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,patientVisitService.updatePatientVisitStatusById(id, request) )).build();
+    }
 
     @GET
     @Path("get-patient-Visit-List-by-id/{id}")

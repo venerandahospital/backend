@@ -126,6 +126,12 @@ public class InvoiceService {
                     .build();
         }
 
+        if ("closed".equals(invoice.visit.visitStatus)) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
         if (request.discount != null && request.discount.compareTo(BigDecimal.ZERO) < 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Discount must be greater than or equal to zero.", null))

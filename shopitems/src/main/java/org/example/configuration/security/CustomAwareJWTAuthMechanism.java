@@ -115,6 +115,8 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
                 request.path().contains("/course/Patient-management/delete-item-used-id") ||
 
+                request.path().contains("/course/Patient-management/update-patient-visit-status/") ||
+
 
 
 

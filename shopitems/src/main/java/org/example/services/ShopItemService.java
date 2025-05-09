@@ -327,9 +327,14 @@ public class ShopItemService {
     }
 
     @Transactional
-    public List<Item> listLatestFirst() {
-        return itemRepository.listAll(Sort.descending("id"));
+    public List<ItemDTO> listLatestFirst() {
+        return itemRepository
+                .listAll(Sort.descending("id"))
+                .stream()
+                .map(ItemDTO::new) // or use a custom mapper: item -> new ItemDTO(item)
+                .collect(Collectors.toList());
     }
+
 
     public Item getShopItemById(Long id){
         return itemRepository.findById(id);
@@ -380,7 +385,7 @@ public class ShopItemService {
     }
 
 
-    public Item updateShopItemById(Long id, ShopItemUpdateRequest request) {
+    public ItemDTO updateShopItemById(Long id, ShopItemUpdateRequest request) {
         return itemRepository.findByIdOptional(id)
                 .map(shopItem -> {
 
@@ -390,13 +395,13 @@ public class ShopItemService {
                     shopItem.subCategory = request.subCategory;
                     shopItem.image = request.image;
                     shopItem.reOrderLevel = request.reOrderLevel;
-
+                    shopItem.unitOfMeasure = request.unitOfMeasure;
                     shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
                     shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
 
                     itemRepository.persist(shopItem);
 
-                    return shopItem;
+                    return new ItemDTO(shopItem);
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 

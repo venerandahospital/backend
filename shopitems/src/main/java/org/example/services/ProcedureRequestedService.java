@@ -7,10 +7,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.domains.InitialTriageVitals;
-import org.example.domains.Procedure;
-import org.example.domains.ProcedureRequested;
-import org.example.domains.PatientVisit;
+import org.example.domains.*;
 import org.example.domains.repositories.ProcedureRequestedRepository;
 import org.example.services.payloads.requests.InitialVitalUpdateRequest;
 import org.example.services.payloads.requests.ProcedureRequestedRequest;
@@ -25,6 +22,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -36,12 +34,23 @@ public class ProcedureRequestedService {
     ItemUsedService itemUsedService;
 
     public static final String NOT_FOUND = "Not found!";
+    public static final String VISIT_CLOSED = "Not found!";
 
     public Response createNewProcedureRequested(Long visitID, ProcedureRequestedRequest request) {
         // Fetch the PatientVisit and Procedure in one go
         PatientVisit patientVisit = PatientVisit.findById(visitID);
 
         Procedure procedure = Procedure.findById(request.procedureId);
+
+        //Patient patient = PatientVisit.patient;
+
+        // Throw exception if either of them is not found
+        /*if (patient.totalAmountDue > null) {
+            //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("visit not found:"  + visitID, null))
+                    .build();
+        }*/
 
         // Throw exception if either of them is not found
         if (patientVisit == null) {
@@ -50,6 +59,14 @@ public class ProcedureRequestedService {
                     .entity(new ResponseMessage("visit not found:"  + visitID, null))
                     .build();
         }
+
+
+        if ("closed".equals(patientVisit.visitStatus)) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
 
         // Throw exception if either of them is not found
         if (procedure == null) {

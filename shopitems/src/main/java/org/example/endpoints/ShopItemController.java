@@ -155,7 +155,7 @@ public class ShopItemController {
    // @RolesAllowed({"ADMIN","AGENT"})
     @Transactional
     @Operation(summary = "Update shopItem by Id", description = "Update shopItem by Id")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = User.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ItemDTO.class)))
     public Response updateShopItem(@PathParam("id") Long id, ShopItemUpdateRequest request){
         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,shopItemService.updateShopItemById(id, request) )).build();
     }

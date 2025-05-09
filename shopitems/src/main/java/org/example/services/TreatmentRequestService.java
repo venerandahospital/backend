@@ -14,6 +14,7 @@ import org.example.services.payloads.responses.dtos.TreatmentRequestedDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @ApplicationScoped
 public class TreatmentRequestService {
@@ -38,6 +39,13 @@ public class TreatmentRequestService {
                     .entity(new ResponseMessage("Patient or item NOT FOUND", null))
                     .build();
         }
+
+        if ("closed".equals(patientVisit.visitStatus)) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
 
         // Check if stock is sufficient
         if (request.quantity.compareTo(item.stockAtHand) > 0) {

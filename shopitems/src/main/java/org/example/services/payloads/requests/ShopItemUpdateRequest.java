@@ -32,4 +32,9 @@ public class ShopItemUpdateRequest {
 
     @Schema(example = "50")
     public BigDecimal stockAtHand;
+
+    @Schema(example = "each")
+    public String unitOfMeasure;
+
+
 }

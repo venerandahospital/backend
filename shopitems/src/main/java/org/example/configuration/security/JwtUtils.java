@@ -17,8 +17,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 
-import static org.example.statics.RoleEnums.AGENT;
-import static org.example.statics.RoleEnums.CUSTOMER;
+import static org.example.statics.RoleEnums.agent;
+import static org.example.statics.RoleEnums.customer;
 
 @ApplicationScoped
 public class JwtUtils {

@@ -39,6 +39,7 @@ public class PatientVisit extends PanacheEntity {
     @Column
     public String visitName;
 
+
     @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate visitLastUpdatedDate;
