@@ -2,7 +2,7 @@
 2023-08-18T11:16:42.196290 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -74,7 +74,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'category' 
 2023-08-18T11:16:42.637539 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -146,7 +146,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'category' 
 2023-08-18T11:16:44.144022 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -218,7 +218,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'category' 
 2023-08-18T11:16:52.271578 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -287,11 +287,11 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'category' 
 	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:275)
 	... 49 more
 
-2023-08-18T11:38:48.845636 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T11:38:48.845636 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -306,7 +306,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -318,11 +318,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:20.825192 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:20.825192 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -337,7 +337,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -349,11 +349,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:24.195002 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:24.195002 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -368,7 +368,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -380,11 +380,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:30.407357 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:30.407357 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -399,7 +399,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -411,11 +411,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:33.515360 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:33.515360 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -430,7 +430,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -442,11 +442,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:51.004788 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:51.004788 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -461,7 +461,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -473,11 +473,11 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:1623)
 
-2023-08-18T12:28:56.182598 Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()" because "shopItem" is null
-	at org.example.services.ShopItemService.deleteShopItemById(ShopItemService.java:64)
+2023-08-18T12:28:56.182598 Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+java.lang.NullPointerException: Cannot invoke "org.example.item.domain.Item.delete()" because "shopItem" is null
+	at org.example.item.ShopItemService.deleteShopItemById(ShopItemService.java:64)
 	at org.example.services.ShopItemService_ClientProxy.deleteShopItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController.deleteItemById(ShopItemController.java:82)
+	at org.example.item.ShopItemController.deleteItemById(ShopItemController.java:82)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById$$superforward(Unknown Source)
 	at org.example.endpoints.ShopItemController_Subclass$$function$$3.apply(Unknown Source)
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:77)
@@ -492,7 +492,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:34)
 	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
 	at org.example.endpoints.ShopItemController_Subclass.deleteItemById(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$deleteItemById_86bd909a4e911612cc5dd2e6b4419fe7d90a4cf5.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -507,7 +507,7 @@ java.lang.NullPointerException: Cannot invoke "org.example.domains.Item.delete()
 2023-08-18T13:04:29.343165 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)

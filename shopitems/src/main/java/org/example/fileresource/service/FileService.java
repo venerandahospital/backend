@@ -2,8 +2,8 @@ package org.example.fileresource.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.example.domains.FileResource;
-import org.example.domains.repositories.FileResourceRepository;
+import org.example.fileresource.FileResource;
+import org.example.fileresource.FileResourceRepository;
 import org.example.fileresource.service.payload.FileRequest;
 import org.example.fileresource.service.payload.FileRequestBytes;
 

@@ -59,7 +59,7 @@ jakarta.ws.rs.WebApplicationException: user Not Found
 2023-08-29T18:20:17.336115500 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.UserController_Subclass.createUser(Unknown Source)
-	at org.example.endpoints.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
+	at org.example.user.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -131,7 +131,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'h
 2023-08-29T18:21:33.440200 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.UserController_Subclass.createUser(Unknown Source)
-	at org.example.endpoints.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
+	at org.example.user.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -203,7 +203,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'h
 2023-08-29T21:36:19.067976900 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -274,7 +274,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:36:38.164051700 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -345,7 +345,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:37:32.275767900 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -416,7 +416,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:38:32.718151700 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -523,7 +523,7 @@ Caused by: jakarta.json.stream.JsonParsingException: Unexpected char 10 at (line
 2023-08-29T21:40:55.470245100 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -594,7 +594,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:41:24.651930100 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -665,7 +665,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:41:54.890511200 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -736,7 +736,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:42:52.645144400 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -807,7 +807,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:43:10.229871800 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -878,7 +878,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:43:30.695467600 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -949,7 +949,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:43:31.177087100 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1020,7 +1020,7 @@ Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Da
 2023-08-29T21:43:31.387421800 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)

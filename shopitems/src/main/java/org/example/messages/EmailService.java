@@ -7,7 +7,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.example.configuration.security.JwtUtils;
-import org.example.domains.User;
+import org.example.user.User;
 import org.example.statics.AppConstants;
 
 @ApplicationScoped

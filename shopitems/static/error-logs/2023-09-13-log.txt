@@ -3,7 +3,7 @@
 java.util.NoSuchElementException: Column ticketId does not exist
 	at io.vertx.sqlclient.Row.getLong(Row.java:125)
 	at io.vertx.mutiny.sqlclient.Row.getLong(Row.java:138)
-	at org.example.services.ShopItemService.from(ShopItemService.java:143)
+	at org.example.item.ShopItemService.from(ShopItemService.java:143)
 	at io.smallrye.context.impl.wrappers.SlowContextualFunction.apply(SlowContextualFunction.java:21)
 	at io.smallrye.mutiny.operators.multi.MultiMapOp$MapProcessor.onItem(MultiMapOp.java:42)
 	at io.smallrye.mutiny.subscription.MultiSubscriber.onNext(MultiSubscriber.java:61)
@@ -95,7 +95,7 @@ java.util.NoSuchElementException: Column ticketId does not exist
 java.util.NoSuchElementException: Column description does not exist
 	at io.vertx.sqlclient.Row.getString(Row.java:186)
 	at io.vertx.mutiny.sqlclient.Row.getString(Row.java:165)
-	at org.example.services.ShopItemService.from(ShopItemService.java:144)
+	at org.example.item.ShopItemService.from(ShopItemService.java:144)
 	at io.smallrye.context.impl.wrappers.SlowContextualFunction.apply(SlowContextualFunction.java:21)
 	at io.smallrye.mutiny.operators.multi.MultiMapOp$MapProcessor.onItem(MultiMapOp.java:42)
 	at io.smallrye.mutiny.subscription.MultiSubscriber.onNext(MultiSubscriber.java:61)

@@ -17,7 +17,7 @@ import org.example.auth.services.UserAuthService;
 import org.example.auth.services.payloads.*;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.domains.User;
+import org.example.user.User;
 
 @Path("auth")
 

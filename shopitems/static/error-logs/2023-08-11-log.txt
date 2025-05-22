@@ -349,7 +349,7 @@ jakarta.ws.rs.NotAllowedException: HTTP 405 Method Not Allowed
 2023-08-11T18:16:35.784776 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -420,7 +420,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:37.479362 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -491,7 +491,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:37.930102 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -562,7 +562,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:38.468480 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -633,7 +633,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:38.934280 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -704,7 +704,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:39.362422 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -775,7 +775,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:39.753489 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -846,7 +846,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:39.997062 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -917,7 +917,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:40.260229 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -988,7 +988,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:40.593044 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1059,7 +1059,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:40.922950 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1130,7 +1130,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:41.557116 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1201,7 +1201,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:41.930042 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1272,7 +1272,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:42.183736 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1343,7 +1343,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:42.478943 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1414,7 +1414,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:42.774403 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1485,7 +1485,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:43.044112 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1556,7 +1556,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:43.330617 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1627,7 +1627,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:43.597624 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1698,7 +1698,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:43.908419 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1769,7 +1769,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:16:44.204168 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1840,7 +1840,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:17:14.978313 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1911,7 +1911,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:24:57.971791 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -1982,7 +1982,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:26:29.041924 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -2053,7 +2053,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:27:25.939998 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -2124,7 +2124,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:28:58.563581 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -2195,7 +2195,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:29:44.394688 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
@@ -2266,7 +2266,7 @@ Caused by: java.sql.SQLException: Field 'imageUrl' doesn't have a default value
 2023-08-11T18:31:28.691424 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.ShopItemController_Subclass.addShopItem(Unknown Source)
-	at org.example.endpoints.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
+	at org.example.item.ShopItemController$quarkusrestinvoker$addShopItem_aea91c6a6a6b0fc2338e4c01667ca587a09f2986.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)

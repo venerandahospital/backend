@@ -6,7 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.example.domains.FileResource;
+import org.example.fileresource.FileResource;
 import org.example.fileresource.service.FileService;
 import org.example.fileresource.service.payload.FileRequest;
 

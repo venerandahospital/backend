@@ -1,7 +1,6 @@
 package org.example.auth.services.payloads;
 
-import org.example.domains.User;
-import org.hibernate.usertype.UserType;
+import org.example.user.User;
 
 public class UserAuthResponse {
     public User user;

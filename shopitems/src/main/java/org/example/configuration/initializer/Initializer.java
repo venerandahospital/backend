@@ -5,11 +5,9 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.example.domains.User;
-import org.example.domains.repositories.UserRepository;
+import org.example.user.User;
+import org.example.user.UserRepository;
 import org.example.statics.RoleEnums;
-
-import static org.example.statics.RoleEnums.admin;
 
 public class Initializer {
 

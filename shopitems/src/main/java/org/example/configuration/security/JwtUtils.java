@@ -10,15 +10,11 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.example.auth.services.payloads.UserAuthResponse;
-import org.example.domains.User;
+import org.example.user.User;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
-
-import static org.example.statics.RoleEnums.agent;
-import static org.example.statics.RoleEnums.customer;
 
 @ApplicationScoped
 public class JwtUtils {
