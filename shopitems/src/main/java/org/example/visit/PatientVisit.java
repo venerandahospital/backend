@@ -8,7 +8,7 @@ import org.example.consultations.Consultation;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.procedure.ProcedureRequested;
 import org.example.referrals.ReferralForm;
-import org.example.treatment.domains.InPatientTreatment;
+import org.example.admissions.InPatientTreatment;
 import org.example.treatment.domains.TreatmentRequested;
 import org.example.vitals.InitialTriageVitals;
 import org.example.vitals.VitalsMonitoringChart;

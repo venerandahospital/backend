@@ -4,7 +4,7 @@ import org.example.consultations.ConsultationDTO;
 import org.example.procedure.ProcedureRequestedDTO;
 import org.example.referrals.ReferralFormDTO;
 import org.example.vitals.VitalsMonitoringChartDTO;
-import org.example.treatment.services.InPatientTreatmentDTO;
+import org.example.admissions.InPatientTreatmentDTO;
 import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
 import org.example.vitals.InitialTriageVitalsDTO;
 

@@ -64,13 +64,13 @@ public class PatientService {
 
 
 
-        // Check if a patient with the same first and second names already exists
+        // Check if a buyer with the same first and second names already exists
         Patient existingPatient = patientRepository.findByFirstNameAndSecondName(
                 request.patientFirstName, request.patientSecondName);
 
         if (existingPatient != null) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity(new ResponseMessage("A patient with the same first and second names already exists", null))
+                    .entity(new ResponseMessage("A buyer with the same first and second names already exists", null))
                     .build();
         }
 
@@ -87,57 +87,57 @@ public class PatientService {
         }
 
         // Create new Patient entity and set basic information
-        Patient patient = new Patient();
-        patient.patientGroup = patientGroup;
-        patient.patientFirstName = request.patientFirstName;
-        patient.patientSecondName = request.patientSecondName;
-        patient.patientAddress = request.patientAddress;
-        patient.patientAge = request.patientAge;
-        patient.patientContact = request.patientContact;
-        patient.patientGender = request.patientGender;
+        Patient buyer = new Patient();
+        buyer.patientGroup = patientGroup;
+        buyer.patientFirstName = request.patientFirstName;
+        buyer.patientSecondName = request.patientSecondName;
+        buyer.patientAddress = request.patientAddress;
+        buyer.patientAge = request.patientAge;
+        buyer.patientContact = request.patientContact;
+        buyer.patientGender = request.patientGender;
 
-//        patient.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
+//        buyer.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
 
-        patient.patientDateOfBirth = request.patientDateOfBirth;
-        patient.creationDate = LocalDate.now();
+        buyer.patientDateOfBirth = request.patientDateOfBirth;
+        buyer.creationDate = LocalDate.now();
 
         // Set Next of Kin information
-        patient.nextOfKinName = request.nextOfKinName;
-        patient.nextOfKinAddress = request.nextOfKinAddress;
-        patient.nextOfKinContact = request.nextOfKinContact;
-        patient.relationship = request.relationship;
+        buyer.nextOfKinName = request.nextOfKinName;
+        buyer.nextOfKinAddress = request.nextOfKinAddress;
+        buyer.nextOfKinContact = request.nextOfKinContact;
+        buyer.relationship = request.relationship;
 
-        // Determine patient number
+        // Determine buyer number
         int deletedPatientNumberInQue = deletedPatientNosService.findFirstDeletedPatientNo();
         if (deletedPatientNumberInQue == 0) {
-            patient.patientNo = findMaxPatientFileNoReturnInt() + 1;
+            buyer.patientNo = findMaxPatientFileNoReturnInt() + 1;
         } else {
-            patient.patientNo = deletedPatientNumberInQue;
+            buyer.patientNo = deletedPatientNumberInQue;
         }
 
-        // Generate patient file number
-        patient.patientFileNo = "VMD" + patient.patientNo;
+        // Generate buyer file number
+        buyer.patientFileNo = "VMD" + buyer.patientNo;
 
         // Persist the new Patient entity
-        patientRepository.persist(patient);
+        patientRepository.persist(buyer);
 
-        // Remove the deleted patient number from the queue
+        // Remove the deleted buyer number from the queue
         if (deletedPatientNumberInQue != 0) {
             deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
         }
 
         // Return a success response with the created PatientDTO
         return Response.status(Response.Status.CREATED)
-                .entity(new ResponseMessage("Patient created successfully", new PatientDTO(patient)))
+                .entity(new ResponseMessage("Patient created successfully", new PatientDTO(buyer)))
                 .build();
     }
 
 
-    public void updateTotalAmountDue(Patient patient, BigDecimal totalAmountDue){
+    public void updateTotalAmountDue(Patient buyer, BigDecimal totalAmountDue){
 
-        patient.totalAmountDue = totalAmountDue;
+        buyer.totalAmountDue = totalAmountDue;
 
-        patientRepository.persist(patient);
+        patientRepository.persist(buyer);
 
     }
 
@@ -150,64 +150,64 @@ public class PatientService {
         for (PatientRequest request : requests) {
             try {
 
-                // Check for existing patient
+                // Check for existing buyer
                 Patient existingPatient = patientRepository.findByFirstNameAndSecondName(
                         request.patientFirstName, request.patientSecondName);
                 if (existingPatient != null) {
-                    errors.add("Duplicate patient: " + request.patientFirstName + " " + request.patientSecondName);
+                    errors.add("Duplicate buyer: " + request.patientFirstName + " " + request.patientSecondName);
                     continue;
                 }
 
-                // Check patient group
+                // Check buyer group
                 PatientGroup patientGroup = null;
                 if (request.patientGroupId != null) {
                     patientGroup = patientGroupRepository.findById(request.patientGroupId);
                     if (patientGroup == null) {
-                        errors.add("Invalid group ID for patient: " + request.patientFirstName + " " + request.patientSecondName);
+                        errors.add("Invalid group ID for buyer: " + request.patientFirstName + " " + request.patientSecondName);
                         continue;
                     }
                 }
 
                 // Create and populate Patient
-                Patient patient = new Patient();
-                patient.patientGroup = patientGroup;
-                patient.patientFirstName = request.patientFirstName;
-                patient.patientSecondName = request.patientSecondName;
-                patient.patientAddress = request.patientAddress;
-                patient.patientAge = request.patientAge;
-                patient.patientContact = request.patientContact;
-                patient.patientGender = request.patientGender;
-                patient.patientProfilePic = request.patientProfilePic;
-                patient.patientDateOfBirth = request.patientDateOfBirth;
-                patient.creationDate = LocalDate.now();
+                Patient buyer = new Patient();
+                buyer.patientGroup = patientGroup;
+                buyer.patientFirstName = request.patientFirstName;
+                buyer.patientSecondName = request.patientSecondName;
+                buyer.patientAddress = request.patientAddress;
+                buyer.patientAge = request.patientAge;
+                buyer.patientContact = request.patientContact;
+                buyer.patientGender = request.patientGender;
+                buyer.patientProfilePic = request.patientProfilePic;
+                buyer.patientDateOfBirth = request.patientDateOfBirth;
+                buyer.creationDate = LocalDate.now();
 
                 // Set next of kin info
-                patient.nextOfKinName = request.nextOfKinName;
-                patient.nextOfKinAddress = request.nextOfKinAddress;
-                patient.nextOfKinContact = request.nextOfKinContact;
-                patient.relationship = request.relationship;
+                buyer.nextOfKinName = request.nextOfKinName;
+                buyer.nextOfKinAddress = request.nextOfKinAddress;
+                buyer.nextOfKinContact = request.nextOfKinContact;
+                buyer.relationship = request.relationship;
 
-                // Assign patient number
+                // Assign buyer number
                 int deletedPatientNumberInQue = deletedPatientNosService.findFirstDeletedPatientNo();
                 if (deletedPatientNumberInQue == 0) {
-                    patient.patientNo = findMaxPatientFileNoReturnInt() + 1;
+                    buyer.patientNo = findMaxPatientFileNoReturnInt() + 1;
                 } else {
-                    patient.patientNo = deletedPatientNumberInQue;
+                    buyer.patientNo = deletedPatientNumberInQue;
                 }
 
-                patient.patientFileNo = "VMD" + patient.patientNo;
+                buyer.patientFileNo = "VMD" + buyer.patientNo;
 
-                patientRepository.persist(patient);
+                patientRepository.persist(buyer);
 
                 // Remove number from deleted queue
                 if (deletedPatientNumberInQue != 0) {
                     deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
                 }
 
-                createdPatients.add(new PatientDTO(patient));
+                createdPatients.add(new PatientDTO(buyer));
 
             } catch (Exception ex) {
-                errors.add("Error creating patient: " + request.patientFirstName + " " + request.patientSecondName);
+                errors.add("Error creating buyer: " + request.patientFirstName + " " + request.patientSecondName);
             }
         }
 
@@ -248,8 +248,8 @@ public class PatientService {
     public List<PatientDTO> getAllPatientsWithDebt() {
         return patientRepository.listAll(Sort.descending("patientNo"))
                 .stream()
-                .filter(patient -> patient.getTotalBalanceDue() != null &&
-                        patient.getTotalBalanceDue().compareTo(BigDecimal.ZERO) > 0)
+                .filter(buyer -> buyer.getTotalBalanceDue() != null &&
+                        buyer.getTotalBalanceDue().compareTo(BigDecimal.ZERO) > 0)
                 .map(PatientDTO::new)
                 .toList();
     }
@@ -258,8 +258,8 @@ public class PatientService {
     public List<PatientDTO> getAllPatientsByGroupId(Long groupId) {
         return patientRepository.listAll(Sort.descending("patientNo"))
                 .stream()
-                .filter(patient -> patient.patientGroup != null &&
-                        patient.patientGroup.id.equals(groupId))
+                .filter(buyer -> buyer.patientGroup != null &&
+                        buyer.patientGroup.id.equals(groupId))
                 .map(PatientDTO::new)
                 .toList();
     }
@@ -273,7 +273,7 @@ public class PatientService {
 
     @Transactional
     public PatientDTO updatePatientById(Long id, PatientUpdateRequest request) {
-        // Find the patient group (only if patientGroupId is provided)
+        // Find the buyer group (only if patientGroupId is provided)
         PatientGroup patientGroup;
         if (request.patientGroupId != null) {
             patientGroup = patientGroupRepository.findById(request.patientGroupId);
@@ -285,27 +285,27 @@ public class PatientService {
         }
 
         return patientRepository.findByIdOptional(id)
-                .map(patient -> {
-                    // Update patient fields
-                    patient.patientFirstName = request.patientFirstName;
-                    patient.patientSecondName = request.patientSecondName;
-                    patient.patientAddress = request.patientAddress;
-                    patient.patientContact = request.patientContact;
-                    patient.patientGender = request.patientGender;
-                    patient.patientAge = request.patientAge;
-                    patient.patientGroup = patientGroup; // Can be null
-                    patient.nextOfKinName = request.nextOfKinName;
-                    patient.nextOfKinContact = request.nextOfKinContact;
-                    patient.relationship = request.relationship;
-                    patient.nextOfKinAddress = request.nextOfKinAddress;
-                    patient.patientDateOfBirth = request.patientDateOfBirth;
-                    patient.patientLastUpdatedDate = LocalDate.now();
+                .map(buyer -> {
+                    // Update buyer fields
+                    buyer.patientFirstName = request.patientFirstName;
+                    buyer.patientSecondName = request.patientSecondName;
+                    buyer.patientAddress = request.patientAddress;
+                    buyer.patientContact = request.patientContact;
+                    buyer.patientGender = request.patientGender;
+                    buyer.patientAge = request.patientAge;
+                    buyer.patientGroup = patientGroup; // Can be null
+                    buyer.nextOfKinName = request.nextOfKinName;
+                    buyer.nextOfKinContact = request.nextOfKinContact;
+                    buyer.relationship = request.relationship;
+                    buyer.nextOfKinAddress = request.nextOfKinAddress;
+                    buyer.patientDateOfBirth = request.patientDateOfBirth;
+                    buyer.patientLastUpdatedDate = LocalDate.now();
 
-                    // Persist the updated patient
-                    patientRepository.persist(patient);
+                    // Persist the updated buyer
+                    patientRepository.persist(buyer);
 
-                    // Return the updated patient as a DTO
-                    return new PatientDTO(patient);
+                    // Return the updated buyer as a DTO
+                    return new PatientDTO(buyer);
                 })
                 .orElseThrow(() -> new WebApplicationException("Patient not found for ID: " + id, Integer.parseInt(NOT_FOUND)));
     }
@@ -326,7 +326,7 @@ public class PatientService {
     public int findMaxPatientFileNoReturnInt() {
         return patientRepository.listAll(Sort.descending("patientNo"))
                 .stream()
-                .map(patient -> patient.patientNo)
+                .map(buyer -> buyer.patientNo)
                 .findFirst()
                 .orElse(0);
     }
@@ -334,16 +334,16 @@ public class PatientService {
     @Transactional
     public Response deletePatientById(Long id) {
 
-        Patient patient = patientRepository.findById(id);
+        Patient buyer = patientRepository.findById(id);
 
-        if (patient == null) {
+        if (buyer == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .build();
         }
 
-        deletedPatientNosService.saveDeletedPatientNo(patient.patientNo);
+        deletedPatientNosService.saveDeletedPatientNo(buyer.patientNo);
         
-        patientRepository.delete(patient);
+        patientRepository.delete(buyer);
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }

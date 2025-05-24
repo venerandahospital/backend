@@ -39,7 +39,7 @@ import org.example.finance.invoice.domains.repositories.InvoiceRepository;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
 import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
-import org.example.finance.payments.PaymentService;
+import org.example.finance.payments.cash.services.PaymentService;
 import org.example.visit.PatientVisit;
 import org.example.vitals.InitialTriageVitals;
 

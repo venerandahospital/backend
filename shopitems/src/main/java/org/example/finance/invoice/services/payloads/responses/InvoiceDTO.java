@@ -2,7 +2,7 @@ package org.example.finance.invoice.services.payloads.responses;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import org.example.finance.invoice.domains.Invoice;
-import org.example.finance.payments.PaymentDTO;
+import org.example.finance.payments.cash.services.payloads.responses.PaymentDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

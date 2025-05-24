@@ -11,7 +11,7 @@ import org.example.finance.invoice.services.InvoiceService;
 import org.example.item.domain.Item;
 import org.example.item.services.ShopItemService;
 import org.example.treatment.domains.TreatmentRequested;
-import org.example.treatment.domains.TreatmentRequestedRepository;
+import org.example.treatment.domains.repositories.TreatmentRequestedRepository;
 import org.example.visit.PatientVisit;
 
 import java.math.BigDecimal;

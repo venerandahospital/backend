@@ -5,7 +5,7 @@ import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import org.example.client.domains.Patient;
 import org.example.visit.PatientVisit;
-import org.example.finance.payments.Payments;
+import org.example.finance.payments.cash.domains.Payments;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
