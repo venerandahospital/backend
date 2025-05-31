@@ -25,10 +25,10 @@ import org.example.hospitalCafeteria.inventory.item.services.payloads.responses.
 
 import java.util.List;
 
-@Path("/Cafeteria-item")
+@Path("/Cafeteria-inventory-item")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cafeteria Management Module", description = "Cafeteria Management")
+@Tag(name = "Cafeteria inventory Management Module", description = "Cafeteria inventory Management")
 public class CanteenItemController {
 
 

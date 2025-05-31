@@ -10,8 +10,8 @@ import org.example.auth.services.payloads.*;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.configuration.security.JwtUtils;
-import org.example.user.User;
-import org.example.user.UserRepository;
+import org.example.user.domains.User;
+import org.example.user.domains.repositories.UserRepository;
 import org.example.messages.EmailService;
 import org.example.statics.UserTypes;
 import org.jboss.logging.Logger;
@@ -19,7 +19,7 @@ import org.jboss.logging.Logger;
 
 import java.util.Optional;
 
-import static org.example.user.UserService.NOT_FOUND;
+import static org.example.user.services.UserService.NOT_FOUND;
 
 @ApplicationScoped
 

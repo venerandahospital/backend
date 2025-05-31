@@ -14,14 +14,6 @@ import org.example.hospitalCafeteria.inventory.stock.domains.CanteenStock;
 import org.example.hospitalCafeteria.inventory.stock.domains.repositories.CanteenStockRepository;
 import org.example.hospitalCafeteria.inventory.stock.services.requests.CanteenStockTakeRequest;
 import org.example.hospitalCafeteria.inventory.stock.services.responses.dtos.CanteenStockDTO;
-import org.example.item.domain.Item;
-import org.example.item.services.ShopItemService;
-import org.example.stock.domains.Stock;
-import org.example.item.domain.repositories.ItemRepository;
-import org.example.stock.domains.repositories.StockRepository;
-import org.example.store.StoreRepository;
-import org.example.stock.services.requests.StockTakeRequest;
-import org.example.stock.services.responses.dtos.StockDTO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

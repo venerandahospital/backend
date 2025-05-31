@@ -3,18 +3,9 @@ package org.example.hospitalCafeteria.sales.saleDay.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
-import org.example.admissions.InPatientTreatment;
-import org.example.client.domains.Patient;
-import org.example.consultations.Consultation;
-import org.example.finance.invoice.domains.Invoice;
 import org.example.hospitalCafeteria.client.domains.Buyer;
 import org.example.hospitalCafeteria.finance.invoice.domains.CanteenInvoice;
 import org.example.hospitalCafeteria.sales.saleDone.domains.Sale;
-import org.example.procedure.ProcedureRequested;
-import org.example.referrals.ReferralForm;
-import org.example.treatment.domains.TreatmentRequested;
-import org.example.vitals.InitialTriageVitals;
-import org.example.vitals.VitalsMonitoringChart;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

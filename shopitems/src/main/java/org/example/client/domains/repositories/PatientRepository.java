@@ -18,4 +18,10 @@ public class PatientRepository implements PanacheRepository<Patient> {
         return find("(patientFirstName = ?1 and patientSecondName = ?2) or (patientFirstName = ?2 and patientSecondName = ?1)",
                 firstName, secondName).firstResult();
     }
+
+    public int generateNextPatientNo() {
+        Patient maxPatient = Patient.find("ORDER BY patientNo DESC").firstResult();
+        return (maxPatient != null ? maxPatient.patientNo : 0) + 1;
+    }
+
 }

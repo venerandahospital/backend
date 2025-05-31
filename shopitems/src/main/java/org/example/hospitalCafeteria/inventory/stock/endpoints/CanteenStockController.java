@@ -16,16 +16,11 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.hospitalCafeteria.inventory.stock.services.CanteenStockService;
 import org.example.hospitalCafeteria.inventory.stock.services.requests.CanteenStockTakeRequest;
 import org.example.hospitalCafeteria.inventory.stock.services.responses.dtos.CanteenStockDTO;
-import org.example.stock.services.StockService;
-import org.example.stock.services.requests.StockTakeRequest;
 
-
-import org.example.stock.services.responses.dtos.StockDTO;
-
-@Path("/Cafeteria-item")
+@Path("/Cafeteria-stock-item")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cafeteria Management Module", description = "Cafeteria Management")
+@Tag(name = "Cafeteria stock Management Module", description = "Cafeteria stock Management")
 
 public class CanteenStockController {
 

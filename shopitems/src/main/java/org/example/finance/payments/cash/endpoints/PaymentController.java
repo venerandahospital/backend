@@ -16,8 +16,8 @@ import org.example.finance.payments.cash.services.payloads.responses.PaymentDTO;
 import org.example.finance.payments.cash.services.payloads.requests.PaymentParametersRequest;
 import org.example.finance.payments.cash.services.payloads.requests.PaymentRequest;
 import org.example.finance.payments.cash.services.PaymentService;
-import org.example.visit.PatientVisit;
-import org.example.visit.PatientVisitDTO;
+import org.example.visit.domains.PatientVisit;
+import org.example.visit.services.paloads.responses.PatientVisitDTO;
 
 import java.util.List;
 

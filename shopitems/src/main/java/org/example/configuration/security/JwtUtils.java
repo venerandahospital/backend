@@ -10,7 +10,7 @@ import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.example.user.User;
+import org.example.user.domains.User;
 
 import java.time.Duration;
 import java.time.Instant;

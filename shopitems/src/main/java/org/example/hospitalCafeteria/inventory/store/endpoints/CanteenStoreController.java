@@ -18,10 +18,10 @@ import org.example.hospitalCafeteria.inventory.store.services.payloads.requests.
 import org.example.hospitalCafeteria.inventory.store.services.CanteenStoreService;
 import org.example.statics.StatusTypes;
 
-@Path("Cafeteria-management")
+@Path("Cafeteria-store-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cafeteria Management Module", description = "Cafeteria Management")
+@Tag(name = "Cafeteria store Management Module", description = "Cafeteria store Management")
 
 public class CanteenStoreController {
 

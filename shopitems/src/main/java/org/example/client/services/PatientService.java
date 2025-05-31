@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.client.domains.DeletedPatient;
 import org.example.client.domains.repositories.PatientRepository;
 import org.example.client.domains.Patient;
 import org.example.client.domains.PatientGroup;
@@ -48,21 +49,6 @@ public class PatientService {
 
     @Transactional
     public Response createNewPatient(PatientRequest request) {
-        // Validate the request
-        /*if (request.patientAge == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Patient Age cannot be null or empty", null))
-                    .build();
-        }
-
-        if (request.patientGender == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Patient Gender cannot be null or empty", null))
-                    .build();
-        }*/
-
-
-
 
         // Check if a buyer with the same first and second names already exists
         Patient existingPatient = patientRepository.findByFirstNameAndSecondName(
@@ -96,7 +82,7 @@ public class PatientService {
         buyer.patientContact = request.patientContact;
         buyer.patientGender = request.patientGender;
 
-//        buyer.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
+//      buyer.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
 
         buyer.patientDateOfBirth = request.patientDateOfBirth;
         buyer.creationDate = LocalDate.now();
@@ -107,13 +93,11 @@ public class PatientService {
         buyer.nextOfKinContact = request.nextOfKinContact;
         buyer.relationship = request.relationship;
 
-        // Determine buyer number
-        int deletedPatientNumberInQue = deletedPatientNosService.findFirstDeletedPatientNo();
-        if (deletedPatientNumberInQue == 0) {
-            buyer.patientNo = findMaxPatientFileNoReturnInt() + 1;
-        } else {
-            buyer.patientNo = deletedPatientNumberInQue;
-        }
+// Determine buyer number
+       // DeletedPatient deletedPatientInQue = deletedPatientNosService.findFirstDeletedPatient();
+
+        buyer.patientNo = patientRepository.generateNextPatientNo();
+
 
         // Generate buyer file number
         buyer.patientFileNo = "VMD" + buyer.patientNo;
@@ -122,9 +106,9 @@ public class PatientService {
         patientRepository.persist(buyer);
 
         // Remove the deleted buyer number from the queue
-        if (deletedPatientNumberInQue != 0) {
-            deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
-        }
+        /*if (deletedPatientInQue.patientNo != 0) {
+            deletedPatientNosService.deleteByDeletedPatient(deletedPatientInQue);
+        }*/
 
         // Return a success response with the created PatientDTO
         return Response.status(Response.Status.CREATED)
@@ -188,21 +172,27 @@ public class PatientService {
                 buyer.relationship = request.relationship;
 
                 // Assign buyer number
-                int deletedPatientNumberInQue = deletedPatientNosService.findFirstDeletedPatientNo();
-                if (deletedPatientNumberInQue == 0) {
-                    buyer.patientNo = findMaxPatientFileNoReturnInt() + 1;
+                // Determine buyer number
+               /* DeletedPatient deletedPatientInQue = deletedPatientNosService.findFirstDeletedPatient();
+
+                if (deletedPatientInQue != null) {
+                    buyer.patientNo = deletedPatientInQue.patientNo;
+                    //deletedPatientNosService.delete(deletedPatientInQue); // remove used number
                 } else {
-                    buyer.patientNo = deletedPatientNumberInQue;
-                }
+                    buyer.patientNo = patientRepository.generateNextPatientNo();
+                }*/
+
+                buyer.patientNo = patientRepository.generateNextPatientNo();
 
                 buyer.patientFileNo = "VMD" + buyer.patientNo;
 
                 patientRepository.persist(buyer);
 
                 // Remove number from deleted queue
-                if (deletedPatientNumberInQue != 0) {
-                    deletedPatientNosService.deleteByDeletedPatientNumber(deletedPatientNumberInQue);
-                }
+                /*assert deletedPatientInQue != null;
+                if (deletedPatientInQue.patientNo != 0) {
+                    deletedPatientNosService.deleteByDeletedPatient(deletedPatientInQue);
+                }*/
 
                 createdPatients.add(new PatientDTO(buyer));
 
@@ -334,16 +324,16 @@ public class PatientService {
     @Transactional
     public Response deletePatientById(Long id) {
 
-        Patient buyer = patientRepository.findById(id);
+        Patient deletedPatient = patientRepository.findById(id);
 
-        if (buyer == null) {
+        if (deletedPatient == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .build();
         }
 
-        deletedPatientNosService.saveDeletedPatientNo(buyer.patientNo);
+        deletedPatientNosService.saveDeletedPatientNo(deletedPatient);
         
-        patientRepository.delete(buyer);
+        patientRepository.delete(deletedPatient);
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }

@@ -1,0 +1,64 @@
+package org.example.consultations.endpoints;
+
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
+import org.example.consultations.services.payloads.responses.ConsultationDTO;
+import org.example.consultations.services.payloads.requests.ConsultationRequest;
+import org.example.consultations.services.ConsultationService;
+import org.example.vitals.services.payloads.responses.InitialTriageVitalsDTO;
+
+import java.util.List;
+
+@Path("Patient-management")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Patient Management Module", description = "Patient Management")
+
+
+public class ConsultationController {
+
+    @Inject
+    ConsultationService consultationService;
+
+    @POST
+    @Path("create-new-Consultation/{id}")
+    @Transactional
+    @Operation(summary = "new-Consultation", description = "new-Consultation")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ConsultationDTO.class)))
+    public Response createConsultation(@PathParam("id") Long id, ConsultationRequest request){
+        return consultationService.createNewConsultation(id, request);
+    }
+
+    @GET
+    @Path("get-consultations-visit-by-id/{id}")
+    @Operation(summary = "Get the first consultation by visit ID", description = "Fetches the most recent consultation for a given visit ID")
+    @APIResponse(
+            description = "Successful",
+            responseCode = "200",
+            content = @Content(schema = @Schema(implementation = ConsultationDTO.class))
+    )
+    public Response getConsultationsById(@PathParam("id") Long id) {
+        // Call the service method to get the first ConsultationDTO for the given visitId
+        ConsultationDTO consultation = consultationService.getFirstConsultationByVisitId(id);
+
+        // Return a successful response with the DTO or 404 if not found
+        if (consultation == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("No consultation found for visit ID: " + id))
+                    .build();
+        }
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, consultation)).build();
+    }
+
+
+}

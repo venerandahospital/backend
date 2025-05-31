@@ -31,17 +31,17 @@ import org.example.client.domains.PatientGroup;
 import org.example.client.services.PatientService;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.consultations.Consultation;
-import org.example.procedure.ProcedureRequested;
+import org.example.consultations.domains.Consultation;
+import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.treatment.domains.TreatmentRequested;
-import org.example.visit.PatientVisitRepository;
+import org.example.visit.domains.repositories.PatientVisitRepository;
 import org.example.finance.invoice.domains.repositories.InvoiceRepository;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
 import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
 import org.example.finance.payments.cash.services.PaymentService;
-import org.example.visit.PatientVisit;
-import org.example.vitals.InitialTriageVitals;
+import org.example.visit.domains.PatientVisit;
+import org.example.vitals.domains.InitialTriageVitals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -164,6 +164,12 @@ public class InvoiceService {
         if (request.tax != null && request.tax.compareTo(BigDecimal.ZERO) < 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Tax must be greater than or equal to zero.", null))
+                    .build();
+        }
+
+        if (request.discount != null && request.discount.compareTo(invoice.balanceDue) > 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Discount cannot be greater than the balance due", null))
                     .build();
         }
 

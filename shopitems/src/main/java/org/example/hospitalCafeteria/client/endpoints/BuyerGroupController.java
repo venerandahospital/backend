@@ -20,10 +20,10 @@ import org.example.hospitalCafeteria.client.services.payloads.responses.dtos.Pat
 
 import java.util.List;
 
-@Path("cafeteria-management")
+@Path("cafeteria-buyer-group-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "cafeteria Management Module", description = "cafeteria Management")
+@Tag(name = "cafeteria buyer group Management Module", description = "cafeteria buyer group Management")
 public class BuyerGroupController {
 
     @Inject

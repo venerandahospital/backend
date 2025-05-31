@@ -22,10 +22,10 @@ import org.example.hospitalCafeteria.sales.saleDone.domains.Sale;
 import java.util.List;
 
 
-@Path("cafeteria-management")
+@Path("cafeteria-payment-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "cafeteria Management Module", description = "cafeteria Management")
+@Tag(name = "cafeteria payment Management Module", description = "cafeteria payment Management")
 
 public class CanteenPaymentController {
 

@@ -6,13 +6,17 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.finance.invoice.domains.Invoice;
+import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
 import org.example.item.domain.repositories.ItemRepository;
 import org.example.finance.invoice.services.InvoiceService;
 import org.example.item.domain.Item;
 import org.example.item.services.ShopItemService;
 import org.example.treatment.domains.TreatmentRequested;
 import org.example.treatment.domains.repositories.TreatmentRequestedRepository;
-import org.example.visit.PatientVisit;
+import org.example.treatment.services.payloads.responses.TreatmentRequestedDTO;
+import org.example.treatment.services.payloads.requests.TreatmentRequestedRequest;
+import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -93,11 +97,14 @@ public class TreatmentRequestService {
             // Otherwise, create a new TreatmentRequested record
             TreatmentRequested treatmentRequested = new TreatmentRequested();
             treatmentRequested.quantity = request.quantity;
+            treatmentRequested.provisionalQuantity = request.quantity;
             treatmentRequested.status = "pending";
             treatmentRequested.unitSellingPrice = item.sellingPrice;
             treatmentRequested.totalAmount = request.quantity.multiply(item.sellingPrice);
+            treatmentRequested.provisionalTotalAmount = request.quantity.multiply(item.sellingPrice);
             treatmentRequested.visit = patientVisit;
             treatmentRequested.itemName = item.title;
+            treatmentRequested.itemId = item.id;
 
             treatmentRequestedRepository.persist(treatmentRequested);
             itemService.updateItemStockAtHandAfterSelling(request.quantity, item);
@@ -106,8 +113,6 @@ public class TreatmentRequestService {
             return Response.ok(new ResponseMessage("New treatment request created successfully", dto)).build();
         }
     }
-
-
 
 
 
@@ -133,6 +138,15 @@ public class TreatmentRequestService {
                     .build();
         }
 
+        Invoice invoice = Invoice.find("visit.id", treatmentRequested.visit.id).firstResult();
+
+        InvoiceUpdateRequest request = new InvoiceUpdateRequest();
+        request.tax = BigDecimal.ZERO;
+        request.discount = BigDecimal.ZERO;
+
+        invoiceService.updateInvoice(invoice.id, request);
+
+
         treatmentRequestedRepository.delete(treatmentRequested);
 
         String itemTitle = treatmentRequested.itemName;
@@ -141,6 +155,8 @@ public class TreatmentRequestService {
 
 
         itemService.updateItemStockAtHandAfterDeleting(treatmentRequested.quantity, item);
+
+
 
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();

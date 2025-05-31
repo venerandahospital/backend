@@ -23,10 +23,10 @@ import org.example.statics.StatusTypes;
 
 import java.util.List;
 
-@Path("Cafeteria-management")
+@Path("Cafeteria-sale-day-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cafeteria Management Module", description = "Cafeteria Management")
+@Tag(name = "Cafeteria sale day Management Module", description = "Cafeteria sale day Management")
 
 public class SaleDayController {
 

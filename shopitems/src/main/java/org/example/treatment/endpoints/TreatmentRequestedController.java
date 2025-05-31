@@ -13,8 +13,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.treatment.services.TreatmentRequestService;
-import org.example.treatment.services.TreatmentRequestedDTO;
-import org.example.treatment.services.TreatmentRequestedRequest;
+import org.example.treatment.services.payloads.responses.TreatmentRequestedDTO;
+import org.example.treatment.services.payloads.requests.TreatmentRequestedRequest;
 
 import java.util.List;
 

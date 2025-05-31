@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.example.finance.invoice.domains.Invoice;
-import org.example.visit.PatientVisit;
+import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

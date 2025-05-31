@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 
-@Path("cafeteria-management")
+@Path("cafeteria-invoice-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "cafeteria Management Module", description = "cafeteria Management")
+@Tag(name = "cafeteria invoice Management Module", description = "cafeteria invoice Management")
 
 public class CanteenInvoiceController {
 

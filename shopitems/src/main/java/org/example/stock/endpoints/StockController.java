@@ -14,10 +14,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.stock.services.StockService;
-import org.example.stock.services.requests.StockTakeRequest;
+import org.example.stock.services.payloads.requests.StockTakeRequest;
 
 
-import org.example.stock.services.responses.dtos.StockDTO;
+import org.example.stock.services.payloads.responses.dtos.StockDTO;
 
 @Path("/shop-item")
 @Produces(MediaType.APPLICATION_JSON)

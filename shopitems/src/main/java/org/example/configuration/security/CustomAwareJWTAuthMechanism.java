@@ -48,9 +48,11 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
     private static final List<String> allowedOrigins = List.of(
             "http://162.212.157.6",
             "http://localhost:4200",
-            "http://veneranda-hospital.s3-website.eu-north-1.amazonaws.com"
-
+            "http://veneranda-hospital.s3-website.eu-north-1.amazonaws.com",
+            "capacitor://localhost",         // ✅ for Android/iOS Capacitor apps
+            "http://localhost"               // ✅ for other development clients
     );
+
 
     @Override
     public Uni<SecurityIdentity> authenticate(RoutingContext context, IdentityProviderManager identityProviderManager) {
@@ -129,6 +131,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/Patient-management/get-payment-List-by-visit-id/") ||
 
                 request.path().contains("/course/Patient-management/get-invoice-by-visit-id/") ||
+                request.path().contains("/course/Patient-management/get-consultations-visit-by-id/") ||
 
 
                 request.path().contains("/course/Patient-management/get-all-patient-groups") ||

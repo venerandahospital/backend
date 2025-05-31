@@ -30,17 +30,15 @@ import org.example.hospitalCafeteria.client.domains.BuyerGroup;
 import org.example.hospitalCafeteria.client.services.BuyerService;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.consultations.Consultation;
 import org.example.hospitalCafeteria.sales.saleDay.domains.SaleDay;
 import org.example.hospitalCafeteria.sales.saleDay.domains.repository.SaleDayRepository;
-import org.example.procedure.ProcedureRequested;
+import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.hospitalCafeteria.sales.saleDone.domains.Sale;
 import org.example.hospitalCafeteria.finance.invoice.domains.repositories.CanteenInvoiceRepository;
 import org.example.hospitalCafeteria.finance.invoice.domains.CanteenInvoice;
 import org.example.hospitalCafeteria.finance.invoice.services.payloads.responses.CanteenInvoiceDTO;
 import org.example.hospitalCafeteria.finance.invoice.services.payloads.requests.CanteenInvoiceUpdateRequest;
 import org.example.hospitalCafeteria.finance.payments.cash.services.CanteenPaymentService;
-import org.example.vitals.InitialTriageVitals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

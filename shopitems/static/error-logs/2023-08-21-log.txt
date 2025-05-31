@@ -2,7 +2,7 @@
 2023-08-21T20:04:16.554139 Error invoking subclass method
 io.quarkus.arc.ArcUndeclaredThrowableException: Error invoking subclass method
 	at org.example.endpoints.UserController_Subclass.createUser(Unknown Source)
-	at org.example.user.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
+	at org.example.user.endpoints.UserController$quarkusrestinvoker$createUser_f945a7e9968b46f9ebad250576c7ab707eba8a6f.invoke(Unknown Source)
 	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
 	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
 	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)

@@ -38,8 +38,6 @@ public class BuyerGroupRepository implements PanacheRepository<BuyerGroup> {
     }
 
 
-
-
     public BuyerGroup findByNormalizedShortForm(String shortForm) {
         String normalizedShortForm = normalize(shortForm);
         return find("replace(lower(groupNameShortForm), ' ', '') = ?1", normalizedShortForm).firstResult();

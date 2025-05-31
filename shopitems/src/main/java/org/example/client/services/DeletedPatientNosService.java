@@ -4,8 +4,9 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.example.client.domains.Patient;
 import org.example.client.domains.repositories.DeletePatientNosRepository;
-import org.example.client.domains.DeletedPatientNos;
+import org.example.client.domains.DeletedPatient;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.delete;
 
@@ -16,25 +17,43 @@ public class DeletedPatientNosService {
     DeletePatientNosRepository deletePatientNosRepository;
 
     @Transactional
-    public void saveDeletedPatientNo(int deletedPatientNoFromDeleteMethod){
-        DeletedPatientNos dpn = new DeletedPatientNos();
-        dpn.deletedPatientNo = deletedPatientNoFromDeleteMethod;
+    public void saveDeletedPatientNo(Patient deletedPatient){
+
+        DeletedPatient dpn = new DeletedPatient();
+        dpn.patientGroup = deletedPatient.patientGroup;
+        dpn.patientFirstName = deletedPatient.patientFirstName;
+        dpn.patientSecondName = deletedPatient.patientSecondName;
+        dpn.patientAddress = deletedPatient.patientAddress;
+        dpn.patientAge = deletedPatient.patientAge;
+        dpn.patientContact = deletedPatient.patientContact;
+        dpn.patientGender = deletedPatient.patientGender;
+
+        dpn.patientDateOfBirth = deletedPatient.patientDateOfBirth;
+        dpn.creationDate = deletedPatient.creationDate;
+
+        dpn.nextOfKinName = deletedPatient.nextOfKinName;
+        dpn.nextOfKinAddress = deletedPatient.nextOfKinAddress;
+        dpn.nextOfKinContact = deletedPatient.nextOfKinContact;
+        dpn.relationship = deletedPatient.relationship;
+
+        dpn.patientNo = deletedPatient.patientNo;
+        dpn.patientFileNo = deletedPatient.patientFileNo;
 
         deletePatientNosRepository.persist(dpn);
 
     }
 
     @Transactional
-    public int findFirstDeletedPatientNo() {
-        return deletePatientNosRepository.listAll(Sort.ascending("deletedPatientNo"))
+    public DeletedPatient findFirstDeletedPatient() {
+        return deletePatientNosRepository.listAll(Sort.ascending("patientNo"))
                 .stream()
-                .map(DeletedPatientNos -> DeletedPatientNos.deletedPatientNo)
                 .findFirst()
-                .orElse(0);
+                .orElse(null);
     }
 
+
     @Transactional
-    public void deleteByDeletedPatientNumber(int deletedPatientNumber) {
-        deletePatientNosRepository.delete("deletedPatientNo = ?1", deletedPatientNumber);
+    public void deleteByDeletedPatient(DeletedPatient deletedPatient) {
+        deletePatientNosRepository.delete(deletedPatient);
     }
 }

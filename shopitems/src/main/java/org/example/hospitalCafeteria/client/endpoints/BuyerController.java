@@ -22,10 +22,10 @@ import org.example.hospitalCafeteria.client.services.payloads.responses.dtos.Pat
 import java.util.List;
 
 
-@Path("cafeteria-management")
+@Path("cafeteria-buyer-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "cafeteria Management Module", description = "cafeteria Management")
+@Tag(name = "cafeteria buyer Management Module", description = "cafeteria buyer Management")
 
 public class BuyerController {
 

@@ -3,7 +3,6 @@ package org.example.hospitalCafeteria.sales.saleDone.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import org.example.hospitalCafeteria.sales.saleDay.domains.SaleDay;
-import org.example.visit.PatientVisit;
 
 import java.math.BigDecimal;
 

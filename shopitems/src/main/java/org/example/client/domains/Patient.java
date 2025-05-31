@@ -3,7 +3,7 @@ package org.example.client.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
-import org.example.visit.PatientVisit;
+import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

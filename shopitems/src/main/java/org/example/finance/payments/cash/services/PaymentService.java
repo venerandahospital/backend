@@ -16,10 +16,10 @@ import org.example.finance.payments.cash.services.payloads.responses.FullPayment
 import org.example.finance.payments.cash.services.payloads.responses.PaymentDTO;
 import org.example.finance.payments.cash.services.payloads.requests.PaymentParametersRequest;
 import org.example.finance.payments.cash.services.payloads.requests.PaymentRequest;
-import org.example.visit.PatientVisitRepository;
+import org.example.visit.domains.repositories.PatientVisitRepository;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.services.InvoiceService;
-import org.example.visit.PatientVisit;
+import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

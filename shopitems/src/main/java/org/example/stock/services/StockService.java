@@ -12,9 +12,9 @@ import org.example.item.services.ShopItemService;
 import org.example.stock.domains.Stock;
 import org.example.item.domain.repositories.ItemRepository;
 import org.example.stock.domains.repositories.StockRepository;
-import org.example.store.StoreRepository;
-import org.example.stock.services.requests.StockTakeRequest;
-import org.example.stock.services.responses.dtos.StockDTO;
+import org.example.store.domains.repositories.StoreRepository;
+import org.example.stock.services.payloads.requests.StockTakeRequest;
+import org.example.stock.services.payloads.responses.dtos.StockDTO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

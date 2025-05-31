@@ -18,10 +18,10 @@ import org.example.hospitalCafeteria.sales.saleDone.services.payloads.requests.S
 
 import java.util.List;
 
-@Path("Cafeteria-management")
+@Path("Cafeteria-sale-done-management")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cafeteria Management Module", description = "Cafeteria Management")
+@Tag(name = "Cafeteria sale done Management Module", description = "Cafeteria sale done Management")
 
 public class SaleController {
 
@@ -29,7 +29,7 @@ public class SaleController {
     SaleService saleService;
 
     @POST
-    @Path("create-new-sale-/{id}")
+    @Path("create-new-sale-done-/{id}")
     @Transactional
     @Operation(summary = "new-treatmentRequest", description = "new-treatmentRequest")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = SaleDTO.class)))
@@ -39,7 +39,7 @@ public class SaleController {
 
 
     @GET
-    @Path("get-sale-requested-by-visit-id/{id}")
+    @Path("get-sale-done-requested-by-visit-id/{id}")
     @Operation(summary = "get-sale-requested-by-visit-id", description = "get-sale-requested-by-visit-id")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = SaleDTO.class)))
     public Response getTreatmentByVisitId(@PathParam("id") Long visitId) {
@@ -50,7 +50,7 @@ public class SaleController {
     }
 
     @DELETE
-    @Path("/delete-requested-sale-by-id/{id}")
+    @Path("/delete-requested-sale-done-by-id/{id}")
     //@RolesAllowed({"ADMIN"})
     @Transactional
     @Operation(summary = "delete requested sale by id", description = "delete requested sale by id")

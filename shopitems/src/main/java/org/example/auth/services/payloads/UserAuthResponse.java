@@ -1,6 +1,6 @@
 package org.example.auth.services.payloads;
 
-import org.example.user.User;
+import org.example.user.domains.User;
 
 public class UserAuthResponse {
     public User user;

@@ -2,7 +2,7 @@ package org.example.treatment.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
-import org.example.visit.PatientVisit;
+import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 
@@ -19,6 +19,9 @@ public class TreatmentRequested extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal quantity;
 
+    @Column(nullable = false)
+    public BigDecimal provisionalQuantity;
+
     // Unit price of the lab test
     @Column(nullable = false)
     public BigDecimal unitSellingPrice;
@@ -27,9 +30,16 @@ public class TreatmentRequested extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal totalAmount;
 
+    @Column(nullable = false)
+    public BigDecimal provisionalTotalAmount;
+
     // Reference to the specific lab test being requested
     @Column(nullable = false)
     public String itemName;
+
+    // Reference to the specific lab test being requested
+    @Column(nullable = false)
+    public Long itemId;
 
     @Column
     public String status;

@@ -1,13 +1,7 @@
 package org.example.hospitalCafeteria.sales.saleDay.services.payloads.responses;
 
-import org.example.admissions.InPatientTreatmentDTO;
-import org.example.consultations.ConsultationDTO;
 import org.example.hospitalCafeteria.finance.invoice.services.payloads.responses.CanteenInvoiceDTO;
 import org.example.hospitalCafeteria.sales.saleDay.domains.SaleDay;
-import org.example.procedure.ProcedureRequestedDTO;
-import org.example.referrals.ReferralFormDTO;
-import org.example.vitals.InitialTriageVitalsDTO;
-import org.example.vitals.VitalsMonitoringChartDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

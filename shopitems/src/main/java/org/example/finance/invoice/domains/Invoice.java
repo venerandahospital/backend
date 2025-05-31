@@ -4,7 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import org.example.client.domains.Patient;
-import org.example.visit.PatientVisit;
+import org.example.visit.domains.PatientVisit;
 import org.example.finance.payments.cash.domains.Payments;
 
 import java.math.BigDecimal;
