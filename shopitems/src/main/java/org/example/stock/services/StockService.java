@@ -73,7 +73,6 @@ public class StockService {
             stock.unitSellingPrice = item.sellingPrice;
         }
 
-        // ✅ If receiveDate is null, set it to today
         stock.receiveDate = (request.receiveDate != null) ? request.receiveDate : LocalDate.now();
 
         // Persist the stock

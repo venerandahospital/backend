@@ -4,7 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class UserAuthRequest {
 
-    @Schema(example = "admin@shop.com")
+    @Schema(example = "md@vmd.com")
     public String email;
 
     @Schema(example = "123")

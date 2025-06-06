@@ -121,6 +121,11 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
                 request.path().contains("/course/Patient-management/get-payment-advanced-search") ||
 
+                request.path().contains("/course/financial-management/get-all-expense-transactions") ||
+
+                request.path().contains("/course/financial-management/get-all-expense-accounts") ||
+
+
 
 
 
@@ -132,6 +137,12 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
                 request.path().contains("/course/Patient-management/get-invoice-by-visit-id/") ||
                 request.path().contains("/course/Patient-management/get-consultations-visit-by-id/") ||
+                request.path().contains("/course/financial-management/create-new-expense-account/") ||
+                request.path().contains("/course/financial-management/create-new-expense-category/") ||
+
+                request.path().contains("/course/financial-management/create-new-expense-transaction/") ||
+
+
 
 
                 request.path().contains("/course/Patient-management/get-all-patient-groups") ||
