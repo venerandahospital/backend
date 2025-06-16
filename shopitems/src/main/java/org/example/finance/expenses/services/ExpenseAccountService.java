@@ -41,6 +41,7 @@ public class ExpenseAccountService {
         expenseAccount.category = expenseCategory;
         expenseAccount.accountName = request.accountName;
         expenseAccount.description = request.description;
+        expenseAccount.expenseCategoryName = expenseCategory.categoryName;
         expenseAccount.dateOfAccountCreation = LocalDate.now();
         expenseAccount.dateOfAccountUpdate = LocalDate.now();
         expenseAccount.timeOfAccountCreation = java.time.LocalTime.now();
@@ -54,7 +55,7 @@ public class ExpenseAccountService {
 
     @Transactional
     public List<ExpenseAccountDto> getAllExpenseAccount() {
-        return expenseAccountRepository.listAll(Sort.ascending("id"))
+        return expenseAccountRepository.listAll(Sort.descending("id"))
                 .stream()
                 .map(ExpenseAccountDto::new)
                 .toList();

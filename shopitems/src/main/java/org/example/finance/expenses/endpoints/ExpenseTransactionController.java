@@ -48,4 +48,15 @@ public class ExpenseTransactionController {
         List<ExpenseTransactionDto> expenseTransactionDto = expenseTransactionService.getAllExpenseTransactions();
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, expenseTransactionDto)).build();
     }
+
+    @DELETE
+    @Path("/delete-expense-transaction/{id}")
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Operation(summary = "delete expense transaction by id ", description = "delete expense Transaction by id.")
+    @APIResponse(description = "Successful", responseCode = "200")
+    public Response deleteExpenseTransactionById(@PathParam("id") Long id){
+        return expenseTransactionService.deleteExpenseTransactionById(id);
+
+    }
 }

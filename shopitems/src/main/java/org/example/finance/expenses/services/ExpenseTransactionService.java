@@ -13,6 +13,7 @@ import org.example.finance.expenses.domains.repositories.ExpenseTransactionRepos
 import org.example.finance.expenses.services.payloads.requests.ExpenseTransactionRequest;
 import org.example.finance.expenses.services.payloads.responses.ExpenseTransactionDto;
 import org.example.finance.invoice.services.InvoiceService;
+import org.example.procedure.procedure.domains.Procedure;
 import org.example.user.domains.User;
 import org.example.user.domains.repositories.UserRepository;
 import org.example.visit.services.paloads.responses.PatientVisitDTO;
@@ -76,10 +77,24 @@ public class ExpenseTransactionService {
 
     @Transactional
     public List<ExpenseTransactionDto> getAllExpenseTransactions() {
-        return expenseTransactionRepository.listAll(Sort.ascending("id"))
+        return expenseTransactionRepository.listAll(Sort.descending("id"))
                 .stream()
                 .map(ExpenseTransactionDto::new)
                 .toList();
+    }
+
+
+    @Transactional
+    public Response deleteExpenseTransactionById(Long id){
+        ExpenseTransaction expenseTransaction = expenseTransactionRepository.findById(id);
+        if (expenseTransaction == null) {
+            //return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Expense Transaction not found", null))
+                    .build();
+        }
+        expenseTransactionRepository.delete(expenseTransaction);
+        return Response.ok(new ResponseMessage("Expense Transaction Deleted successfully")).build();
     }
 
 }

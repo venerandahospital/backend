@@ -9,6 +9,7 @@ public class ExpenseAccountDto {
 
     public Long id;
     public String accountName;
+    public String expenseCategoryName;
     public String description;
     public LocalDate dateOfAccountCreation;
     public LocalDate dateOfAccountUpdate;
@@ -19,8 +20,8 @@ public class ExpenseAccountDto {
     public ExpenseAccountDto(ExpenseAccount expenseAccount) {
         this.dateOfAccountCreation = expenseAccount.dateOfAccountCreation;
         this.timeOfAccountCreation = expenseAccount.timeOfAccountCreation;
-
         this.id = expenseAccount.id;
+        this.expenseCategoryName = expenseAccount.expenseCategoryName;
         this.accountName = expenseAccount.accountName;
         this.description = expenseAccount.description;
         this.dateOfAccountUpdate = expenseAccount.dateOfAccountUpdate;

@@ -31,7 +31,7 @@ public class ExpenseAccountController {
     ExpenseAccountService expenseAccountService;
 
     @POST
-    @Path("create-new-expense-account/{id}")
+    @Path("create-new-expense-account")
     @Transactional
     @Operation(summary = "new expense account", description = "new expense account")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ExpenseAccountDto.class)))

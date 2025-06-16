@@ -20,6 +20,9 @@ public class ExpenseAccount extends PanacheEntity {
     @Column(nullable = false)
     public String accountName;
 
+    @Column(nullable = false)
+    public String expenseCategoryName;
+
     @Column(columnDefinition = "TEXT") // Assuming this may be a longer text
     public String description;
 
