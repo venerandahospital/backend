@@ -56,6 +56,7 @@ public class ShopItemService {
         shopItem.title = request.title;
         shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
+        shopItem.shelfNumber = request.shelfNumber;
         shopItem.subCategory = request.subCategory;
         shopItem.description = request.description;
         shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
@@ -83,6 +84,7 @@ public class ShopItemService {
         for (ShopItemRequest request : requests) {
             Item shopItem = new Item();
             shopItem.title = request.title;
+            shopItem.shelfNumber = request.shelfNumber;
             shopItem.number = userAuthService.generateRandomPassword(5);
             shopItem.category = request.category;
             shopItem.subCategory = request.subCategory;
@@ -111,6 +113,7 @@ public class ShopItemService {
         item.stockAtHand = stock.newQuantity ;
         item.expiryDate = stock.expiryDate;
         item.costPrice = stock.unitCostPrice;
+
 
         item.sellingPrice = stock.unitSellingPrice;
         item.brand = stock.brand;
@@ -378,6 +381,7 @@ public class ShopItemService {
 
                     shopItem.title = request.title;
                     shopItem.description = request.description;
+                    shopItem.shelfNumber = request.shelfNumber;
                     shopItem.category = request.category;
                     shopItem.subCategory = request.subCategory;
                     shopItem.image = request.image;

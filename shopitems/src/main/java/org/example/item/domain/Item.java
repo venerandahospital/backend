@@ -19,8 +19,29 @@ public class Item extends PanacheEntity {
     @Column
     public String subCategory;
 
+    @Column
+    public String subSubCategory;
+
+    @Column
+    public String formulation; // e.g. "Tablet", "Syrup", "Injection"
+
+    @Column
+    public String activeIngredient;
+
+    @Column
+    public String strength;
+
+    @Column
+    public String manufacturer;
+
+    @Column
+    public String batchNumber;
+
     @Column(nullable = false)
     public String title;
+
+    @Column
+    public String genericName;
 
     @Column(columnDefinition = "TEXT")
     public String description;
@@ -39,6 +60,9 @@ public class Item extends PanacheEntity {
 
     @Column
     public Integer reOrderLevel;
+
+    @Column
+    public Integer shelfNumber;
 
     @Column
     public String unitOfMeasure;

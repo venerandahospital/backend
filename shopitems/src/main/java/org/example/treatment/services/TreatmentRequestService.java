@@ -56,13 +56,16 @@ public class TreatmentRequestService {
 
         BigDecimal totalBalanceDue = invoiceService.calculateTotalBalanceDueForClosedVisits(patientVisit.patient.id);
 
-        if (totalBalanceDue.compareTo(BigDecimal.ZERO) > 0) {
-            // There is an unpaid balance — do not open a new visit
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Cannot access any service. Patient has a debt, tell the client to first pay the debt of:  " + totalBalanceDue))
-                    .build();
+        if (totalBalanceDue.compareTo(BigDecimal.ZERO) > 0 &&
+                (patientVisit.patient.patientGroup == null || !patientVisit.patient.patientGroup.groupName.equalsIgnoreCase("veneranda medical"))) {
 
+            // There is an unpaid balance and the patient is not part of the "family" group
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Cannot access any service. Patient has a debt of: "
+                            + totalBalanceDue + " and doesn't belong to veneranda medical group"+". Please clear the debt first. or Contact Admin"))
+                    .build();
         }
+
 
 
         // Check if stock is sufficient
@@ -97,12 +100,20 @@ public class TreatmentRequestService {
             // Otherwise, create a new TreatmentRequested record
             TreatmentRequested treatmentRequested = new TreatmentRequested();
             treatmentRequested.quantity = request.quantity;
+            treatmentRequested.shelfNumber = item.shelfNumber;
             treatmentRequested.provisionalQuantity = request.quantity;
             treatmentRequested.status = "pending";
             treatmentRequested.unitSellingPrice = item.sellingPrice;
             treatmentRequested.totalAmount = request.quantity.multiply(item.sellingPrice);
             treatmentRequested.provisionalTotalAmount = request.quantity.multiply(item.sellingPrice);
             treatmentRequested.visit = patientVisit;
+            treatmentRequested.amountPerFrequency = request.amountPerFrequency;
+            treatmentRequested.durationValue = request.durationValue;
+            treatmentRequested.durationUnit = request.durationUnit;
+            treatmentRequested.instructions = request.instructions;
+            treatmentRequested.route = request.route;
+            treatmentRequested.frequencyValue = request.frequencyValue;
+            treatmentRequested.frequencyUnit = request.frequencyUnit;
             treatmentRequested.itemName = item.title;
             treatmentRequested.itemId = item.id;
 
@@ -113,6 +124,70 @@ public class TreatmentRequestService {
             return Response.ok(new ResponseMessage("New treatment request created successfully", dto)).build();
         }
     }
+
+
+    public Response updateTreatmentRequested(Long treatmentId, TreatmentRequestedRequest request) {
+        // Fetch the existing treatment request
+        TreatmentRequested treatment = TreatmentRequested.findById(treatmentId);
+        if (treatment == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Treatment request not found", null))
+                    .build();
+        }
+
+        PatientVisit visit = treatment.visit;
+        if (visit == null || "closed".equals(visit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Cannot update treatment. Visit is closed.", null))
+                    .build();
+        }
+
+        // Fetch new item if provided
+        Item item = Item.findById(request.itemId);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("Item not found", null))
+                    .build();
+        }
+
+        // Check if quantity has changed and stock is sufficient
+        if (request.quantity != null && request.quantity.compareTo(treatment.quantity) > 0) {
+            BigDecimal additionalNeeded = request.quantity.subtract(treatment.quantity);
+            if (additionalNeeded.compareTo(item.stockAtHand) > 0) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Insufficient stock. Additional required: " + additionalNeeded + ", Available: " + item.stockAtHand,
+                                "INSUFFICIENT_STOCK"))
+                        .build();
+            }
+
+            // Reduce stock by additional quantity
+            itemService.updateItemStockAtHandAfterSelling(additionalNeeded, item);
+        }
+
+        // Update fields
+        treatment.quantity = request.quantity;
+        treatment.provisionalQuantity = request.quantity;
+        treatment.unitSellingPrice = item.sellingPrice;
+        assert request.quantity != null;
+        treatment.totalAmount = request.quantity.multiply(item.sellingPrice);
+        treatment.provisionalTotalAmount = treatment.totalAmount;
+        treatment.durationValue = request.durationValue;
+        treatment.amountPerFrequency = request.amountPerFrequency;
+        treatment.durationUnit = request.durationUnit;
+        treatment.frequencyValue = request.frequencyValue;
+        treatment.frequencyUnit = request.frequencyUnit;
+        treatment.route = request.route;
+        treatment.instructions = request.instructions;
+
+        treatment.itemName = item.title;
+        treatment.itemId = item.id;
+
+        treatmentRequestedRepository.persist(treatment);
+
+        TreatmentRequestedDTO dto = new TreatmentRequestedDTO(treatment);
+        return Response.ok(new ResponseMessage("Treatment request updated successfully", dto)).build();
+    }
+
 
 
 

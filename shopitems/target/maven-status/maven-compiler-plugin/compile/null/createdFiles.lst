@@ -63,6 +63,7 @@ org\example\finance\payments\cash\endpoints\PaymentController.class
 org\example\client\services\payloads\requests\PatientParametersRequest.class
 org\example\finance\payments\cryptoPayments\BitPay\domains\BinanceCoin.class
 org\example\finance\payments\cryptoPayments\OpenNode\domains\Bitcoin.class
+org\example\item\domain\Brand.class
 org\example\finance\payments\cryptoPayments\CoinGate\domains\Bitcoin.class
 org\example\finance\invoice\services\payloads\requests\InvoiceParametersRequest.class
 org\example\statics\UserTypes.class
@@ -96,6 +97,7 @@ org\example\auth\services\payloads\RoleRequest.class
 org\example\treatment\domains\TreatmentRequested.class
 org\example\configuration\handler\ActionMessages.class
 org\example\finance\expenses\services\payloads\requests\ExpenseTransactionRequest.class
+org\example\statics\DurationUnit.class
 org\example\course\services\payloads\responses\CourseResponse.class
 org\example\cart\services\payloads\requests\ShoppingCartRequest.class
 org\example\client\domains\PatientGroup.class

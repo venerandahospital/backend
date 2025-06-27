@@ -31,6 +31,9 @@ public class ShopItemUpdateRequest {
     public Integer reOrderLevel;
 
     @Schema(example = "50")
+    public Integer shelfNumber;
+
+    @Schema(example = "50")
     public BigDecimal stockAtHand;
 
     @Schema(example = "each")

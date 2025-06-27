@@ -11,12 +11,14 @@ public class TreatmentRequestedDTO {
     public BigDecimal totalAmount;
     public BigDecimal provisionalTotalAmount;
     public String itemName;
+    public Integer shelfNumber;
     public BigDecimal provisionalQuantity;
 
 
     public TreatmentRequestedDTO(TreatmentRequested treatmentRequested) {
         this.id = treatmentRequested.id;
         this.quantity = treatmentRequested.quantity;
+        this.shelfNumber = treatmentRequested.shelfNumber;
         this.provisionalQuantity = treatmentRequested.provisionalQuantity;
         this.unitSellingPrice = treatmentRequested.unitSellingPrice;
         this.provisionalTotalAmount = treatmentRequested.provisionalTotalAmount;

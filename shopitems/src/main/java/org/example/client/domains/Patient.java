@@ -24,8 +24,6 @@ public class Patient extends PanacheEntity {
     @JoinColumn(name = "group_id")
     public PatientGroup patientGroup;
 
-
-
     @Column
     public String patientAddress;
 

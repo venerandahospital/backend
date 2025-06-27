@@ -44,7 +44,7 @@ public class ItemUsedService {
         // Create new item-usage entry
         ItemUsed itemUsed = new ItemUsed();
         itemUsed.procedureName = procedure.procedureName;
-        itemUsed.itemName = item.title;
+        itemUsed.itemName = item.genericName;
         itemUsed.procedureId = procedure.id;
         itemUsed.itemId = item.id;
         itemUsed.quantityUsed = BigDecimal.valueOf(request.quantityUsed);
@@ -92,7 +92,7 @@ public class ItemUsedService {
             if (item.stockAtHand.compareTo(usage.quantityUsed) < 0) {
                 //throw new IllegalStateException("Not enough stock for item: " + item.title);
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new ResponseMessage("Not enough stock for item: " + item.title, null))
+                        .entity(new ResponseMessage("Not enough stock for item: " + item.genericName, null))
                         .build();
             }
 

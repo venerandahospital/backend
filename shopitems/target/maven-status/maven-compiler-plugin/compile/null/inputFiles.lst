@@ -112,6 +112,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\vitals\doma
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\admissions\domains\repositories\InPatientTreatmentRepository.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\payments\cryptoPayments\GoCrypto\domains\USDT.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\payments\cryptoPayments\BitPay\domains\Ethereum.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\statics\DurationUnit.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\consultations\domains\ConsultationRepository.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\treatment\services\payloads\requests\TreatmentRequestedRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cart\domains\ShoppingCart.java
@@ -237,6 +238,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\i
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\stock\services\payloads\responses\dtos\StockDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\payments\cash\services\payloads\responses\CanteenPaymentDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\user\services\RoleResponse.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\treatment\services\payloads\requests\TreatmentRequestedUpdateRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\user\domains\User.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\course\services\CourseService.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\vitals\services\payloads\requests\InitialVitalUpdateRequest.java
@@ -296,6 +298,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\client\serv
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\inventory\store\services\payloads\responses\CanteenStoreDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\payments\cash\services\payloads\requests\PaymentRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\item\services\payloads\requests\ShopItemRequest.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\item\domain\Brand.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\client\services\payloads\responses\PatientResponse.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\payments\cash\domains\repository\CanteenPaymentsRepository.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\payments\cash\services\payloads\responses\PaymentDTO.java

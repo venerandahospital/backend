@@ -10,6 +10,7 @@ public class ItemDTO {
     public String category;
     public String subCategory;
     public String title;
+    public Integer shelfNumber;
     public String description;
     public BigDecimal costPrice;
     public BigDecimal sellingPrice;
@@ -18,6 +19,7 @@ public class ItemDTO {
 
     public ItemDTO(Item item) {
         this.id = item.id;
+        this.shelfNumber = item.shelfNumber;
         this.stockAtHand = item.stockAtHand;
         this.number = item.number;
         this.category = item.category;

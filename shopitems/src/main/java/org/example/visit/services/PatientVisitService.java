@@ -200,14 +200,27 @@ public class PatientVisitService {
         return patientVisitRepository.findByIdOptional(id)
                 .map(patientVisit -> {
 
+                    // If the status to be updated is "open", and userRole is not "md", deny the operation
+                    if ("open".equalsIgnoreCase(request.visitStatus) &&
+                            (request.userRole == null || !request.userRole.equalsIgnoreCase("md"))) {
+
+                        throw new WebApplicationException(
+                                Response.status(Response.Status.BAD_REQUEST)
+                                        .entity(new ResponseMessage("You need admin approval to open a visit", null))
+                                        .build()
+                        );
+                    }
+
                     patientVisit.visitStatus = request.visitStatus;
                     patientVisit.visitLastUpdatedDate = LocalDate.now();
 
                     patientVisitRepository.persist(patientVisit);
 
                     return new PatientVisitDTO(patientVisit);
-                }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
+                })
+                .orElseThrow(() -> new WebApplicationException("Visit not found", 404));
     }
+
 
 
 

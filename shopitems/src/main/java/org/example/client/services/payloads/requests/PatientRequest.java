@@ -48,6 +48,9 @@ public class PatientRequest {
     @Schema(example = "Kampala")
     public String nextOfKinAddress;
 
+    @Schema(example = "admin")
+    public String userRole;
+
     @Schema(example = "52")
     public Long patientGroupId;
 

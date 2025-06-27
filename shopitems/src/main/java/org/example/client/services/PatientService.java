@@ -61,16 +61,26 @@ public class PatientService {
         }
 
 
-
         PatientGroup patientGroup = null;
         if (request.patientGroupId != null) {
             patientGroup = patientGroupRepository.findById(request.patientGroupId);
+
             if (patientGroup == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity(new ResponseMessage("Patient group not found for ID: " + request.patientGroupId, null))
                         .build();
             }
+
+            // Check if group is "veneranda medical" and role is not "md"
+            if ("veneranda medical".equalsIgnoreCase(patientGroup.groupName) &&
+                    (request.userRole == null || !request.userRole.equalsIgnoreCase("md"))) {
+
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("You need admin approval to add any patient in Veneranda Medical group", null))
+                        .build();
+            }
         }
+
 
         // Create new Patient entity and set basic information
         Patient buyer = new Patient();
