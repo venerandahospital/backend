@@ -94,7 +94,7 @@ public class ProcedureRequestedService {
         }
 
 
-        // Throw exception if either of them is not found
+        // Throw exception if either of them is not found now
 
 
         if ("closed".equals(patientVisit.visitStatus)) {
@@ -104,7 +104,7 @@ public class ProcedureRequestedService {
         }
 
 
-        // Throw exception if either of them is not found
+        // Throw exception if either of them is not found now
 
         if (procedure.category == null) {
             //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error

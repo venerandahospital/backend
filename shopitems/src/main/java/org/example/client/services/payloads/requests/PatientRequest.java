@@ -24,6 +24,9 @@ public class PatientRequest {
     @Schema(example = "Male")
     public String patientGender;
 
+    @Schema(example = "farmer")
+    public String occupation;
+
     @Schema(example = "28")
     public BigDecimal patientAge;
 

@@ -114,7 +114,7 @@ public class PatientController {
     @Transactional
     @Path("/get-all-patients")
     // @RolesAllowed({"ADMIN"})
-    @Operation(summary = "Get all patients", description = "Retrieve a list of all patients")
+    @Operation(summary = "Get all patients", description = "How to Retrieve a list of all patients")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class, type = SchemaType.ARRAY)))
     public Response getAllPatients() {
         List<PatientDTO> allPatientList = patientService.getAllPatients();

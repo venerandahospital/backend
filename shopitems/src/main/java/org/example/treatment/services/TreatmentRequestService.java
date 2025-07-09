@@ -50,7 +50,7 @@ public class TreatmentRequestService {
 
         if ("closed".equals(patientVisit.visitStatus)) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
                     .build();
         }
 
