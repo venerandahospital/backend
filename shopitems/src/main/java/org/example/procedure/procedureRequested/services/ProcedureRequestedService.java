@@ -83,12 +83,14 @@ public class ProcedureRequestedService {
 
         BigDecimal totalBalanceDue = invoiceService.calculateTotalBalanceDueForClosedVisits(patientVisit.patient.id);
 
-        if (totalBalanceDue.compareTo(BigDecimal.ZERO) > 0) {
-            // There is an unpaid balance — do not open a new visit
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Cannot access any service. client has a debt, tell the client to first pay the debt of: " + totalBalanceDue))
-                    .build();
+        if (totalBalanceDue.compareTo(BigDecimal.ZERO) > 0 &&
+                (patientVisit.patient.patientGroup == null || !patientVisit.patient.patientGroup.groupName.equalsIgnoreCase("veneranda medical"))) {
 
+            // There is an unpaid balance and the patient is not part of the "family" group
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Cannot access any service. Patient has a debt of: "
+                            + totalBalanceDue + " and doesn't belong to veneranda medical group"+". Please clear the debt first. or Contact Admin"))
+                    .build();
         }
 
 

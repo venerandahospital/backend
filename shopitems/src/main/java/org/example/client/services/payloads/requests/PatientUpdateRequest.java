@@ -49,4 +49,8 @@ public class PatientUpdateRequest {
     @Schema(example = "52")
     public Long patientGroupId;
 
+
+    @Schema(example = "admin")
+    public String userRole;
+
 }

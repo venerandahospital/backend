@@ -21,6 +21,7 @@ import org.example.client.services.payloads.responses.FullPatientResponse;
 import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.treatment.services.payloads.responses.TreatmentRequestedDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -156,9 +157,20 @@ public class PatientService {
                 PatientGroup patientGroup = null;
                 if (request.patientGroupId != null) {
                     patientGroup = patientGroupRepository.findById(request.patientGroupId);
+
                     if (patientGroup == null) {
-                        errors.add("Invalid group ID for buyer: " + request.patientFirstName + " " + request.patientSecondName);
-                        continue;
+                        return Response.status(Response.Status.NOT_FOUND)
+                                .entity(new ResponseMessage("Patient group not found for ID: " + request.patientGroupId, null))
+                                .build();
+                    }
+
+                    // Check if group is "veneranda medical" and role is not "md"
+                    if ("veneranda medical".equalsIgnoreCase(patientGroup.groupName) &&
+                            (request.userRole == null || !request.userRole.equalsIgnoreCase("md"))) {
+
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity(new ResponseMessage("You need admin approval to add any patient in Veneranda Medical group", null))
+                                .build();
                     }
                 }
 
@@ -271,44 +283,59 @@ public class PatientService {
                 .orElseThrow(() -> new WebApplicationException("Patient not found", 404));
     }
 
+
+
     @Transactional
-    public PatientDTO updatePatientById(Long id, PatientUpdateRequest request) {
-        // Find the buyer group (only if patientGroupId is provided)
-        PatientGroup patientGroup;
-        if (request.patientGroupId != null) {
-            patientGroup = patientGroupRepository.findById(request.patientGroupId);
-            if (patientGroup == null) {
-                throw new IllegalArgumentException("Patient group not found for ID: " + request.patientGroupId);
-            }
-        } else {
-            patientGroup = null;
-        }
+    public Response updatePatientById(Long id, PatientUpdateRequest request) {
 
-        return patientRepository.findByIdOptional(id)
-                .map(buyer -> {
-                    // Update buyer fields
-                    buyer.patientFirstName = request.patientFirstName;
-                    buyer.patientSecondName = request.patientSecondName;
-                    buyer.patientAddress = request.patientAddress;
-                    buyer.patientContact = request.patientContact;
-                    buyer.patientGender = request.patientGender;
-                    buyer.patientAge = request.patientAge;
-                    buyer.patientGroup = patientGroup; // Can be null
-                    buyer.nextOfKinName = request.nextOfKinName;
-                    buyer.nextOfKinContact = request.nextOfKinContact;
-                    buyer.relationship = request.relationship;
-                    buyer.nextOfKinAddress = request.nextOfKinAddress;
-                    buyer.patientDateOfBirth = request.patientDateOfBirth;
-                    buyer.patientLastUpdatedDate = LocalDate.now();
+                    PatientGroup patientGroup = null;
 
-                    // Persist the updated buyer
-                    patientRepository.persist(buyer);
+                    // Validate and assign patient group
+                    if (request.patientGroupId != null) {
+                        patientGroup = patientGroupRepository.findById(request.patientGroupId);
+                        if (patientGroup == null) {
+                            throw new WebApplicationException(
+                                    Response.status(Response.Status.NOT_FOUND)
+                                            .entity(new ResponseMessage("Patient group not found for ID: " + request.patientGroupId, null))
+                                            .build()
+                            );
+                        }
 
-                    // Return the updated buyer as a DTO
-                    return new PatientDTO(buyer);
-                })
-                .orElseThrow(() -> new WebApplicationException("Patient not found for ID: " + id, Integer.parseInt(NOT_FOUND)));
+                        if ("veneranda medical".equalsIgnoreCase(patientGroup.groupName) &&
+                                (request.userRole == null || !request.userRole.equalsIgnoreCase("md"))) {
+                            throw new WebApplicationException(
+                                    Response.status(Response.Status.BAD_REQUEST)
+                                            .entity(new ResponseMessage("You need admin approval to add any patient in Veneranda Medical group", null))
+                                            .build()
+                            );
+                        }
+                    }
+
+                    Patient patient = patientRepository.findById(id);
+                    // Update patient fields
+                    patient.patientFirstName = request.patientFirstName;
+                    patient.patientSecondName = request.patientSecondName;
+                    patient.patientAddress = request.patientAddress;
+                    patient.patientContact = request.patientContact;
+                    patient.patientGender = request.patientGender;
+                    patient.patientAge = request.patientAge;
+                    patient.patientGroup = patientGroup;
+                    patient.nextOfKinName = request.nextOfKinName;
+                    patient.nextOfKinContact = request.nextOfKinContact;
+                    patient.relationship = request.relationship;
+                    patient.nextOfKinAddress = request.nextOfKinAddress;
+                    patient.patientDateOfBirth = request.patientDateOfBirth;
+                    patient.patientLastUpdatedDate = LocalDate.now();
+
+                    patientRepository.persist(patient);
+
+
+        return Response.ok(new ResponseMessage("New treatment request created successfully", new PatientDTO(patient))).build();
+
+
     }
+
+
 
 
     @Transactional
