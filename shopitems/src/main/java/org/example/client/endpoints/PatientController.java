@@ -130,7 +130,7 @@ public class PatientController {
     @Operation(summary = "Update patient", description = "Update patient")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
     public Response updatePatient(@PathParam("id") Long id, PatientUpdateRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.PATIENT_UPDATED_SUCCESSFULLY.label,patientService.updatePatientById(id, request) )).build();
+        return patientService.updatePatientById(id, request);
     }
 
     /*@PUT
