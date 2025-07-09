@@ -23,6 +23,9 @@ public class Item extends PanacheEntity {
     public String subSubSubCategory;
 
     @Column
+    public String indication;
+
+    @Column
     public String subSubCategory;
 
     @Column
