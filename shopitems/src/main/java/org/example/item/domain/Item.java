@@ -26,6 +26,9 @@ public class Item extends PanacheEntity {
     public String indication;
 
     @Column
+    public String contraIndication;
+
+    @Column
     public String subSubCategory;
 
     @Column
