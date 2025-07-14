@@ -131,6 +131,14 @@ public class ShopItemService {
         itemRepository.persist(item);
     }
 
+    public void updateItemStockAtHandBeforeUpdating(BigDecimal quantity, Item item) {
+        // Update the stock at hand
+        item.stockAtHand = item.stockAtHand.add(quantity);
+
+        // Persist the updated item
+        itemRepository.persist(item);
+    }
+
 
 
 

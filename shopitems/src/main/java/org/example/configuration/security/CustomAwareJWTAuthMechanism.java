@@ -47,6 +47,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
     private static final List<String> allowedOrigins = List.of(
             "http://162.212.157.6",
+            "http://localhost:4300",
             "http://localhost:4200",
             "http://192.168.7.193",
             "http://127.0.0.1:4200",
@@ -114,6 +115,9 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/hospital-management/delete") ||
                 request.path().contains("/course/Patient-management/create-new-store") ||
                 request.path().contains("/course/Patient-management/get-all-stores") ||
+                request.path().contains("/course/Patient-management/update-treatmentRequest/") ||
+
+
 
                 request.path().contains("/course/Patient-management/get-all-procedures-requested-by-visit-id") ||
 

@@ -14,9 +14,7 @@ public class TreatmentRequestedRequest {
     public Long itemId;
 
     @Schema(example = "1")
-    public BigDecimal unitSellingPrice;
-
-
+    public Long visitId;
 
     @Schema(example = "1")
     public BigDecimal durationValue;
@@ -25,17 +23,16 @@ public class TreatmentRequestedRequest {
     public String durationUnit;
 
     @Schema(example = "2")
-    public BigDecimal amountPerFrequency;
+    public BigDecimal amountPerFrequencyValue;
+
+    @Schema(example = "mg")
+    public String amountPerFrequencyUnit;
 
     @Schema(example = "3")
     public BigDecimal frequencyValue;
 
     @Schema(example = "per day, week, or month")
     public String frequencyUnit;
-
-
-
-
 
 
     @Schema(example = "after meals")

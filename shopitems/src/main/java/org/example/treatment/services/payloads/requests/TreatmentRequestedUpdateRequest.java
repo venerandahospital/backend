@@ -15,9 +15,11 @@ public class TreatmentRequestedUpdateRequest {
     @Schema(example = "1")
     public BigDecimal durationValue;
 
-    @Schema(example = "1")
-    public BigDecimal amountPerFrequency;
+    @Schema(example = "2")
+    public BigDecimal amountPerFrequencyValue;
 
+    @Schema(example = "mg")
+    public String amountPerFrequencyUnit;
 
     @Schema(example = "3")
     public BigDecimal frequencyValue;

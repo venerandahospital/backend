@@ -22,8 +22,14 @@ public class TreatmentRequested extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal provisionalQuantity;
 
+
+
+
     @Column
-    public BigDecimal amountPerFrequency;
+    public BigDecimal amountPerFrequencyValue;
+
+    @Column
+    public String amountPerFrequencyUnit;
 
     @Column
     public BigDecimal frequencyValue;
@@ -36,6 +42,9 @@ public class TreatmentRequested extends PanacheEntity {
 
     @Column
     public String durationUnit;
+
+
+
 
     @Column
     public String instructions;
@@ -60,6 +69,19 @@ public class TreatmentRequested extends PanacheEntity {
     // Reference to the specific lab test being requested
     @Column(nullable = false)
     public String itemName;
+
+    @Column
+    public BigDecimal lastStockAtHand;
+
+    // Reference to the specific lab test being requested
+    @Column
+    public BigDecimal unitBuy;
+
+    @Column
+    public BigDecimal availableQuantity;
+
+    @Column
+    public BigDecimal lastUpDateQuantity;
 
     // Reference to the specific lab test being requested
     @Column(nullable = false)

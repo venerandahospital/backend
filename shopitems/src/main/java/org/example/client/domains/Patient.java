@@ -31,9 +31,6 @@ public class Patient extends PanacheEntity {
     public String patientContact;
 
     @Column
-    public String occupation;
-
-    @Column
     public String patientGender;
 
     @Column

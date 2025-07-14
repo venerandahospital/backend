@@ -49,13 +49,13 @@ public class TreatmentRequestedController {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, treatmentRequested)).build();
     }
 
-    @POST
+    @PUT
     @Path("update-treatmentRequest/{id}")
     @Transactional
-    @Operation(summary = "new-treatmentRequest", description = "new-treatmentRequest")
+    @Operation(summary = "update-treatmentRequest", description = "update-treatmentRequest")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = TreatmentRequestedDTO.class)))
-    public Response updateTreatmentRequested(@PathParam("id") Long visitId, TreatmentRequestedRequest request){
-        return treatmentRequestService.updateTreatmentRequested(visitId, request);
+    public Response updateTreatmentRequested(@PathParam("id") Long treatmentId, TreatmentRequestedRequest request){
+        return treatmentRequestService.updateTreatmentRequested(treatmentId, request);
     }
 
     @DELETE

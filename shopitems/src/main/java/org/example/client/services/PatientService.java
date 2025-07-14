@@ -92,7 +92,7 @@ public class PatientService {
         buyer.patientAge = request.patientAge;
         buyer.patientContact = request.patientContact;
         buyer.patientGender = request.patientGender;
-        buyer.occupation = request.occupation;
+
 
 //      buyer.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
 
@@ -190,7 +190,7 @@ public class PatientService {
 
                 // Set next of kin info
                 buyer.nextOfKinName = request.nextOfKinName;
-                buyer.occupation = request.occupation;
+
                 buyer.nextOfKinAddress = request.nextOfKinAddress;
                 buyer.nextOfKinContact = request.nextOfKinContact;
                 buyer.relationship = request.relationship;
@@ -321,7 +321,7 @@ public class PatientService {
                     patient.patientContact = request.patientContact;
                     patient.patientGender = request.patientGender;
                     patient.patientAge = request.patientAge;
-                    patient.occupation = request.occupation;
+
                     patient.patientGroup = patientGroup;
                     patient.nextOfKinName = request.nextOfKinName;
                     patient.nextOfKinContact = request.nextOfKinContact;
