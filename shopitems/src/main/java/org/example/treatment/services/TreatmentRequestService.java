@@ -117,7 +117,24 @@ public class TreatmentRequestService {
             treatmentRequested.amountPerFrequencyUnit = request.amountPerFrequencyUnit;
 
             treatmentRequested.durationValue = request.durationValue;
-            treatmentRequested.durationUnit = request.durationUnit;
+
+
+            if (request.durationUnit != null) {
+                switch (request.durationUnit) {
+                    case 1:
+                        treatmentRequested.durationUnit = "Day(s)";
+                        break;
+                    case 7:
+                        treatmentRequested.durationUnit = "Week(s)";
+                        break;
+                    case 3:
+                        treatmentRequested.durationUnit = "Month(s)";
+                        break;
+                    default:
+                        treatmentRequested.durationUnit = "Day(s)"; // fallback to original value
+                }
+            }
+
             treatmentRequested.instructions = request.instructions;
             treatmentRequested.route = request.route;
             treatmentRequested.frequencyValue = request.frequencyValue;
@@ -189,7 +206,28 @@ public class TreatmentRequestService {
         treatment.durationValue = request.durationValue;
         treatment.amountPerFrequencyValue = request.amountPerFrequencyValue;
         treatment.amountPerFrequencyUnit = request.amountPerFrequencyUnit;
-        treatment.durationUnit = request.durationUnit;
+
+
+
+        if (request.durationUnit != null) {
+            switch (request.durationUnit) {
+                case 1:
+                    treatment.durationUnit = "Day(s)";
+                    break;
+                case 7:
+                    treatment.durationUnit = "Week(s)";
+                    break;
+                case 3:
+                    treatment.durationUnit = "Month(s)";
+                    break;
+                default:
+                    treatment.durationUnit = "Day(s)"; // fallback to original value
+            }
+        }
+
+
+
+        //treatment.durationUnit = request.durationUnit;
         treatment.frequencyValue = request.frequencyValue;
         treatment.frequencyUnit = request.frequencyUnit;
         treatment.availableQuantity = item.stockAtHand;

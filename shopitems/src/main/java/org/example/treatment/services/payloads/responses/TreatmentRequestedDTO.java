@@ -51,11 +51,9 @@ public class TreatmentRequestedDTO {
         this.frequencyValue = treatmentRequested.frequencyValue;
         this.durationValue = treatmentRequested.durationValue;
         this.frequencyUnit = treatmentRequested.frequencyUnit;
+
+
         this.durationUnit = treatmentRequested.durationUnit;
-
-
-
-
 
 
         this.lastUpDateQuantity = treatmentRequested.lastUpDateQuantity;

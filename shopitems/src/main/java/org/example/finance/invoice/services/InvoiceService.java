@@ -746,7 +746,7 @@ public class InvoiceService {
                     .setBorder(Border.NO_BORDER));
 
             // Add table rows
-            for (Consultation consultation : invoice.visit.getConsultation()) {
+            /*for (Consultation consultation : invoice.visit.getConsultation()) {
                 Border bottomBorder = new SolidBorder(1f);
 
                 itemsTable.addCell(createCell("CONSULTATION FEE", 1, TextAlignment.LEFT)
@@ -768,7 +768,7 @@ public class InvoiceService {
                         .setFontSize(7)
                         .setBorder(Border.NO_BORDER)
                         .setBorderBottom(bottomBorder));
-            }
+            }*/
 
             // Add rows for ProcedureRequested
             boolean isEvenRow = false;

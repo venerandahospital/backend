@@ -20,7 +20,7 @@ public class TreatmentRequestedRequest {
     public BigDecimal durationValue;
 
     @Schema(example = "duration in days, weeks, or months")
-    public String durationUnit;
+    public Integer durationUnit;
 
     @Schema(example = "2")
     public BigDecimal amountPerFrequencyValue;
