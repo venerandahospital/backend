@@ -39,5 +39,11 @@ public class ShopItemUpdateRequest {
     @Schema(example = "each")
     public String unitOfMeasure;
 
+    @Schema(example = "mg")
+    public String lastUnitOfMeasure;
+
+    @Schema(example = "250")
+    public BigDecimal lastUnitValue;
+
 
 }

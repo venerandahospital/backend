@@ -43,7 +43,11 @@ public class TreatmentRequested extends PanacheEntity {
     @Column
     public String durationUnit;
 
+    @Column
+    public BigDecimal lastUnitValue;
 
+    @Column
+    public BigDecimal totalUnits;
 
 
     @Column

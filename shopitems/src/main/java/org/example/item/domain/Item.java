@@ -76,6 +76,14 @@ public class Item extends PanacheEntity {
     @Column
     public String unitOfMeasure;
 
+
+    @Column
+    public String lastUnitOfMeasure;
+
+    @Column
+    public BigDecimal lastUnitValue;
+
+
     @Column
     public String brand;
 

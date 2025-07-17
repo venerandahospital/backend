@@ -64,6 +64,12 @@ public class ShopItemService {
         shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
 
         shopItem.image = request.image;
+
+        shopItem.lastUnitOfMeasure = request.lastUnitOfMeasure;
+        shopItem.lastUnitValue = request.lastUnitValue;
+
+
+
         shopItem.unitOfMeasure = request.unitOfMeasure;
         shopItem.reOrderLevel = request.reOrderLevel;
 
@@ -88,6 +94,8 @@ public class ShopItemService {
             shopItem.number = userAuthService.generateRandomPassword(5);
             shopItem.category = request.category;
             shopItem.subCategory = request.subCategory;
+            shopItem.lastUnitOfMeasure = request.lastUnitOfMeasure;
+            shopItem.lastUnitValue = request.lastUnitValue;
             shopItem.description = request.description;
             shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
             shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
@@ -392,6 +400,8 @@ public class ShopItemService {
                     shopItem.shelfNumber = request.shelfNumber;
                     shopItem.category = request.category;
                     shopItem.subCategory = request.subCategory;
+                    shopItem.lastUnitOfMeasure = request.lastUnitOfMeasure;
+                    shopItem.lastUnitValue = request.lastUnitValue;
                     shopItem.image = request.image;
                     shopItem.reOrderLevel = request.reOrderLevel;
                     shopItem.unitOfMeasure = request.unitOfMeasure;

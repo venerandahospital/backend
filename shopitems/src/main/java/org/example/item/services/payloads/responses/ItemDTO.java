@@ -15,7 +15,11 @@ public class ItemDTO {
     public BigDecimal costPrice;
     public BigDecimal sellingPrice;
     public String unitOfMeasure;
+    public String lastUnitOfMeasure;
+    public BigDecimal lastUnitValue;
+
     public BigDecimal stockAtHand;
+
 
     public ItemDTO(Item item) {
         this.id = item.id;
@@ -29,5 +33,8 @@ public class ItemDTO {
         this.costPrice = item.costPrice;
         this.sellingPrice = item.sellingPrice;
         this.unitOfMeasure = item.unitOfMeasure;
+        this.lastUnitOfMeasure = item.lastUnitOfMeasure;
+        this.lastUnitValue = item.lastUnitValue;
+
     }
 }

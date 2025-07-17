@@ -31,8 +31,11 @@ public class TreatmentRequestedRequest {
     @Schema(example = "3")
     public BigDecimal frequencyValue;
 
+    @Schema(example = "3")
+    public BigDecimal totalUnits;
+
     @Schema(example = "per day, week, or month")
-    public String frequencyUnit;
+    public Integer frequencyUnit;
 
 
     @Schema(example = "after meals")

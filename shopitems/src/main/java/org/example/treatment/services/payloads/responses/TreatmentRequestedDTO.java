@@ -14,6 +14,9 @@ public class TreatmentRequestedDTO {
     public String itemName;
     public Integer shelfNumber;
     public BigDecimal provisionalQuantity;
+    public BigDecimal totalUnits;
+
+
 
     public BigDecimal availableQuantity;
 
@@ -31,9 +34,9 @@ public class TreatmentRequestedDTO {
 
     public BigDecimal durationValue;
 
+    public BigDecimal lastUnitValue;
+
     public String durationUnit;
-
-
 
     public Long itemId;
 
@@ -51,6 +54,11 @@ public class TreatmentRequestedDTO {
         this.frequencyValue = treatmentRequested.frequencyValue;
         this.durationValue = treatmentRequested.durationValue;
         this.frequencyUnit = treatmentRequested.frequencyUnit;
+
+        this.lastUnitValue = treatmentRequested.lastUnitValue;
+        this.totalUnits = treatmentRequested.totalUnits;
+
+
 
 
         this.durationUnit = treatmentRequested.durationUnit;

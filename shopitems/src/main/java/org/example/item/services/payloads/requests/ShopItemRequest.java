@@ -25,6 +25,12 @@ public class ShopItemRequest {
     @Schema(example = "Vial")
     public String unitOfMeasure;
 
+    @Schema(example = "mg")
+    public String lastUnitOfMeasure;
+
+    @Schema(example = "250")
+    public BigDecimal lastUnitValue;
+
     @Schema(example = "50")
     public Integer reOrderLevel;
 

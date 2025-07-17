@@ -108,6 +108,8 @@ public class TreatmentRequestService {
             treatmentRequested.provisionalQuantity = request.quantity;
             treatmentRequested.status = "pending";
             treatmentRequested.unitSellingPrice = item.sellingPrice;
+            treatmentRequested.lastUnitValue = item.lastUnitValue;
+            treatmentRequested.totalUnits = request.totalUnits;
             treatmentRequested.unitBuy = item.costPrice;
             treatmentRequested.availableQuantity = item.stockAtHand;
             treatmentRequested.totalAmount = request.quantity.multiply(item.sellingPrice);
@@ -138,7 +140,28 @@ public class TreatmentRequestService {
             treatmentRequested.instructions = request.instructions;
             treatmentRequested.route = request.route;
             treatmentRequested.frequencyValue = request.frequencyValue;
-            treatmentRequested.frequencyUnit = request.frequencyUnit;
+
+
+            //treatmentRequested.frequencyUnit = request.frequencyUnit;
+
+
+            if (request.frequencyUnit != null) {
+                switch (request.frequencyUnit) {
+                    case 1:
+                        treatmentRequested.frequencyUnit = "Day";
+                        break;
+                    case 7:
+                        treatmentRequested.frequencyUnit = "Week";
+                        break;
+                    case 3:
+                        treatmentRequested.frequencyUnit = "Month";
+                        break;
+                    default:
+                        treatmentRequested.frequencyUnit = "Day"; // fallback to original value
+                }
+            }
+
+
             treatmentRequested.itemName = item.title;
             treatmentRequested.itemId = item.id;
             treatmentRequested.lastUpDateQuantity = request.quantity;
@@ -204,6 +227,8 @@ public class TreatmentRequestService {
         treatment.totalAmount = request.quantity.multiply(item.sellingPrice);
         treatment.provisionalTotalAmount = treatment.totalAmount;
         treatment.durationValue = request.durationValue;
+        treatment.totalUnits = request.totalUnits;
+
         treatment.amountPerFrequencyValue = request.amountPerFrequencyValue;
         treatment.amountPerFrequencyUnit = request.amountPerFrequencyUnit;
 
@@ -229,7 +254,26 @@ public class TreatmentRequestService {
 
         //treatment.durationUnit = request.durationUnit;
         treatment.frequencyValue = request.frequencyValue;
-        treatment.frequencyUnit = request.frequencyUnit;
+
+
+        //treatment.frequencyUnit = request.frequencyUnit;
+
+        if (request.frequencyUnit != null) {
+            switch (request.frequencyUnit) {
+                case 1:
+                    treatment.frequencyUnit = "Day";
+                    break;
+                case 7:
+                    treatment.frequencyUnit = "Week";
+                    break;
+                case 3:
+                    treatment.frequencyUnit = "Month";
+                    break;
+                default:
+                    treatment.frequencyUnit = "Day"; // fallback to original value
+            }
+        }
+
         treatment.availableQuantity = item.stockAtHand;
         treatment.route = request.route;
         treatment.shelfNumber = item.shelfNumber;
