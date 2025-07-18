@@ -20,6 +20,7 @@ import org.example.visit.domains.PatientVisit;
 import org.example.visit.domains.repositories.PatientVisitRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @ApplicationScoped
@@ -41,6 +42,8 @@ public class TreatmentRequestService {
 
     public static final String NOT_FOUND = "Not found!";
     public Response createNewTreatmentRequested(Long id, TreatmentRequestedRequest request) {
+
+        BigDecimal roundedQuantity = request.quantity.setScale(0, RoundingMode.CEILING);
         // Fetch the PatientVisit and Item in one go
         PatientVisit patientVisit = patientVisitRepository.findById(id);
         Item item = itemRepository.findById(request.itemId);
@@ -73,10 +76,10 @@ public class TreatmentRequestService {
 
 
         // Check if stock is sufficient
-        if (request.quantity.compareTo(item.stockAtHand) > 0) {
+        if (roundedQuantity.compareTo(item.stockAtHand) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Stock at hand is insufficient. Available: " +
-                            item.stockAtHand + ", Requested: " + request.quantity,
+                            item.stockAtHand + ", Requested: " + roundedQuantity,
                             "INSUFFICIENT_STOCK"))
                     .build();
         }
@@ -103,17 +106,20 @@ public class TreatmentRequestService {
         } else {
             // Otherwise, create a new TreatmentRequested record
             TreatmentRequested treatmentRequested = new TreatmentRequested();
-            treatmentRequested.quantity = request.quantity;
+
+            //BigDecimal roundedQuantity = request.quantity.setScale(0, RoundingMode.HALF_UP);
+
+            treatmentRequested.quantity = roundedQuantity;
             treatmentRequested.shelfNumber = item.shelfNumber;
-            treatmentRequested.provisionalQuantity = request.quantity;
+            treatmentRequested.provisionalQuantity = roundedQuantity;
             treatmentRequested.status = "pending";
             treatmentRequested.unitSellingPrice = item.sellingPrice;
             treatmentRequested.lastUnitValue = item.lastUnitValue;
             treatmentRequested.totalUnits = request.totalUnits;
             treatmentRequested.unitBuy = item.costPrice;
             treatmentRequested.availableQuantity = item.stockAtHand;
-            treatmentRequested.totalAmount = request.quantity.multiply(item.sellingPrice);
-            treatmentRequested.provisionalTotalAmount = request.quantity.multiply(item.sellingPrice);
+            treatmentRequested.totalAmount = roundedQuantity.multiply(item.sellingPrice);
+            treatmentRequested.provisionalTotalAmount = roundedQuantity.multiply(item.sellingPrice);
             treatmentRequested.visit = patientVisit;
             treatmentRequested.amountPerFrequencyValue = request.amountPerFrequencyValue;
             treatmentRequested.amountPerFrequencyUnit = request.amountPerFrequencyUnit;
@@ -164,12 +170,12 @@ public class TreatmentRequestService {
 
             treatmentRequested.itemName = item.title;
             treatmentRequested.itemId = item.id;
-            treatmentRequested.lastUpDateQuantity = request.quantity;
+            treatmentRequested.lastUpDateQuantity = roundedQuantity;
 
-            treatmentRequested.lastStockAtHand = item.stockAtHand.subtract(request.quantity);
+            treatmentRequested.lastStockAtHand = item.stockAtHand.subtract(roundedQuantity);
 
             treatmentRequestedRepository.persist(treatmentRequested);
-            itemService.updateItemStockAtHandAfterSelling(request.quantity, item);
+            itemService.updateItemStockAtHandAfterSelling(roundedQuantity, item);
 
             dto = new TreatmentRequestedDTO(treatmentRequested);
             return Response.ok(new ResponseMessage("New treatment request created successfully", dto)).build();
@@ -179,6 +185,9 @@ public class TreatmentRequestService {
 
     @Transactional
     public Response updateTreatmentRequested(Long treatmentId, TreatmentRequestedRequest request) {
+
+        BigDecimal roundedQuantity = request.quantity.setScale(0, RoundingMode.CEILING);
+
         // 1. Fetch the existing treatment request
         TreatmentRequested treatment = treatmentRequestedRepository.findById(treatmentId);
         if (treatment == null) {
@@ -205,26 +214,30 @@ public class TreatmentRequestService {
 
         // 4. First, return the previous quantity to stock
         if (treatment.lastUpDateQuantity != null) {
-            itemService.updateItemStockAtHandBeforeUpdating(treatment.lastUpDateQuantity, item);
+            //itemService.updateItemStockAtHandBeforeUpdating(treatment.lastUpDateQuantity, item);
+            item.stockAtHand = item.stockAtHand.add(treatment.lastUpDateQuantity);
+            // Persist the updated item
+            itemRepository.persist(item);
         }
 
+
         // 5. Then, check if the new quantity can be fulfilled
-        if (request.quantity != null && request.quantity.compareTo(item.stockAtHand) > 0) {
+        if (roundedQuantity.compareTo(item.stockAtHand) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage(
-                            "Insufficient stock. Required: " + request.quantity + ", Available: " + item.stockAtHand,
+                            "Insufficient stock. Required: " + roundedQuantity + ", Available: " + item.stockAtHand,
                             "INSUFFICIENT_STOCK"))
                     .build();
         }
 
         // 6. Deduct the new quantity from stock
-        itemService.updateItemStockAtHandAfterSelling(request.quantity, item);
+        itemService.updateItemStockAtHandAfterSelling(roundedQuantity, item);
 
         // 7. Update the treatment request fields
-        treatment.quantity = request.quantity;
-        treatment.provisionalQuantity = request.quantity;
+        treatment.quantity = roundedQuantity;
+        treatment.provisionalQuantity = roundedQuantity;
         treatment.unitSellingPrice = item.sellingPrice;
-        treatment.totalAmount = request.quantity.multiply(item.sellingPrice);
+        treatment.totalAmount = roundedQuantity.multiply(item.sellingPrice);
         treatment.provisionalTotalAmount = treatment.totalAmount;
         treatment.durationValue = request.durationValue;
         treatment.totalUnits = request.totalUnits;
@@ -280,8 +293,8 @@ public class TreatmentRequestService {
         treatment.instructions = request.instructions;
         treatment.itemName = item.title;
         treatment.itemId = item.id;
-        treatment.lastStockAtHand = item.stockAtHand.subtract(request.quantity);
-        treatment.lastUpDateQuantity = request.quantity;
+        treatment.lastStockAtHand = item.stockAtHand.subtract(roundedQuantity);
+        treatment.lastUpDateQuantity = roundedQuantity;
 
         // 8. Persist the updated treatment request
         treatmentRequestedRepository.persist(treatment);
