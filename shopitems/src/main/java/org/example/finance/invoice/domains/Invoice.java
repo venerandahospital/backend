@@ -31,6 +31,9 @@ public class Invoice extends PanacheEntity {
     public String invoiceNo;
 
     @Column
+    public String invoiceStatus;
+
+    @Column
     public int invoicePlainNo;
 
     @Column

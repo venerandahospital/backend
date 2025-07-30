@@ -105,11 +105,7 @@ public class PaymentService {
                     .entity(new ResponseMessage("You are Receiving More than the Debt ", null))
                     .build();
         }
-
-
-
-            //throw new IllegalArgumentException("Invoice not found for visit ID: " + request.visitId);
-
+        //throw new IllegalArgumentException("Invoice not found for visit ID: " + request.visitId);
         // Create a new Payment entity with PENDING status
         Payments payment = new Payments();
         payment.visit = visit;
@@ -133,7 +129,6 @@ public class PaymentService {
 
         // Return the PaymentDTO
         //return new PaymentDTO(payment);
-
 
         return Response.ok(new ResponseMessage("New payment made successfully", new PaymentDTO(payment))).build();
 

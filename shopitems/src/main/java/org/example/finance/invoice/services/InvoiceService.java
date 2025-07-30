@@ -32,6 +32,7 @@ import org.example.client.services.PatientService;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.domains.Consultation;
+import org.example.finance.payments.cash.domains.Payments;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.treatment.domains.TreatmentRequested;
 import org.example.visit.domains.repositories.PatientVisitRepository;
@@ -114,6 +115,7 @@ public class InvoiceService {
         invoice.totalAmount = BigDecimal.valueOf(0.00);
         invoice.balanceDue = BigDecimal.valueOf(0.00);
         invoice.amountPaid = BigDecimal.valueOf(0.00);
+        invoice.invoiceStatus = "INVOICE";
 
         // Persist the invoice
         invoiceRepository.persist(invoice);
@@ -230,6 +232,7 @@ public class InvoiceService {
         // Update the invoice fields
         invoice.amountPaid = totalPayments;
         invoice.balanceDue = invoice.totalAmount.subtract(totalPayments);
+        invoice.invoiceStatus = "RECEIPT";
 
         // Persist the updated invoice
         invoiceRepository.persist(invoice);
@@ -624,6 +627,18 @@ public class InvoiceService {
                 throw new IllegalArgumentException("Invoice not found.");
             }
 
+            BigDecimal totalPayments = paymentService.getTotalPaymentOfVisit(visitId);
+
+            if (totalPayments != null && totalPayments.compareTo(BigDecimal.ZERO) > 0) {
+                invoice.invoiceStatus = "RECEIPT";
+                invoiceRepository.persist(invoice);
+            } else {
+                invoice.invoiceStatus = "INVOICE";
+                invoiceRepository.persist(invoice);
+
+            }
+
+
             // Create the PDF document
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter pdfWriter = new PdfWriter(baos);
@@ -634,7 +649,7 @@ public class InvoiceService {
             Table invoiceTitle = new Table(new float[]{1});
             invoiceTitle.setWidthPercent(100);
             invoiceTitle.addCell(new Cell()
-                    .add(new Paragraph("STATEMENT")
+                    .add(new Paragraph(invoice.invoiceStatus)
                             .setBold()
                             .setFontSize(11)
                             .setTextAlignment(TextAlignment.CENTER))
