@@ -83,6 +83,12 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/Patient-management/get-all-InitialTriageVitals") ||
                 request.path().contains("/course/Patient-management/create-new-Consultation") ||
                 request.path().contains("/course/Patient-management/create-new-labTest") ||
+                request.path().contains("/course/diagnostics-management/create-new-general-scan-report") ||
+                request.path().contains("/course/diagnostics-management/update-scan-report/") ||
+
+
+
+
                 request.path().contains("/course/items-used/add-to-item-used") ||
                 request.path().contains("/course/Patient-management/get-All-used-items") ||
                 request.path().contains("/course/Patient-management/get-used-items/") ||

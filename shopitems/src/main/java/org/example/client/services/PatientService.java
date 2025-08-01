@@ -84,38 +84,39 @@ public class PatientService {
 
 
         // Create new Patient entity and set basic information
-        Patient buyer = new Patient();
-        buyer.patientGroup = patientGroup;
-        buyer.patientFirstName = request.patientFirstName;
-        buyer.patientSecondName = request.patientSecondName;
-        buyer.patientAddress = request.patientAddress;
-        buyer.patientAge = request.patientAge;
-        buyer.patientContact = request.patientContact;
-        buyer.patientGender = request.patientGender;
+        Patient patient = new Patient();
+        patient.patientGroup = patientGroup;
+        patient.patientFirstName = request.patientFirstName;
+        patient.patientSecondName = request.patientSecondName;
+        patient.patientAddress = request.patientAddress;
+        patient.patientAge = request.patientAge;
+        patient.patientContact = request.patientContact;
+        patient.patientGender = request.patientGender;
+        patient.occupation = request.occupation;
 
 
 //      buyer.patientProfilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=caade802-c591-4dee-b590-a040c694553b";
 
-        buyer.patientDateOfBirth = request.patientDateOfBirth;
-        buyer.creationDate = LocalDate.now();
+        patient.patientDateOfBirth = request.patientDateOfBirth;
+        patient.creationDate = LocalDate.now();
 
         // Set Next of Kin information
-        buyer.nextOfKinName = request.nextOfKinName;
-        buyer.nextOfKinAddress = request.nextOfKinAddress;
-        buyer.nextOfKinContact = request.nextOfKinContact;
-        buyer.relationship = request.relationship;
+        patient.nextOfKinName = request.nextOfKinName;
+        patient.nextOfKinAddress = request.nextOfKinAddress;
+        patient.nextOfKinContact = request.nextOfKinContact;
+        patient.relationship = request.relationship;
 
 // Determine buyer number
        // DeletedPatient deletedPatientInQue = deletedPatientNosService.findFirstDeletedPatient();
 
-        buyer.patientNo = patientRepository.generateNextPatientNo();
+        patient.patientNo = patientRepository.generateNextPatientNo();
 
 
         // Generate buyer file number
-        buyer.patientFileNo = "VMD" + buyer.patientNo;
+        patient.patientFileNo = "VMD" + patient.patientNo;
 
         // Persist the new Patient entity
-        patientRepository.persist(buyer);
+        patientRepository.persist(patient);
 
         // Remove the deleted buyer number from the queue
         /*if (deletedPatientInQue.patientNo != 0) {
@@ -124,7 +125,7 @@ public class PatientService {
 
         // Return a success response with the created PatientDTO
         return Response.status(Response.Status.CREATED)
-                .entity(new ResponseMessage("Patient created successfully", new PatientDTO(buyer)))
+                .entity(new ResponseMessage("Patient created successfully", new PatientDTO(patient)))
                 .build();
     }
 
@@ -176,24 +177,25 @@ public class PatientService {
                 }
 
                 // Create and populate Patient
-                Patient buyer = new Patient();
-                buyer.patientGroup = patientGroup;
-                buyer.patientFirstName = request.patientFirstName;
-                buyer.patientSecondName = request.patientSecondName;
-                buyer.patientAddress = request.patientAddress;
-                buyer.patientAge = request.patientAge;
-                buyer.patientContact = request.patientContact;
-                buyer.patientGender = request.patientGender;
-                buyer.patientProfilePic = request.patientProfilePic;
-                buyer.patientDateOfBirth = request.patientDateOfBirth;
-                buyer.creationDate = LocalDate.now();
+                Patient patient = new Patient();
+                patient.patientGroup = patientGroup;
+                patient.patientFirstName = request.patientFirstName;
+                patient.patientSecondName = request.patientSecondName;
+                patient.patientAddress = request.patientAddress;
+                patient.patientAge = request.patientAge;
+                patient.patientContact = request.patientContact;
+                patient.patientGender = request.patientGender;
+                patient.occupation = request.occupation;
+                patient.patientProfilePic = request.patientProfilePic;
+                patient.patientDateOfBirth = request.patientDateOfBirth;
+                patient.creationDate = LocalDate.now();
 
                 // Set next of kin info
-                buyer.nextOfKinName = request.nextOfKinName;
+                patient.nextOfKinName = request.nextOfKinName;
 
-                buyer.nextOfKinAddress = request.nextOfKinAddress;
-                buyer.nextOfKinContact = request.nextOfKinContact;
-                buyer.relationship = request.relationship;
+                patient.nextOfKinAddress = request.nextOfKinAddress;
+                patient.nextOfKinContact = request.nextOfKinContact;
+                patient.relationship = request.relationship;
 
                 // Assign buyer number
                 // Determine buyer number
@@ -206,11 +208,11 @@ public class PatientService {
                     buyer.patientNo = patientRepository.generateNextPatientNo();
                 }*/
 
-                buyer.patientNo = patientRepository.generateNextPatientNo();
+                patient.patientNo = patientRepository.generateNextPatientNo();
 
-                buyer.patientFileNo = "VMD" + buyer.patientNo;
+                patient.patientFileNo = "VMD" + patient.patientNo;
 
-                patientRepository.persist(buyer);
+                patientRepository.persist(patient);
 
                 // Remove number from deleted queue
                 /*assert deletedPatientInQue != null;
@@ -218,7 +220,7 @@ public class PatientService {
                     deletedPatientNosService.deleteByDeletedPatient(deletedPatientInQue);
                 }*/
 
-                createdPatients.add(new PatientDTO(buyer));
+                createdPatients.add(new PatientDTO(patient));
 
             } catch (Exception ex) {
                 errors.add("Error creating buyer: " + request.patientFirstName + " " + request.patientSecondName);
@@ -321,6 +323,7 @@ public class PatientService {
                     patient.patientContact = request.patientContact;
                     patient.patientGender = request.patientGender;
                     patient.patientAge = request.patientAge;
+                    patient.occupation = request.occupation;
 
                     patient.patientGroup = patientGroup;
                     patient.nextOfKinName = request.nextOfKinName;
@@ -333,12 +336,10 @@ public class PatientService {
                     patientRepository.persist(patient);
 
 
-        return Response.ok(new ResponseMessage("New treatment request created successfully", new PatientDTO(patient))).build();
+        return Response.ok(new ResponseMessage("Patient Details Updated successfully", new PatientDTO(patient))).build();
 
 
     }
-
-
 
 
     @Transactional
@@ -399,6 +400,7 @@ public class PatientService {
             patientFileNo,
             patientFirstName,
             patientGender,
+            occupation,
             patientLastUpdatedDate,
             patientNo,
             patientProfilePic,
@@ -431,6 +433,7 @@ public class PatientService {
         response.nextOfKinContact = row.getString("nextOfKinContact");
         response.nextOfKinName = row.getString("nextOfKinName");
         response.patientAddress = row.getString("patientAddress");
+        response.occupation = row.getString("occupation");
         response.patientAge = row.getBigDecimal("patientAge");
         response.totalAmountDue = row.getBigDecimal("totalAmountDue");
         response.patientNo = row.getInteger("patientNo");

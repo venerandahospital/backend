@@ -46,6 +46,9 @@ public class PatientRequest {
     @Schema(example = "Brother")
     public String relationship;
 
+    @Schema(example = "peasant")
+    public String occupation;
+
     @Schema(example = "Kampala")
     public String nextOfKinAddress;
 

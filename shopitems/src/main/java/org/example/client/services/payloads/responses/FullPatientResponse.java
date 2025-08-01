@@ -19,6 +19,7 @@ public class FullPatientResponse {
     public String patientGender;
     public LocalDate patientLastUpdatedDate;
     public int patientNo;
+    public String occupation;
     public String patientProfilePic;
     public String patientSecondName;
     public String relationship;

@@ -47,6 +47,9 @@ public class Patient extends PanacheEntity {
     public String patientProfilePic;
 
     @Column
+    public String occupation;
+
+    @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate creationDate;
 

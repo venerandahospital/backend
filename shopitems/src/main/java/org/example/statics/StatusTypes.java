@@ -7,6 +7,7 @@ public enum StatusTypes {
     APPROVED("Approved".toUpperCase()),
     ALLOWED_CREDIT("Allowed on Credit".toUpperCase()),
     BILLED("Billed".toUpperCase()),
+    UPDATED_SUCCESSFULLY("Updated Successfully".toUpperCase()),
     CREATED("Created".toUpperCase()),
     VISIT_CREATED_SUCCESSFULLY("Visit Created successfully".toUpperCase()),
     REQUESTED("Requested Successfully".toUpperCase()),
