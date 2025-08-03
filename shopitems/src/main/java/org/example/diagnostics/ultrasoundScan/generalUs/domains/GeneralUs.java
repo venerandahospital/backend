@@ -22,7 +22,7 @@ public class GeneralUs extends PanacheEntity {
     @JoinColumn(name = "procedureRequested_id", nullable = false)
     public ProcedureRequested procedureRequested;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     public String indication;
 
     @Column
@@ -37,16 +37,16 @@ public class GeneralUs extends PanacheEntity {
     @Column
     public String doneBy;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     public String exam;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     public String findings;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     public String impression;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     public String recommendation;
 
     @Column

@@ -635,7 +635,6 @@ public class InvoiceService {
             } else {
                 invoice.invoiceStatus = "INVOICE";
                 invoiceRepository.persist(invoice);
-
             }
 
 

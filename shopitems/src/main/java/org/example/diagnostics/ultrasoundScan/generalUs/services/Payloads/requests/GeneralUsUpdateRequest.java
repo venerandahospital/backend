@@ -4,8 +4,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class GeneralUsUpdateRequest {
 
-    @Schema(example = "1")
-    public Long id;
 
     @Schema(example = "Lap and Abdominal Distention")
     public String indication;

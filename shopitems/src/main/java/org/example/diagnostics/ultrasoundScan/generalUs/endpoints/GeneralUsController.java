@@ -48,4 +48,14 @@ public class GeneralUsController {
     public Response updateScanReport(@PathParam("id") Long id, GeneralUsUpdateRequest request){
         return generalUsService.updateScanReportById(id, request);
     }
+
+    @GET
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Path("scan/generate-pdf/{id}")
+    @Operation(summary = "scan pdf", description = "scan pdf download")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
+    public Response generateAndReturnScanPdf(@PathParam("id") Long visitId) {
+        return generalUsService.generateAndReturnScanReportPdf(visitId);
+    }
 }
