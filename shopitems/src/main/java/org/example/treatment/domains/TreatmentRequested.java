@@ -23,8 +23,6 @@ public class TreatmentRequested extends PanacheEntity {
     public BigDecimal provisionalQuantity;
 
 
-
-
     @Column
     public BigDecimal amountPerFrequencyValue;
 

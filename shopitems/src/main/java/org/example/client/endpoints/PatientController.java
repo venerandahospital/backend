@@ -1,5 +1,6 @@
 package org.example.client.endpoints;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -36,10 +37,13 @@ public class PatientController {
 
     @POST
     @Path("create-new-patient")
+    //@RolesAllowed({"admin", "doctor","md"})
     @Transactional
-    @Operation(summary = "Create New Patient", description = "Creates a new patient and returns the patient's details.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class)))
-    public Response createPatient(PatientRequest request) {
+    @Operation(summary = "Create New Patient",
+            description = "Creates a new patient. Requires DOCTOR or ADMIN role.")
+    @APIResponse(responseCode = "200", description = "Patient created successfully")
+    @APIResponse(responseCode = "401", description = "Unauthorized")
+    @APIResponse(responseCode = "403", description = "Forbidden (missing required role)")public Response createPatient(PatientRequest request) {
         return patientService.createNewPatient(request);
     }
 

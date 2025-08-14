@@ -354,6 +354,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\f
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\widal\endpoints\WidalController.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\payments\cryptoPayments\BitPay\domains\Ethereum.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\randomGlucose\services\Payloads\requests\RbsRequest.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\invoice\services\FooterHelperInvoice.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\urineHcg\services\Payloads\requests\UrineHcgRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\statics\DurationUnit.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\consultations\domains\ConsultationRepository.java
@@ -420,6 +421,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\exp
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\treatment\services\payloads\responses\TreatmentRequestedDTO.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\auth\services\payloads\UserAuthResponse.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\sales\saleDay\domains\repository\SaleDayRepository.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics\ultrasoundScan\generalUs\services\FooterHelperUsReport.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\stock\domains\Stock.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\store\domains\Store.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\client\domains\repositories\BuyerGroupRepository.java

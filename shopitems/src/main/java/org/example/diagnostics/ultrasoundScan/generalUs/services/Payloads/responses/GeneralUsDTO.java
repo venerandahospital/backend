@@ -17,6 +17,7 @@ public class GeneralUsDTO {
     public String gender;
     public String doneBy;
     public String exam;
+    public String scanReportTitle;
     public String findings;
     public String impression;
     public String recommendation;
@@ -39,6 +40,7 @@ public class GeneralUsDTO {
         this.indication = generalUs.indication;
         this.patientName = generalUs.patientName;
         this.exam = generalUs.exam;
+        this.scanReportTitle = generalUs.scanReportTitle;
         this.findings = generalUs.findings;
         this.impression = generalUs.impression;
         this.recommendation = generalUs.recommendation;

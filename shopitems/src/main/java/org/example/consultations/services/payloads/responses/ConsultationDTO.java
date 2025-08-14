@@ -26,7 +26,9 @@ public class ConsultationDTO {
 
         this.clinicalExamination = consultation.clinicalExamination;
         this.differentialDiagnosis = consultation.differentialDiagnosis;
-        this.diagnosis = consultation.diagnosis;
+        //this.groupName = patient.patientGroup!= null ? patient.patientGroup.groupNameShortForm : null;
+
+        this.diagnosis = consultation.diagnosis!= null ? consultation.diagnosis : null;
         this.visitId = consultation.visit != null ? consultation.visit.id : null;
     }
 }

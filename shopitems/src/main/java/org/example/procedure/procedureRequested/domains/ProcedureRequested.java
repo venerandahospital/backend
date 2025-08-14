@@ -39,6 +39,12 @@ public class ProcedureRequested extends PanacheEntity {
     @Column
     public String report;
 
+    @Column
+    public String status;
+
+    @Column
+    public String patientName;
+
     // Name or ID of the person who ordered the lab test
     @Column
     public String orderedBy;
@@ -46,6 +52,9 @@ public class ProcedureRequested extends PanacheEntity {
     // Name or ID of the person who performed or is responsible for the lab test
     @Column
     public String doneBy;
+
+    @Column
+    public String exam;
 
     @Column
     @JsonbDateFormat(value = "yyyy/MM/dd")

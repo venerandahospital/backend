@@ -9,6 +9,9 @@ import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.client.domains.Patient;
 import org.example.client.domains.repositories.PatientRepository;
+import org.example.consultations.domains.Consultation;
+import org.example.consultations.domains.ConsultationRepository;
+import org.example.consultations.services.ConsultationService;
 import org.example.finance.invoice.services.InvoiceService;
 import org.example.visit.domains.PatientVisit;
 import org.example.visit.domains.repositories.PatientVisitRepository;
@@ -35,6 +38,12 @@ public class PatientVisitService {
 
     @Inject
     InvoiceService invoiceService;
+
+    @Inject
+    ConsultationService consultationService;
+
+    @Inject
+    ConsultationRepository consultationRepository;
 
     public static final String NOT_FOUND = "Not found!";
 
@@ -88,6 +97,9 @@ public class PatientVisitService {
 
         invoiceService.createInvoice(patientVisit.id);
 
+        consultationService.newConsultationOnTheGo(patientVisit.id);
+
+
         return new PatientVisitDTO(patientVisit);
 
     }
@@ -135,6 +147,7 @@ public class PatientVisitService {
                 .toList();
     }
 
+    @Transactional
     public List<PatientVisitDTO> getVisitByPatientId(Long patientId) {
         // Fetch the list of initial triage vitals by visitId
         List<PatientVisitDTO> result = patientVisitRepository
@@ -181,7 +194,7 @@ public class PatientVisitService {
 
 
 
-
+    @Transactional
     public PatientVisitDTO updatePatientVisitById(Long id, PatientVisitUpdateRequest request) {
         return patientVisitRepository.findByIdOptional(id)
                 .map(patientVisit -> {
@@ -195,7 +208,7 @@ public class PatientVisitService {
                     return new PatientVisitDTO(patientVisit);
                 }).orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
-
+    @Transactional
     public PatientVisitDTO updatePatientVisitStatusById(Long id, PatientVisitStatusUpdateRequest request) {
         return patientVisitRepository.findByIdOptional(id)
                 .map(patientVisit -> {

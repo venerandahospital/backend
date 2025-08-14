@@ -4,21 +4,20 @@ import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.DeviceRgb;
+import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 //0782166412 surgical clinic level // 0788636441
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.border.SolidBorder;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.*;
 
 
 import java.awt.*;
 
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.HorizontalAlignment;
 
 
@@ -26,13 +25,15 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.client.domains.PatientGroup;
 import org.example.client.services.PatientService;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.domains.Consultation;
-import org.example.finance.payments.cash.domains.Payments;
+import org.example.consultations.services.ConsultationService;
+import org.example.consultations.services.payloads.responses.ConsultationDTO;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.treatment.domains.TreatmentRequested;
 import org.example.visit.domains.repositories.PatientVisitRepository;
@@ -68,6 +69,9 @@ public class InvoiceService {
 
     @Inject
     PatientService patientService;
+
+    @Inject
+    ConsultationService consultationService;
 
     private static final String NOT_FOUND = "Not found!";
 
@@ -642,15 +646,30 @@ public class InvoiceService {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter pdfWriter = new PdfWriter(baos);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+            pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, new FooterHelperInvoice());
+
             Document document = new Document(pdfDocument);
+            document.setMargins(36, 36, 90, 36);
+
+
 
             // Add invoice title
             Table invoiceTitle = new Table(new float[]{1});
             invoiceTitle.setWidthPercent(100);
             invoiceTitle.addCell(new Cell()
-                    .add(new Paragraph(invoice.invoiceStatus)
-                            .setBold()
-                            .setFontSize(11)
+                    .add(new Div()
+                            .setBorderBottom(new SolidBorder(1)) // Underline (1px solid line)
+                            .setPaddingBottom(2) // Space between text and underline
+                            .add(new Paragraph(invoice.invoiceStatus)
+                                    .setBold()
+                                    .setFontSize(11)
+                                    .setTextAlignment(TextAlignment.CENTER)
+                            )
+                    )
+                    .add(new Paragraph("Department of Finance - Veneranda Medical (A subsidiary of Veneranda Hospital)")
+                            .setFontSize(7)
+                            //.setItalic()
+                            .setMarginTop(3)
                             .setTextAlignment(TextAlignment.CENTER))
                     .setBorder(Border.NO_BORDER)
                     .setPaddingBottom(15)
@@ -668,7 +687,7 @@ public class InvoiceService {
                     .setHorizontalAlignment(HorizontalAlignment.LEFT)
                     .setVerticalAlignment(VerticalAlignment.TOP)
                     .setPaddingTop(-7)
-                    .setPaddingLeft(-27)
+                    .setPaddingLeft(-22)
             );
 
             // Add invoice details
@@ -682,9 +701,16 @@ public class InvoiceService {
 
             headerTable.addCell(new Cell()
                     .add(new Paragraph("VENERANDA MEDICAL").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph("BUGOGO VILLAGE, KYEGEGWA").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("BUGOGO TOWN COUNCIL, KYEGEGWA DISTRICT").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
                     .add(new Paragraph(invoice.visit.patient.patientFirstName.toUpperCase() + " " + invoice.visit.patient.patientSecondName.toUpperCase())
                             .setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph()
+                                    .add(Optional.ofNullable(invoice.visit.patient.patientAddress)
+                                            .map(String::toUpperCase)
+                                            .orElse(""))
+                                    .setFontSize(7)
+                                    .setTextAlignment(TextAlignment.LEFT)
+                            )
                     .add(new Paragraph()
                              .add(Optional.ofNullable(invoice.visit.patient.getPatientGroup())
                                      .map(PatientGroup::getGroupName)
@@ -693,13 +719,7 @@ public class InvoiceService {
                              .setFontSize(7)
                              .setTextAlignment(TextAlignment.LEFT))
 
-                    .add(new Paragraph()
-                             .add(Optional.ofNullable(invoice.visit.patient.patientAddress)
-                                     .map(String::toUpperCase)
-                                     .orElse(""))
-                             .setFontSize(7)
-                             .setTextAlignment(TextAlignment.LEFT)
-                            )
+
 
 
 
@@ -720,6 +740,7 @@ public class InvoiceService {
                     .add(new Paragraph(String.valueOf(invoice.dateOfInvoice)).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
                     .add(new Paragraph(String.valueOf(invoice.dateOfInvoice)).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
                     .add(new Paragraph(String.valueOf(invoice.balanceDue)).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
+
                     .setBorder(Border.NO_BORDER)
             );
 
@@ -859,9 +880,13 @@ public class InvoiceService {
             Table totalsTable = new Table(new float[]{4, 2, 2});
             totalsTable.setWidthPercent(100);
 
+            ConsultationDTO consultationDTO = consultationService.getFirstConsultationByVisitId(visitId);
+
+
+
 
             Cell notesCell1 = new Cell(6, 1)
-                    .add(("NOTES: " +"\n"+"PATIENT NAME: " +invoice.visit.patient.patientFirstName.toUpperCase()+" "+invoice.visit.patient.patientSecondName.toUpperCase() ))
+                    .add(("\n IMPRESSION / DIAGNOSIS: " + consultationDTO.diagnosis.toUpperCase()))
                     .setTextAlignment(TextAlignment.LEFT)
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
@@ -969,14 +994,6 @@ public class InvoiceService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
-
-
-
-
-
-
 
 
 

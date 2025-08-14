@@ -23,6 +23,7 @@ public class PatientDTO {
     public String nextOfKinContact;
     public String relationship;
     public String occupation;
+    public String groupName;
 
     public Long patientGroupId;
     public BigDecimal totalAmountDue;
@@ -39,6 +40,7 @@ public class PatientDTO {
         this.patientGender = patient.patientGender;
         this.patientAge = patient.patientAge;
         this.occupation = patient.occupation;
+        this.groupName = patient.patientGroup!= null ? patient.patientGroup.groupNameShortForm : null;
 
 
         this.patientDateOfBirth = patient.patientDateOfBirth;

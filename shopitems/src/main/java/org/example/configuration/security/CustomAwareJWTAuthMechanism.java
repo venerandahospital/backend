@@ -47,7 +47,17 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
     private static final List<String> allowedOrigins = List.of(
             "http://162.212.157.6",
+            "http://192.168.1.114",
+            "http://192.168.1.100",
+            "http://192.168.1.101",
+            "http://192.168.1.102",
+            "http://192.168.1.114:4200",
+            "http://192.168.1.178",
+            "http://192.168.1.157",
+            "http://192.168.1.*",  // Wildcard for entire subnet
             "http://localhost:4300",
+            "http://localhost:4300/ **",
+            "http://localhost:4400",
             "http://localhost:4200",
             "http://192.168.7.193",
             "http://127.0.0.1:4200",
@@ -74,6 +84,13 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/course/update-course") ||
                 request.path().contains("/course/shop-cart/add-to-cart") ||
                 request.path().contains("/course/diagnostics-management/scan/generate-pdf/") ||
+                request.path().contains("/course/Patient-management/get-all-consultations") ||
+
+                request.path().contains("/course/Patient-management/get-all-ultrasound-scan-procedures") ||
+                request.path().contains("/course/diagnostics-management/get-scan-report-by-request-id/") ||
+
+
+
 
                 request.path().contains("/course/shop-item/add-new-Items") ||
                 request.path().contains("/course/shop-cart/get-cart-items/") ||
@@ -87,9 +104,6 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/Patient-management/create-new-labTest") ||
                 request.path().contains("/course/diagnostics-management/create-new-general-scan-report") ||
                 request.path().contains("/course/diagnostics-management/update-scan-report/") ||
-
-
-
 
                 request.path().contains("/course/items-used/add-to-item-used") ||
                 request.path().contains("/course/Patient-management/get-All-used-items") ||
@@ -177,7 +191,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
 
                 request.path().contains("/course/Patient-management/update-service") ||
-                request.path().contains("/course/Patient-management/create-new-patient") ||
+                //request.path().contains("/course/Patient-management/create-new-patient") ||
                 request.path().contains("/course/Patient-management/get-patient-group/") ||
                 request.path().contains("/course/Patient-management/get-patient-group-by-id/") ||
                 request.path().contains("/course/Patient-management/update-invoice") ||

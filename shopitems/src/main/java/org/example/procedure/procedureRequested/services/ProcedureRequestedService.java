@@ -7,6 +7,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.diagnostics.ultrasoundScan.generalUs.domains.GeneralUs;
+import org.example.diagnostics.ultrasoundScan.generalUs.services.GeneralUsService;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.services.InvoiceService;
 import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
@@ -22,6 +24,7 @@ import org.example.visit.domains.PatientVisit;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -34,6 +37,9 @@ public class ProcedureRequestedService {
 
     @Inject
     ItemUsedService itemUsedService;
+
+    @Inject
+    GeneralUsService generalUsService;
 
     public static final String NOT_FOUND = "Not found!";
     public static final String VISIT_CLOSED = "Not found!";
@@ -69,14 +75,6 @@ public class ProcedureRequestedService {
                         .build();
             }
         }
-
-
-
-
-
-
-
-
 
 
 
@@ -124,22 +122,23 @@ public class ProcedureRequestedService {
 
         if (existingProcedureRequested != null) {
 
-            // If it exists, increment the quantity and update the total amount
+            /*
             existingProcedureRequested.quantity += 1;
             existingProcedureRequested.totalAmount = BigDecimal.valueOf(existingProcedureRequested.quantity)
                     .multiply(request.unitSellingPrice);
 
             proceduresRequestedRepository.persist(existingProcedureRequested); // Persist the updated entity
 
-            itemUsedService.performProcedure(request.procedureId);
+            itemUsedService.performProcedure(request.procedureId);*/
 
 
             //return new ProcedureRequestedDTO(existingProcedureRequested);
-            return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(existingProcedureRequested))).build();
+            return Response.ok(new ResponseMessage("procedure already requested", new ProcedureRequestedDTO(existingProcedureRequested))).build();
 
         } else {
             // Otherwise, create a new ProcedureRequested record
             ProcedureRequested procedureRequested = new ProcedureRequested();
+            procedureRequested.patientName = patientVisit.patient.patientFirstName+" "+patientVisit.patient.patientSecondName;
             procedureRequested.quantity = request.quantity;
             procedureRequested.report = request.report;
             procedureRequested.procedureId = request.procedureId;
@@ -149,6 +148,8 @@ public class ProcedureRequestedService {
             procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(request.unitSellingPrice);
             procedureRequested.visit = patientVisit;
             procedureRequested.procedureRequestedType = procedure.procedureType;
+            procedureRequested.exam = procedure.procedureType;
+            procedureRequested.status = "pending";
 
             procedureRequested.category = procedure.category;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
@@ -157,6 +158,12 @@ public class ProcedureRequestedService {
             proceduresRequestedRepository.persist(procedureRequested);
 
             itemUsedService.performProcedure(request.procedureId);
+
+            if(Objects.equals(procedureRequested.category, "imaging")){
+                generalUsService.createGeneralUsReport(procedureRequested);
+
+            }
+
 
             //return new ProcedureRequestedDTO(procedureRequested);
             return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(procedureRequested))).build();
@@ -217,6 +224,30 @@ public class ProcedureRequestedService {
                 .map(ProcedureRequestedDTO::new)
                 .toList();
     }
+
+
+
+
+
+
+    public List<ProcedureRequestedDTO> getAllUltrasoundScanProcedures() {
+        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
+                "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
+                "imaging"
+
+        ).list();
+
+        // Convert the results to a list of ProcedureRequestedDTO
+        return UltrasoundScan.stream()
+                .map(ProcedureRequestedDTO::new)
+                .toList();
+    }
+
+
+
+
+
 
 
     public List<ProcedureRequestedDTO> getUltrasoundScanProceduresByVisit(Long visitId) {
@@ -284,6 +315,22 @@ public class ProcedureRequestedService {
         return totalAmountSum;
     }
 
+  /*  public BigDecimal getAllScanProcedures() {
+        List<ProcedureRequested> scanProcedures = ProcedureRequested.find(
+                "category = ?1 ORDER BY id DESC",
+                "imaging"
+
+        ).list();
+
+        BigDecimal totalAmountSum;
+        totalAmountSum = scanProcedures.stream()
+                .map(procedureRequested -> procedureRequested.totalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        return totalAmountSum;
+    }*/
+
 
 
     public List<BigDecimal> getTotalCostOfProceduresAndSumByVisit(Long visitId) {
@@ -322,6 +369,12 @@ public class ProcedureRequestedService {
             return Response.status(Response.Status.NOT_FOUND)
                     .build();
         }
+
+        if(Objects.equals(procedureRequested.category, "imaging")){
+            GeneralUs.delete("procedureRequested.id", id);
+
+        }
+
 
         Invoice invoice = Invoice.find("visit.id", procedureRequested.visit.id).firstResult();
 

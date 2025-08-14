@@ -1,9 +1,12 @@
 package org.example.consultations.services;
 
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.domains.Consultation;
 import org.example.consultations.domains.ConsultationRepository;
@@ -86,10 +89,6 @@ public class ConsultationService {
             existingConsultation.followUpInstructions = request.followUpInstructions;
             existingConsultation.notes = request.notes;
 
-
-
-
-
             existingConsultation.medicationHistory = request.medicationHistory;
 
             existingConsultation.clinicalExamination = request.clinicalExamination;
@@ -117,23 +116,10 @@ public class ConsultationService {
                             .build();
                 }else{
 
-                    // Create and persist ProcedureRequested entity (not the DTO)
-                    procedureRequested.procedureId = procedure.id;
-                    procedureRequested.doneBy = existingConsultation.doneBy;
-                    procedureRequested.orderedBy = existingConsultation.doneBy;;
-                    procedureRequested.report = existingConsultation.report;
-                    procedureRequested.quantity = 1;
-                    procedureRequested.unitSellingPrice = BigDecimal.valueOf(10000.00);
-                    procedureRequested.visit = patientVisit;
-                    procedureRequested.totalAmount = BigDecimal.valueOf(10000.00);
-                    procedureRequested.procedureRequestedType = procedure.procedureType;
-                    procedureRequested.category = procedure.category;
-                    procedureRequested.dateOfProcedure = java.time.LocalDate.now();
-                    procedureRequested.timeOfProcedure = java.time.LocalTime.now();
+
 
                     itemUsedService.performProcedure(procedure.id);
 
-                    procedureRequestedRepository.persist(procedureRequested);
 
                     return Response.status(Response.Status.CONFLICT)
                             .entity(new ResponseMessage("Clinical notes already saved and Consultation fee billed successfully for this visit", new ConsultationDTO(consultation)))
@@ -184,23 +170,10 @@ public class ConsultationService {
                             .build();
                 }else{
 
-                    // Create and persist ProcedureRequested entity (not the DTO)
-                    procedureRequested.procedureId = procedure.id;
-                    procedureRequested.doneBy = "Doctor";
-                    procedureRequested.orderedBy = "Doctor";
-                    procedureRequested.report = "Done Successfully";
-                    procedureRequested.quantity = 1;
-                    procedureRequested.unitSellingPrice = BigDecimal.valueOf(10000.00);
-                    procedureRequested.visit = patientVisit;
-                    procedureRequested.totalAmount = BigDecimal.valueOf(10000.00);
-                    procedureRequested.procedureRequestedType = procedure.procedureType;
-                    procedureRequested.category = procedure.category;
-                    procedureRequested.dateOfProcedure = java.time.LocalDate.now();
-                    procedureRequested.timeOfProcedure = java.time.LocalTime.now();
+
 
                     itemUsedService.performProcedure(procedure.id);
 
-                    procedureRequestedRepository.persist(procedureRequested);
 
 
                     return Response.status(Response.Status.CREATED)
@@ -215,17 +188,89 @@ public class ConsultationService {
                 .build();
     }
 
+    @Transactional
+    public ConsultationDTO newConsultationOnTheGo(Long visitId){
+
+        PatientVisit patientVisit = PatientVisit.findById(visitId);
+
+        Consultation consultation = new Consultation();
+
+
+        consultation.visit = patientVisit;
+        consultation.chiefComplaint = "please input presenting complaint";
+        consultation.doneBy = "system";
+        consultation.historyOfPresentingComplaint = "historyOfPresentingComplaint";
+        consultation.medicationHistory = "medicationHistory";
+        consultation.allergies = "allergies";
+        consultation.familyHistory = "familyHistory";
+        consultation.socialHistory = "socialHistory";
+        consultation.systemicExamination = "systemicExamination";
+        consultation.clinicalImpression = "clinicalImpression";
+        consultation.followUpInstructions = "followUpInstructions";
+        consultation.notes = "notes";
+        consultation.report = "report";
+        consultation.clinicalExamination = "clinicalExamination";
+        consultation.differentialDiagnosis = "differentialDiagnosis";
+        consultation.diagnosis = "please type diagnosis";
+        consultation.creationDate = LocalDate.now();
+        consultation.medicalHistory = "medicalHistory";
+
+
+        consultationRepository.persist(consultation);
+
+        return new ConsultationDTO(consultation);
+
+    }
 
 
 
 
+    @Transactional
     public ConsultationDTO getFirstConsultationByVisitId(Long visitId) {
+        Consultation consultationNew = Consultation.find(
+                "visit.id = ?1 ORDER BY id DESC", visitId
+        ).firstResult();
+
+
+        if (consultationNew == null) {
+
+            return newConsultationOnTheGo(visitId);
+
+        }else {
+            return new ConsultationDTO(consultationNew);
+        }
+
+        //return consultation != null ? new ConsultationDTO(consultation) : null;
+
+
+    }
+    @Transactional
+    public ConsultationDTO getFirstConsultationByVisitIdReturnConsultation(Long visitId) {
         Consultation consultation = Consultation.find(
                 "visit.id = ?1 ORDER BY id DESC", visitId
         ).firstResult();
 
-        return consultation != null ? new ConsultationDTO(consultation) : null;
+
+
+        return  new ConsultationDTO(consultation);
     }
+
+    public List<ConsultationDTO> getAllConsultations() {
+        return consultationRepository.listAll(Sort.descending("id"))
+                .stream()
+                .map(ConsultationDTO::new)
+                .toList();
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 }

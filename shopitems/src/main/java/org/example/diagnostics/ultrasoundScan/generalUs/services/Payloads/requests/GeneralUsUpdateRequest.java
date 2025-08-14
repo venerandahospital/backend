@@ -14,6 +14,9 @@ public class GeneralUsUpdateRequest {
     @Schema(example = "Abdominal Scan")
     public String exam;
 
+    @Schema(example = "Abdominal Scan")
+    public String scanReportTitle;
+
     @Schema(example = "The urinary bladder is well distended with thick wall thickness and internal echoes noted")
     public String findings;
 

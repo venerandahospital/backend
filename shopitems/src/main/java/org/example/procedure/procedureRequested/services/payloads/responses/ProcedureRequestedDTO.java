@@ -15,6 +15,9 @@ public class ProcedureRequestedDTO {
     public String orderedBy;
     public String doneBy;
     public Long visitId;
+    public String exam;
+    public String patientName;
+    public String status;
     public LocalDate dateOfProcedure;
     public LocalTime timeOfProcedure;
     public String procedureRequestedType;
@@ -32,11 +35,15 @@ public class ProcedureRequestedDTO {
         this.orderedBy = procedureRequested.orderedBy;
         this.report = procedureRequested.report;
         this.doneBy = procedureRequested.doneBy;
+        this.exam = procedureRequested.exam;
+        this.status = procedureRequested.status;
+        this.patientName = procedureRequested.visit.patient.patientFirstName+" "+procedureRequested.visit.patient.patientSecondName;
+
         this.procedureRequestedType = procedureRequested.procedureRequestedType;
         this.category = procedureRequested.category;
 
         // Properly reference the instance variable for visit
-        this.visitId = procedureRequested.visit != null ? procedureRequested.visit.id : null;
+        this.visitId = procedureRequested.visit.id;
 
         // Map the LabTest entity to LabTestDTO
     }

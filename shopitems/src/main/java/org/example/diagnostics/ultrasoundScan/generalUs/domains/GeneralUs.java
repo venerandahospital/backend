@@ -29,6 +29,9 @@ public class GeneralUs extends PanacheEntity {
     public String patientName;
 
     @Column
+    public String scanReportTitle;
+
+    @Column
     public BigDecimal patientAge;
 
     @Column
