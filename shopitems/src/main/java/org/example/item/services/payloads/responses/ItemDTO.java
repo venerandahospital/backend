@@ -17,12 +17,13 @@ public class ItemDTO {
     public String unitOfMeasure;
     public String lastUnitOfMeasure;
     public BigDecimal lastUnitValue;
-
+    public Integer reOrderLevel;
     public BigDecimal stockAtHand;
 
 
     public ItemDTO(Item item) {
         this.id = item.id;
+        this.reOrderLevel = item.reOrderLevel;
         this.shelfNumber = item.shelfNumber;
         this.stockAtHand = item.stockAtHand;
         this.number = item.number;

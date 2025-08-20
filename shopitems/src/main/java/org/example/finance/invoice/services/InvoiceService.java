@@ -143,7 +143,6 @@ public class InvoiceService {
 
 
 
-
     @Transactional
     public Response updateInvoice(Long invoiceId, InvoiceUpdateRequest request) {
         // Find the existing invoice
@@ -173,9 +172,9 @@ public class InvoiceService {
                     .build();
         }
 
-        if (request.discount != null && request.discount.compareTo(invoice.balanceDue) > 0) {
+        if (request.discount != null && request.discount.compareTo(invoice.subTotal) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ResponseMessage("Discount cannot be greater than the balance due", null))
+                    .entity(new ResponseMessage("Discount cannot be greater than the subtotal", null))
                     .build();
         }
 

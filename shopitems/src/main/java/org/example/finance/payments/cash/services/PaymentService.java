@@ -195,6 +195,13 @@ public class PaymentService {
     @Transactional
     public Response deletePayment(Long id) {
         try {
+            Payments payment = Payments.findById(id);
+
+            if ("closed".equals(payment.visit.visitStatus)) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                        .build();
+            }
             // Execute the custom SQL query to delete the payment
             int rowsDeleted = paymentsRepository.deletePaymentById(id);
 

@@ -44,7 +44,7 @@ public class FooterHelperInvoice implements IEventHandler {
 
             // Contact information
             Paragraph contactInfo = new Paragraph()
-                    .add("Bugogo Village, Kyegegwa | Tel: +256 784 411 848 | Email: finance@venerandahospital.com")
+                    .add("Bugogo Village, Kyegegwa | Tel: +256 784 411 848 | Email: venerandahospital@gmail.com")
                     .setFontSize(7)
                     .setMarginBottom(4)
                     .setTextAlignment(TextAlignment.CENTER);

@@ -126,7 +126,7 @@ public class GeneralUsService {
 
         generalUsRepository.persist(generalUs);
 
-        procedureRequested.report = request.scanReportTitle;
+        procedureRequested.report = "Done";
         procedureRequested.status = "Done";
 
         procedureRequestedRepository.persist(procedureRequested);
@@ -264,10 +264,12 @@ public class GeneralUsService {
             // Add invoice details
             headerTable.addCell(new Cell()
                     .add(new Paragraph("CLIENT NAME: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph("ADDRESS: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph("EXAM: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
                     .add(new Paragraph("NEXT OF KEEN: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+
+                    .add(new Paragraph("EXAM: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("ADDRESS: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+
+
 
                     .setBorder(Border.NO_BORDER)
             );
@@ -276,32 +278,39 @@ public class GeneralUsService {
                     .add(new Paragraph(generalUs.patientName.toUpperCase()).setFontSize(8).setTextAlignment(TextAlignment.LEFT))
 
                     .add(new Paragraph()
-                            .add(Optional.ofNullable(invoice.visit.patient.getPatientGroup())
-                                    .map(PatientGroup::getGroupName)
-                                    .map(String::toUpperCase)
-                                    .orElse(""))
-                            .setFontSize(8)
-                            .setTextAlignment(TextAlignment.LEFT))
-
-                    .add(new Paragraph()
-                            .add(Optional.ofNullable(invoice.visit.patient.patientAddress)
-                                    .map(String::toUpperCase)
-                                    .orElse(""))
-                            .setFontSize(8)
-                            .setTextAlignment(TextAlignment.LEFT)
-                    )
-                    .add(new Paragraph(generalUs.exam.toUpperCase())
-                            .setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-                    //.add(new Paragraph(patient.nextOfKinName.toUpperCase()).setFontSize(8).orElse("N/A")).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph()
                             .add(Optional.ofNullable(patient.nextOfKinName)
                                     .map(String::toUpperCase)
                                     .orElse("N/A"))  // Fallback value if null
                             .setFontSize(8)
                             .setTextAlignment(TextAlignment.LEFT)
                     )
+                    .add(new Paragraph(generalUs.exam.toUpperCase())
+                            .setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+
+                    .add(new Paragraph()
+                            .add(Optional.ofNullable(invoice.visit.patient)
+                                    .map(p -> p.patientAddress +
+                                            (p.getPatientGroup() != null
+                                                    ? " (" + p.patientGroup.groupNameShortForm + ")"
+                                                    : ""))
+                                    .map(String::toUpperCase)
+                                    .orElse(""))
+                            .setFontSize(8)
+                            .setTextAlignment(TextAlignment.LEFT)
+                    )
 
 
+
+                    //.add(new Paragraph(patient.nextOfKinName.toUpperCase()).setFontSize(8).orElse("N/A")).setTextAlignment(TextAlignment.LEFT))
+
+
+                    /*.add(new Paragraph()
+                            .add(Optional.ofNullable(invoice.visit.patient.getPatientGroup())
+                                    .map(PatientGroup::getGroupName)
+                                    .map(String::toUpperCase)
+                                    .orElse(""))
+                            .setFontSize(8)
+                            .setTextAlignment(TextAlignment.LEFT))*/
 
 
 

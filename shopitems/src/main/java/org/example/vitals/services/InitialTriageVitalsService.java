@@ -40,6 +40,12 @@ public class InitialTriageVitalsService {
                     .build();
         }
 
+        if ("closed".equals(patientVisit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
         // Create a new InitialTriageVitals object
         InitialTriageVitals initialTriageVitals = new InitialTriageVitals();
 
@@ -114,6 +120,15 @@ public class InitialTriageVitalsService {
 
     public Response updateInitialVitalById(Long id, InitialVitalUpdateRequest request) {
 
+        InitialTriageVitals initialTriageVitals1 = initialTriageVitalsRepository.findById(id);
+
+        if ("closed".equals(initialTriageVitals1.visit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
+
         return initialTriageVitalsRepository.findByIdOptional(id)
                 .map(initialTriageVitals -> {
 
@@ -152,6 +167,12 @@ public class InitialTriageVitalsService {
 
         if (initialTriageVitals == null) {
             return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+
+        if ("closed".equals(initialTriageVitals.visit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
                     .build();
         }
 

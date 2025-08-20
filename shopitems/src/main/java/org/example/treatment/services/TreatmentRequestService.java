@@ -204,6 +204,7 @@ public class TreatmentRequestService {
                     .build();
         }
 
+
         // 3. Fetch the new item
         Item item = itemRepository.findById(request.itemId);
         if (item == null) {
@@ -327,6 +328,14 @@ public class TreatmentRequestService {
             return Response.status(Response.Status.NOT_FOUND)
                     .build();
         }
+
+        if ("closed".equals(treatmentRequested.visit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
+
 
         Invoice invoice = Invoice.find("visit.id", treatmentRequested.visit.id).firstResult();
 

@@ -47,6 +47,12 @@ public class ConsultationService {
         // Fetch the patient visit by ID
         PatientVisit patientVisit = PatientVisit.findById(visitId);
 
+        if ("closed".equals(patientVisit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
         Procedure procedure = procedureRepository.findByCategory("consultation");
 
         ProcedureRequested procedureRequested = new ProcedureRequested();
@@ -58,15 +64,6 @@ public class ConsultationService {
                 .firstResultOptional()
                 .isPresent();
 
-
-
-
-
-        if (patientVisit == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Patient visit not found for ID: " + visitId, null))
-                    .build();
-        }
 
         // Check if a consultation already exists for this visit
         Consultation existingConsultation = consultationRepository.find("visit.id", visitId).firstResult();
@@ -192,6 +189,12 @@ public class ConsultationService {
     public ConsultationDTO newConsultationOnTheGo(Long visitId){
 
         PatientVisit patientVisit = PatientVisit.findById(visitId);
+
+        if ("closed".equals(patientVisit.visitStatus)) {
+            throw new WebApplicationException("Visit is closed. You cannot add anything. Open a new visit or contact Admin on 0784411848:",409);
+
+        }
+
 
         Consultation consultation = new Consultation();
 

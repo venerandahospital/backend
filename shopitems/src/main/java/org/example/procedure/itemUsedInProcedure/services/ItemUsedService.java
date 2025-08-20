@@ -44,7 +44,7 @@ public class ItemUsedService {
         // Create new item-usage entry
         ItemUsed itemUsed = new ItemUsed();
         itemUsed.procedureName = procedure.procedureName;
-        itemUsed.itemName = item.genericName;
+        itemUsed.itemName = item.title;
         itemUsed.procedureId = procedure.id;
         itemUsed.itemId = item.id;
         itemUsed.quantityUsed = BigDecimal.valueOf(request.quantityUsed);
@@ -68,13 +68,13 @@ public class ItemUsedService {
 
 
     @Transactional
-    public Response performProcedure(Long procedureId) {
+    public void performProcedure(Long procedureId) {
         Procedure procedure = Procedure.findById(procedureId);
         if (procedure == null) {
             //throw new IllegalArgumentException("Procedure not found.");
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Procedure not found."))
-                    .build();
+            throw new WebApplicationException("Procedure not found",409);
+
+
         }
 
         List<ItemUsed> usedItems = ItemUsed.list("procedureId", procedure.id);
@@ -84,44 +84,44 @@ public class ItemUsedService {
 
             if (item == null) {
                // throw new IllegalStateException("Item not found for usage record.");
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity(new ResponseMessage("Item not found for usage record."))
-                        .build();
+                throw new WebApplicationException("Item not found for usage record",409);
+
             }
 
             if (item.stockAtHand.compareTo(usage.quantityUsed) < 0) {
                 //throw new IllegalStateException("Not enough stock for item: " + item.title);
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new ResponseMessage("Not enough stock for item: " + item.genericName, null))
-                        .build();
+                throw new WebApplicationException("Not enough stock for item: " + item.title);
+
             }
 
             item.stockAtHand = item.stockAtHand.subtract(usage.quantityUsed);
             item.persist();
         }
 
-        return Response.ok(new ResponseMessage("Item stock updated after procedure done successfully")).build();
     }
 
 
     @Transactional
-    public Response restoreStockOnProcedureDelete(Long procedureId) {
+    public void restoreStockOnProcedureDelete(Long procedureId) {
         Procedure procedure = Procedure.findById(procedureId);
         if (procedure == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new ResponseMessage("Procedure not found."))
-                    .build();
+            throw new WebApplicationException("procedure not found for usage record",409);
+
         }
 
         List<ItemUsed> usedItems = ItemUsed.list("procedureId", procedure.id);
+
+        if (usedItems.isEmpty()) {
+            throw new WebApplicationException("Item not found for usage record", 409);
+        }
+
 
         for (ItemUsed usage : usedItems) {
             Item item = Item.findById(usage.itemId);
 
             if (item == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity(new ResponseMessage("Item not found for usage record."))
-                        .build();
+                throw new WebApplicationException("Item not found for usage record",409);
+
             }
 
             // Add back the used quantity
@@ -129,7 +129,6 @@ public class ItemUsedService {
             item.persist();
         }
 
-        return Response.ok(new ResponseMessage("Stock restored after procedure deletion")).build();
     }
 
 

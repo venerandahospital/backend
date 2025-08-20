@@ -54,6 +54,12 @@ public class ProcedureRequestedService {
                     .build();
         }
 
+        if ("closed".equals(patientVisit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
         // Fetch procedure
         Procedure procedure = Procedure.findById(request.procedureId);
         if (procedure == null) {
@@ -192,6 +198,13 @@ public class ProcedureRequestedService {
 
     public ProcedureRequestedDTO updateProcedureRequestedById(Long id, ProcedureRequestedUpdateRequest request) {
         Procedure procedure = Procedure.findById(request.procedureId);
+
+        ProcedureRequested procedureReq = ProcedureRequested.findById(id);
+
+        if ("closed".equals(procedureReq.visit.visitStatus)) {
+            throw new WebApplicationException("Your new password must be unique",409);
+
+        }
         return proceduresRequestedRepository.findByIdOptional(id)
                 .map(procedureRequested -> {
 
@@ -359,7 +372,7 @@ public class ProcedureRequestedService {
     }
 
 
-    @SuppressWarnings("resource")
+
     @Transactional
     public Response deleteProcedureRequestById(Long id) {
 
@@ -369,6 +382,14 @@ public class ProcedureRequestedService {
             return Response.status(Response.Status.NOT_FOUND)
                     .build();
         }
+
+        if ("closed".equals(procedureRequested.visit.visitStatus)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
+                    .build();
+        }
+
+
 
         if(Objects.equals(procedureRequested.category, "imaging")){
             GeneralUs.delete("procedureRequested.id", id);
