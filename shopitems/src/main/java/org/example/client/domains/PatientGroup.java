@@ -44,4 +44,12 @@ public class PatientGroup extends PanacheEntity {
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
+
+    public String getGroupNameShortForm() {
+        return groupNameShortForm;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

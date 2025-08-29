@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
@@ -131,6 +132,20 @@ public class InvoiceController {
     public Response generateAndReturnInvoicePdf(@PathParam("id") Long visitId) {
         return invoiceService.generateAndReturnInvoicePdf(visitId);
     }
+
+    @GET
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Path("compassion-invoice/generate-pdf/{id}")
+    @Operation(summary = "invoice pdf compassion", description = "invoice pdf download")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
+    public Response generateAndReturnInvoicePdfForCompassion() {
+        return invoiceService.generateAndReturnInvoicePdfForListOfCompassionPatients();
+    }
+
+
+
+
 
     @DELETE
     @Path("/delete-invoice-id/{id}")

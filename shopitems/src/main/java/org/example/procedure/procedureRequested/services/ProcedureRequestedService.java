@@ -146,7 +146,7 @@ public class ProcedureRequestedService {
             ProcedureRequested procedureRequested = new ProcedureRequested();
             procedureRequested.patientName = patientVisit.patient.patientFirstName+" "+patientVisit.patient.patientSecondName;
             procedureRequested.quantity = request.quantity;
-            procedureRequested.report = request.report;
+            procedureRequested.report = "";
             procedureRequested.procedureId = request.procedureId;
             procedureRequested.orderedBy = request.orderedBy;
             procedureRequested.doneBy = request.doneBy;
@@ -383,16 +383,27 @@ public class ProcedureRequestedService {
                     .build();
         }
 
+        GeneralUs generalUs = GeneralUs.find(
+                "procedureRequested.id = ?1",
+                id
+
+        ).firstResult();
+
         if ("closed".equals(procedureRequested.visit.visitStatus)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
                     .build();
         }
 
-
-
-        if(Objects.equals(procedureRequested.category, "imaging")){
-            GeneralUs.delete("procedureRequested.id", id);
+        if (Objects.equals(procedureRequested.category, "imaging")) {
+            if ((generalUs.findings == null || generalUs.findings.isEmpty()) && (generalUs.impression == null || generalUs.impression.isEmpty()) &&
+                    (generalUs.indication == null || generalUs.indication.isEmpty())) {
+                GeneralUs.delete("procedureRequested.id", id);
+            }else {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Cannot delete scan report with findings ", null))
+                        .build();
+            }
 
         }
 

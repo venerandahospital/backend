@@ -7,6 +7,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\c
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\cafeteria\finance\expenses\endpoints\ShopExpensesController.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics\ultrasoundScan\transvaginal\domains\TransVaginalUs.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics\ultrasoundScan\abdominal\services\AbdominalUsService.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\visit\services\VisitGroupInitializer.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\betaHcg\services\BetaHcgService.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\hepatitisB\services\Payloads\requests\HepatitisBUpdateRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\expenses\endpoints\ExpenseCategoryController.java
@@ -41,6 +42,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\procedure\procedureRequested\services\ProcedureRequestedService.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics\ultrasoundScan\breast\services\BreastUsService.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\visit\services\paloads\requests\PatientVisitUpdateRequest.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\visit\services\paloads\responses\FullVisitResponse.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\expenses\services\payloads\requests\ExpenseAccountRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\item\services\payloads\responses\ShopItemResponse.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics\ultrasoundScan\breast\services\Payloads\responses\BreastUsDTO.java
@@ -97,6 +99,7 @@ C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\diagnostics
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\mrdt\services\Payloads\requests\MrdtUpdateRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\client\domains\DeletedPatient.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\finance\payments\cryptoPayments\GoCrypto\domains\Ethereum.java
+C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\visit\services\paloads\requests\VisitParametersRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\consultations\services\payloads\requests\ConsultationRequest.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\labResults\urineHcg\domains\UrineHcg.java
 C:\Users\hp\IdeaProjects\shopnew\shopitems\src\main\java\org\example\admissions\domains\repositories\InPatientTreatmentRepository.java

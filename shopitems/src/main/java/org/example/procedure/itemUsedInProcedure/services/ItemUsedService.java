@@ -112,7 +112,7 @@ public class ItemUsedService {
         List<ItemUsed> usedItems = ItemUsed.list("procedureId", procedure.id);
 
         if (usedItems.isEmpty()) {
-            throw new WebApplicationException("Item not found for usage record", 409);
+            return;
         }
 
 
@@ -120,7 +120,7 @@ public class ItemUsedService {
             Item item = Item.findById(usage.itemId);
 
             if (item == null) {
-                throw new WebApplicationException("Item not found for usage record",409);
+                continue;
 
             }
 

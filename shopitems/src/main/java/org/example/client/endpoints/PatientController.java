@@ -102,6 +102,32 @@ public class PatientController {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, patientList)).build();
     }
 
+    @GET
+    @Transactional
+    @Path("/get-all-patients-with-debts-and-compassion-group")
+    // @RolesAllowed({"ADMIN"})
+    @Operation(summary = "Get all patients with debts and from compassion", description = "Retrieve a list of all patients with debts and from compassion")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientDTO.class, type = SchemaType.ARRAY)))
+    public Response getAllPatientsWithDebtsAndFromCompassion() {
+        List<PatientDTO> patientList = patientService.getAllPatientsWithDebtAndCompassion().patients();
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, patientList)).build();
+    }
+
+
+    @GET
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Path("compassion/invoice/generate-pdf/{id}")
+    @Operation(summary = "invoice pdf for compassion", description = "invoice pdf download for compassion")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
+    public Response generateAndReturnInvoiceForCompassionPdf() {
+        return patientService.generateAndReturnInvoicePdfForListOfCompassionPatients();
+    }
+
+
+
+
+
 
     @GET
     @Transactional

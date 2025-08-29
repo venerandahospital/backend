@@ -4,6 +4,9 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.example.client.domains.Patient;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 @ApplicationScoped
 public class PatientRepository implements PanacheRepository<Patient> {
 
@@ -22,6 +25,16 @@ public class PatientRepository implements PanacheRepository<Patient> {
     public int generateNextPatientNo() {
         Patient maxPatient = Patient.find("ORDER BY patientNo DESC").firstResult();
         return (maxPatient != null ? maxPatient.patientNo : 0) + 1;
+    }
+
+
+    public BigDecimal sumTotalDebtForCompassionPatients() {
+        // Using Panache query
+        return find("totalBalanceDue > 0 and patientGroup.groupNameShortForm = ?1", "compassion")
+                .stream()
+                .map(Patient::getTotalBalanceDue)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

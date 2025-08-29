@@ -88,8 +88,9 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
 
                 request.path().contains("/course/Patient-management/get-all-ultrasound-scan-procedures") ||
                 request.path().contains("/course/diagnostics-management/get-scan-report-by-request-id/") ||
-
-
+                request.path().contains("/course/Patient-management/compassion/invoice/generate-pdf") ||
+                request.path().contains("/course/Patient-management/compassion-invoice/generate-pdf/") ||
+                request.path().contains("group/invoice-period/generate-pdf") ||
 
 
                 request.path().contains("/course/shop-item/add-new-Items") ||
@@ -104,6 +105,8 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/Patient-management/create-new-labTest") ||
                 request.path().contains("/course/diagnostics-management/create-new-general-scan-report") ||
                 request.path().contains("/course/diagnostics-management/update-scan-report/") ||
+                request.path().contains("/course/Patient-management/initialize-visit-groups") ||
+                request.path().contains("/course/Patient-management/get-visit-advanced-search") ||
 
                 request.path().contains("/course/items-used/add-to-item-used") ||
                 request.path().contains("/course/Patient-management/get-All-used-items") ||

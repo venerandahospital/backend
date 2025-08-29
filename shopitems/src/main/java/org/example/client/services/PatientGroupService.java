@@ -23,6 +23,8 @@ public class PatientGroupService {
     @Inject
     PatientGroupRepository patientGroupRepository;
 
+
+
     private static final String NOT_FOUND = "Not found!";
 
 

@@ -108,6 +108,23 @@ public class Invoice extends PanacheEntity {
     }
 
 
+    public BigDecimal getTotalBalanceDue() {
+        return balanceDue;
+    }
 
+    public BigDecimal getBalanceDue() {
+        return balanceDue;
+    }
 
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
 }

@@ -1,6 +1,7 @@
 package org.example.finance.invoice.services.payloads.responses;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
+import org.example.client.domains.Patient;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.payments.cash.services.payloads.responses.PaymentDTO;
 
@@ -38,9 +39,11 @@ public class InvoiceDTO {
     public BigDecimal totalAmount;
     public BigDecimal amountPaid;
     public String notes;
+    //public Patient patient;
 
     // New field for payments
     public List<PaymentDTO> payments;
+    public Patient patient;
 
     // Constructor to map from Invoice entity
     public InvoiceDTO(Invoice invoice) {
@@ -49,6 +52,7 @@ public class InvoiceDTO {
             this.id = invoice.getId();  // Assuming getId() is non-nullable
             this.visitId = (invoice.visit != null) ? invoice.visit.id : null;
             this.patientId = (invoice.patient != null) ? invoice.patient.id : null;
+            //this.patient = (invoice.patient != null) ? invoice.patient : null;
 
             this.timeOfCreation = invoice.timeOfCreation != null ? invoice.timeOfCreation : LocalTime.now();
             this.invoiceNo = invoice.invoiceNo != null ? invoice.invoiceNo : "N/A";

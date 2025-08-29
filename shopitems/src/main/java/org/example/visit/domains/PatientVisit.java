@@ -13,6 +13,7 @@ import org.example.treatment.domains.TreatmentRequested;
 import org.example.vitals.domains.InitialTriageVitals;
 import org.example.vitals.domains.VitalsMonitoringChart;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -42,10 +43,28 @@ public class PatientVisit extends PanacheEntity {
     public String visitReason;
 
     @Column
+    public String patientName;
+
+    @Column
+    public String visitGroup;
+
+    @Column
     public String visitStatus;
 
     @Column
     public String visitName;
+
+    @Column
+    public BigDecimal balanceDue;
+
+    @Column
+    public BigDecimal amountPaid;
+
+    @Column
+    public BigDecimal totalAmount;
+
+    @Column
+    public BigDecimal subTotal;
 
 
     @Column
@@ -168,4 +187,19 @@ public class PatientVisit extends PanacheEntity {
         this.patient = patient;
     }
 
+    public Object getTotalBalanceDue() {
+        return balanceDue;
+    }
+
+    public BigDecimal getBalanceDue() {
+        return balanceDue;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
 }

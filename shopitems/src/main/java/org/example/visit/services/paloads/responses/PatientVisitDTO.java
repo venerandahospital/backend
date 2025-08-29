@@ -9,6 +9,7 @@ import org.example.admissions.services.payloads.responses.InPatientTreatmentDTO;
 import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
 import org.example.vitals.services.payloads.responses.InitialTriageVitalsDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class PatientVisitDTO {
     public Long id;
-    public Long patientId; // New field for patient ID
+    public Long patientId;
     public LocalDate visitDate;
     public LocalTime visitTime;
     public String visitType;
@@ -24,9 +25,17 @@ public class PatientVisitDTO {
     public String visitReason;
     public String visitName;
     public String visitStatus;
+    public BigDecimal balanceDue;
+    public BigDecimal amountPaid;
+    public String patientName;
+    public BigDecimal totalAmount;
+    public BigDecimal subTotal;
+
+    public String visitGroup;
+
+
 
     public List<ProcedureRequestedDTO> proceduresRequested;
-   // public List<TreatmentRequestedDTO> treatmentRequested;
     public List<InitialTriageVitalsDTO> initialTriageVitals;
     public List<VitalsMonitoringChartDTO> vitalsMonitoringChart;
     public List<ConsultationDTO> consultation;
@@ -45,19 +54,14 @@ public class PatientVisitDTO {
         this.visitReason = patientVisit.visitReason;
         this.visitName = patientVisit.visitName;
         this.visitStatus = patientVisit.visitStatus;
+        this.patientName = patientVisit.patientName;
 
+        this.balanceDue = patientVisit.balanceDue;
+        this.amountPaid = patientVisit.amountPaid;
+        this.totalAmount = patientVisit.totalAmount;
+        this.subTotal = patientVisit.subTotal;
+        this.visitGroup = patientVisit.visitGroup;
 
-        // Mapping lists with proper null check and stream processing
-
-        /*this.treatmentRequested = patientVisit.getTreatmentRequested() != null ?
-                patientVisit.getTreatmentRequested().stream()
-                        .map(TreatmentRequestedDTO::new)
-                        .collect(Collectors.toList()) : null;*/
-
-        //this.patientId = patientVisit.patient != null ? patientVisit.patient.id : null;
-
-
-       // this.invoiceId = patientVisit.getInvoice() != null ? patientVisit.getInvoice().id : null;
 
 
         this.proceduresRequested = patientVisit.getProceduresRequested() != null ?
@@ -65,50 +69,38 @@ public class PatientVisitDTO {
                         .map(ProcedureRequestedDTO::new)
                         .collect(Collectors.toList()) : null;
 
-
         this.initialTriageVitals = patientVisit.getInitialTriageVitals() != null ?
                 patientVisit.getInitialTriageVitals().stream()
                         .map(InitialTriageVitalsDTO::new)
                         .collect(Collectors.toList()) : null;
-
-
-        // this.initialTriageVitals = patientVisit.getInitialTriageVitals().stream().map(InitialTriageVitalsDTO::new).toList();
 
         this.vitalsMonitoringChart = patientVisit.getVitalsMonitoringChart() != null ?
                 patientVisit.getVitalsMonitoringChart().stream()
                         .map(VitalsMonitoringChartDTO::new)
                         .collect(Collectors.toList()) : null;
 
-
-
         this.consultation = patientVisit.getConsultation() != null ?
                 patientVisit.getConsultation().stream()
                         .map(ConsultationDTO::new)
                         .collect(Collectors.toList()) : null;
-
 
         this.invoice = patientVisit.getInvoice() != null ?
                 patientVisit.getInvoice().stream()
                         .map(InvoiceDTO::new)
                         .collect(Collectors.toList()) : null;
 
-
-
-
         this.inPatientTreatments = patientVisit.getInPatientTreatments() != null ?
                 patientVisit.getInPatientTreatments().stream()
                         .map(InPatientTreatmentDTO::new)
                         .collect(Collectors.toList()) : null;
 
-
         this.referralForm = patientVisit.getReferralForm() != null ?
                 patientVisit.getReferralForm().stream()
                         .map(ReferralFormDTO::new)
                         .collect(Collectors.toList()) : null;
-
     }
 
-    // Getters (for accessing the public fields)
+    // Getters
     public Long getId() {
         return id;
     }
@@ -116,7 +108,6 @@ public class PatientVisitDTO {
     public Long getPatientId() {
         return patientId;
     }
-
 
     public LocalDate getVisitDate() {
         return visitDate;
@@ -142,9 +133,9 @@ public class PatientVisitDTO {
         return visitName;
     }
 
-    //public List<TreatmentRequestedDTO> getTreatmentRequested() {
-    //    return treatmentRequested;
-    //}
+    public String getVisitStatus() {
+        return visitStatus;
+    }
 
     public List<ProcedureRequestedDTO> getProceduresRequested() {
         return proceduresRequested;
@@ -165,7 +156,6 @@ public class PatientVisitDTO {
     public List<InvoiceDTO> getInvoice() {
         return invoice;
     }
-
 
     public List<InPatientTreatmentDTO> getInPatientTreatments() {
         return inPatientTreatments;

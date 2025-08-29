@@ -27,8 +27,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import org.example.client.domains.Patient;
 import org.example.client.domains.PatientGroup;
 import org.example.client.services.PatientService;
+import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.domains.Consultation;
@@ -218,6 +220,18 @@ public class InvoiceService {
         // Persist
         invoiceRepository.persist(invoice);
 
+        PatientVisit patientVisit = invoice.visit;
+        if (patientVisit == null) {
+            throw new IllegalArgumentException("visit not found.");
+        }
+
+        patientVisit.balanceDue = invoice.balanceDue;
+        patientVisit.amountPaid = invoice.amountPaid;
+        patientVisit.subTotal = invoice.subTotal;
+        patientVisit.totalAmount = invoice.totalAmount;
+        patientVisitRepository.persist(patientVisit);
+
+
         return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
     }
 
@@ -228,6 +242,9 @@ public class InvoiceService {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice not found.");
         }
+
+
+
         BigDecimal totalPayments = paymentService.getTotalPaymentOfInvoice(invoice.id);
 
         totalPayments = totalPayments != null ? totalPayments : BigDecimal.ZERO;
@@ -239,6 +256,17 @@ public class InvoiceService {
 
         // Persist the updated invoice
         invoiceRepository.persist(invoice);
+
+        PatientVisit patientVisit = invoice.visit;
+        if (patientVisit == null) {
+            throw new IllegalArgumentException("visit not found.");
+        }
+
+        patientVisit.balanceDue = invoice.balanceDue;
+        patientVisit.amountPaid = invoice.amountPaid;
+        patientVisit.subTotal = invoice.subTotal;
+        patientVisit.totalAmount = invoice.totalAmount;
+        patientVisitRepository.persist(patientVisit);
     }
 
     @Transactional
@@ -265,6 +293,465 @@ public class InvoiceService {
         return Response.ok(new ResponseMessage("Invoice updated successfully", new InvoiceDTO(invoice))).build();
 
     }
+
+    @Transactional
+    public Response getCompassionInvoices() {
+        List<Invoice> invoices = invoiceRepository.listAll()
+                .stream()
+                .filter(invoice ->
+                        invoice.visit != null &&
+                                invoice.visit.patient != null &&
+                                invoice.visit.patient.getPatientGroup() != null &&
+                                "compassion".equalsIgnoreCase(invoice.visit.patient.patientGroup.groupNameShortForm)
+                )
+                .toList();
+
+        if (invoices.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ResponseMessage("No invoices found for compassion group patients", null))
+                    .build();
+        }
+
+        List<InvoiceDTO> invoiceDTOs = invoices.stream()
+                .map(InvoiceDTO::new)
+                .toList();
+
+        return Response.ok(new ResponseMessage("Compassion invoices retrieved successfully", invoiceDTOs)).build();
+    }
+
+
+
+
+
+    @Transactional
+    public CompassionDebtResult getAllInvoicesWithDebtAndCompassion() {
+        List<Invoice> invoices = invoiceRepository.listAll()
+                .stream()
+                .filter(invoice ->
+                        invoice.visit != null &&
+                                invoice.visit.patient != null &&
+                                invoice.visit.patient.getPatientGroup() != null &&
+                                "compassion".equalsIgnoreCase(invoice.visit.patient.patientGroup.groupNameShortForm)
+                )
+                .toList();
+
+        if (invoices.isEmpty()) {
+            throw new RuntimeException("no invoice returned.");
+
+        }
+
+        // Calculate total debt
+        BigDecimal totalBalanceDue = invoices.stream()
+                .map(Invoice::getTotalBalanceDue)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Convert to DTOs
+        List<InvoiceDTO> invoiceDTOs = invoices.stream()
+                .map(InvoiceDTO::new)
+                .toList();
+
+        return new CompassionDebtResult(invoiceDTOs, totalBalanceDue);
+    }
+
+    // Create a wrapper class
+    public record CompassionDebtResult(List<InvoiceDTO> invoices, BigDecimal totalBalanceDue) {}
+
+
+
+
+
+
+
+
+
+    @Transactional
+    public Response generateAndReturnInvoicePdfForListOfCompassionPatients() {
+        try {
+
+
+
+            // Create the PDF document
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter pdfWriter = new PdfWriter(baos);
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+            pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, new FooterHelperInvoice());
+
+            Document document = new Document(pdfDocument);
+            document.setMargins(36, 36, 90, 36);
+
+
+
+            // Add invoice title
+            Table invoiceTitle = new Table(new float[]{1});
+            invoiceTitle.setWidthPercent(100);
+            invoiceTitle.addCell(new Cell()
+                    .add(new Div()
+                            .setBorderBottom(new SolidBorder(1)) // Underline (1px solid line)
+                            .setPaddingBottom(2) // Space between text and underline
+                            .add(new Paragraph("invoice")
+                                    .setBold()
+                                    .setFontSize(11)
+                                    .setTextAlignment(TextAlignment.CENTER)
+                            )
+                    )
+                    .add(new Paragraph("Department of Finance - Veneranda Medical (A subsidiary of Veneranda Hospital)")
+                            .setFontSize(7)
+                            //.setItalic()
+                            .setMarginTop(3)
+                            .setTextAlignment(TextAlignment.CENTER))
+                    .setBorder(Border.NO_BORDER)
+                    .setPaddingBottom(15)
+            );
+            document.add(invoiceTitle);
+
+            // Add header: Logo and Invoice Details
+            Table headerTable = new Table(new float[]{1, 1, 1, 2, 1});
+            headerTable.setWidthPercent(100);
+
+            // Add logo
+            headerTable.addCell(new Cell()
+                    .add(getLogo().setWidth(79).setHeight(68))
+                    .setBorder(Border.NO_BORDER)
+                    .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                    .setVerticalAlignment(VerticalAlignment.TOP)
+                    .setPaddingTop(-7)
+                    .setPaddingLeft(-22)
+            );
+
+            // Add invoice details
+            headerTable.addCell(new Cell()
+                    .add(new Paragraph("FROM: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("ADDRESS: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("TO: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("ADDRESS: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .setBorder(Border.NO_BORDER)
+            );
+
+            headerTable.addCell(new Cell()
+                    .add(new Paragraph("VENERANDA MEDICAL").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("BUGOGO TOWN COUNCIL, KYEGEGWA DISTRICT").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("KATOMA DEVELOPMENT CENTER")
+                            .setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph()
+                            .add(Optional.of("KATOMA")
+                                    .map(String::toUpperCase)
+                                    .orElse(""))
+                            .setFontSize(7)
+                            .setTextAlignment(TextAlignment.LEFT)
+                    )
+
+
+
+
+
+                    .setBorder(Border.NO_BORDER)
+            );
+
+            headerTable.addCell(new Cell()
+                    .add(new Paragraph("NUMBER: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("DUE DATE: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("DATE: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("BALANCE DUE: ").setFontSize(7).setTextAlignment(TextAlignment.LEFT))
+                    .setBorder(Border.NO_BORDER)
+            );
+
+            headerTable.addCell(new Cell()
+                    .add(new Paragraph("UG-503").setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
+                    .add(new Paragraph(String.valueOf("8/25/2025")).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
+                    .add(new Paragraph(String.valueOf("8/25/2025")).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
+                    .add(new Paragraph(String.valueOf("5000")).setFontSize(7).setTextAlignment(TextAlignment.RIGHT))
+
+                    .setBorder(Border.NO_BORDER)
+            );
+
+            document.add(headerTable);
+
+            // Add items table
+            float[] columnWidths = {4, 1, 2, 2};
+            Table itemsTable = new Table(columnWidths);
+            itemsTable.setWidthPercent(100);
+
+            // Add header with no column lines
+            itemsTable.addCell(createCell("CLIENT NAME", 1, TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setBorder(Border.NO_BORDER));
+
+            itemsTable.addCell(createCell("SERVICE", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setBorder(Border.NO_BORDER));
+
+            itemsTable.addCell(createCell("AMOUNT TO PAY (UGX)", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setBorder(Border.NO_BORDER));
+
+            itemsTable.addCell(createCell("AMOUNT PAID (UGX)", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setBorder(Border.NO_BORDER));
+
+            itemsTable.addCell(createCell("BALANCE DUE (UGX)", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setBorder(Border.NO_BORDER));
+
+
+
+            boolean isEvenRow = false;
+            CompassionDebtResult result = getAllInvoicesWithDebtAndCompassion();
+
+            List<InvoiceDTO> invoiceDTOs = result.invoices();
+
+            BigDecimal totalBalanceDue = result.totalBalanceDue();
+
+
+            for (InvoiceDTO invoiceDto : invoiceDTOs) {
+                com.itextpdf.kernel.color.Color rowColor = isEvenRow
+                        ? com.itextpdf.kernel.color.Color.WHITE
+                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+
+                itemsTable.addCell(createCell(invoiceDto.patient.patientFirstName.toUpperCase() + " " + invoiceDto.patient.patientSecondName.toUpperCase() , 1, TextAlignment.LEFT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(String.valueOf("MEDICAL BILLS"), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(String.valueOf(invoiceDto.patient.patientGender), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(String.valueOf(invoiceDto.patient.patientGender), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(String.valueOf(totalBalanceDue), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                isEvenRow = !isEvenRow;
+            }
+
+            // Add rows for TreatmentRequested
+            /*for (TreatmentRequested treatmentRequested : invoice.visit.getTreatmentRequested()) {
+                com.itextpdf.kernel.color.Color rowColor = isEvenRow
+                        ? com.itextpdf.kernel.color.Color.WHITE
+                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+
+                itemsTable.addCell(createCell(treatmentRequested.itemName.toUpperCase(), 1, TextAlignment.LEFT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(treatmentRequested.quantity.toString(), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+
+                itemsTable.addCell(createCell(String.valueOf(treatmentRequested.unitSellingPrice), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                itemsTable.addCell(createCell(String.valueOf(treatmentRequested.totalAmount), 1, TextAlignment.RIGHT)
+                        .setFontSize(7)
+                        .setBackgroundColor(rowColor)
+                        .setBorder(Border.NO_BORDER)
+                        .setBorderBottom(new SolidBorder(1)));
+
+                isEvenRow = !isEvenRow;
+            }*/
+
+            document.add(itemsTable);
+
+
+
+            // Add totals table
+            Table totalsTable = new Table(new float[]{4, 2, 2});
+            totalsTable.setWidthPercent(100);
+
+            //PatientGroupDTO patientDTO = patientGroupService.getPatientGroupById(1);
+
+
+            Cell notesCell1 = new Cell(6, 1)
+                    .add(("\n IMPRESSION / DIAGNOSIS: " ))
+                    .setTextAlignment(TextAlignment.LEFT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setVerticalAlignment(VerticalAlignment.TOP);
+            totalsTable.addCell(notesCell1);
+
+            BigDecimal totalDebt = result.totalBalanceDue();
+
+            // Add subtotal row
+            totalsTable.addCell(createCell("SUBTOTAL:", 1, TextAlignment.LEFT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBold()
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+            totalsTable.addCell(createCell(String.valueOf(totalDebt), 1, TextAlignment.RIGHT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBold()
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+
+            // Add discount row
+            totalsTable.addCell(createCell("DISCOUNT:", 1, TextAlignment.LEFT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+            totalsTable.addCell(createCell("50000", 1, TextAlignment.RIGHT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+
+            // Add tax row
+            totalsTable.addCell(createCell("TAX:", 1, TextAlignment.LEFT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+            totalsTable.addCell(createCell("1000000", 1, TextAlignment.RIGHT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+
+            // Add total amount row
+            totalsTable.addCell(createCell("TOTAL AMOUNT:", 1, TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+            totalsTable.addCell(createCell("500000", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+
+            // Add amount paid row
+            totalsTable.addCell(createCell("AMOUNT PAID:", 1, TextAlignment.LEFT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+            totalsTable.addCell(createCell("700000", 1, TextAlignment.RIGHT)
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1)));
+
+            // Add balance due row
+            totalsTable.addCell(createCell("BALANCE DUE:", 1, TextAlignment.LEFT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+            totalsTable.addCell(createCell("1200000", 1, TextAlignment.RIGHT)
+                    .setBold()
+                    .setFontSize(7)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(1))
+                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+
+            document.add(totalsTable);
+
+            // Close the document
+            document.close();
+
+            // Return the PDF as a response
+            byte[] pdfBytes = baos.toByteArray();
+            return Response.ok(new ByteArrayInputStream(pdfBytes))
+                    .header("Content-Disposition", "attachment; filename=invoice.pdf")
+                    .type("application/pdf")
+                    .build();
+
+        } catch (IOException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Transactional
@@ -445,6 +932,19 @@ public class InvoiceService {
 
         // Persist the updated invoice
         invoiceRepository.persist(invoiceUpdate);
+
+        PatientVisit patientVisit = invoiceUpdate.visit;
+        if (patientVisit == null) {
+            throw new IllegalArgumentException("visit not found.");
+        }
+
+        patientVisit.balanceDue = invoiceUpdate.balanceDue;
+        patientVisit.amountPaid = invoiceUpdate.amountPaid;
+        patientVisit.subTotal = invoiceUpdate.subTotal;
+        patientVisit.totalAmount = invoiceUpdate.totalAmount;
+        patientVisitRepository.persist(patientVisit);
+
+
 
         List<Invoice> allInvoices = Invoice.find(
                 "patient.id = ?1 ORDER BY id DESC",

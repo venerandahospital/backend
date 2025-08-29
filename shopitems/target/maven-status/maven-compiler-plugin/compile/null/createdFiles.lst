@@ -121,6 +121,7 @@ org\example\cafeteria\sales\saleDone\domains\repositories\SaleRepository.class
 org\example\procedure\itemUsedInProcedure\domains\ItemUsed.class
 org\example\finance\payments\cryptoPayments\OpenNode\domains\BinanceCoin.class
 org\example\finance\expenses\endpoints\ExpenseCategoryController.class
+org\example\visit\services\PatientVisitService$PatientVisitDebtResult.class
 org\example\visit\domains\PatientVisit.class
 org\example\fileresource\FileResource.class
 org\example\finance\payments\cash\services\payloads\requests\PaymentRequest.class
@@ -173,6 +174,7 @@ org\example\finance\expenses\endpoints\ExpenseAccountController.class
 org\example\finance\payments\cryptoPayments\BinancePay\domains\Ethereum.class
 org\example\vitals\domains\repositories\VitalsMonitoringChartRepository.class
 org\example\visit\services\paloads\responses\PatientVisitResponse.class
+org\example\visit\services\paloads\requests\VisitParametersRequest.class
 org\example\stock\domains\Stock.class
 org\example\course\domains\Course.class
 org\example\client\services\payloads\requests\PatientGroupUpdateRequest.class
@@ -297,6 +299,7 @@ org\example\cafeteria\finance\payments\cryptoPayments\BitPay\domains\BinanceCoin
 org\example\procedure\procedure\services\ProcedureService.class
 org\example\cafeteria\finance\payments\cryptoPayments\CoinGate\domains\Ethereum.class
 org\example\cafeteria\finance\payments\cash\services\payloads\responses\CanteenPaymentDTO.class
+org\example\visit\services\VisitGroupInitializer.class
 org\example\store\domains\Store.class
 org\example\vitals\services\InitialTriageVitalsService.class
 org\example\course\domains\CourseRepository.class
@@ -328,6 +331,7 @@ org\example\procedure\procedureRequested\services\payloads\responses\ProcedureRe
 org\example\item\services\payloads\responses\ItemDTO.class
 org\example\auth\services\payloads\RoleResponse.class
 org\example\finance\payments\cash\domains\Payments.class
+org\example\visit\services\paloads\responses\FullVisitResponse.class
 org\example\finance\payments\cryptoPayments\BitPay\domains\USDT.class
 org\example\cafeteria\finance\payments\cryptoPayments\GoCrypto\domains\Bitcoin.class
 org\example\item\services\payloads\requests\ShopItemParametersRequest.class

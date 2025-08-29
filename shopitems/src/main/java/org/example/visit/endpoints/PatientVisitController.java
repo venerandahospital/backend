@@ -1,6 +1,7 @@
 package org.example.visit.endpoints;
 
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -14,11 +15,14 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.finance.payments.cash.services.payloads.requests.PaymentParametersRequest;
 import org.example.statics.StatusTypes;
+import org.example.visit.domains.PatientVisit;
 import org.example.visit.services.*;
 import org.example.visit.services.paloads.requests.PatientVisitRequest;
 import org.example.visit.services.paloads.requests.PatientVisitStatusUpdateRequest;
 import org.example.visit.services.paloads.requests.PatientVisitUpdateRequest;
+import org.example.visit.services.paloads.requests.VisitParametersRequest;
 import org.example.visit.services.paloads.responses.PatientVisitDTO;
 
 import java.util.List;
@@ -93,6 +97,37 @@ public class PatientVisitController {
     public Response getLatestPatientVisitByPatientId(@PathParam("id") Long patientId) {
 
         return patientVisitService.getLatestVisitByPatientId(patientId);
+    }
+
+    @GET
+    @Path("/get-visit-advanced-search")
+    //@RolesAllowed({"ADMIN","USER","AGENT"})
+    @Operation(summary = "get visit advanced search", description = "get visit advanced search.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = PatientVisitDTO.class)))
+    public Response getVisitAdvancedFilter(@BeanParam VisitParametersRequest request){
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,patientVisitService.getVisitsAdvancedFilter(request))).build();
+    }
+
+    @POST
+    @Path("/initialize-visit-groups")
+    //@RolesAllowed("admin")
+    public Response initializeVisitGroups() {
+        try {
+            patientVisitService.updateAllVisitGroupsAndFinancialsFromPatients();
+            return Response.ok("Visit groups initialized successfully").build();
+        } catch (Exception e) {
+            return Response.status(500).entity("Failed to initialize: " + e.getMessage()).build();
+        }
+    }
+
+    @GET
+    //@RolesAllowed({"ADMIN"})
+    @Transactional
+    @Path("group/invoice-period/generate-pdf")
+    @Operation(summary = "invoice pdf for compassion", description = "invoice pdf download for compassion")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Response.class)))
+    public Response generateAndReturnInvoiceForCompassionPdfTrue(@BeanParam VisitParametersRequest request) {
+        return patientVisitService.generateAndReturnInvoicePdfForListOfCompassionPatients(request);
     }
 
 

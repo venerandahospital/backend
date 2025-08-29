@@ -18,4 +18,12 @@ public class InvoiceRepository implements PanacheRepository<Invoice> {
         // Execute the query and return the number of rows affected
         return query.executeUpdate();
     }
+
+
+
+
+
+
+
+
 }

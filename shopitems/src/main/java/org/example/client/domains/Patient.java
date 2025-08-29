@@ -112,5 +112,12 @@ public class Patient extends PanacheEntity {
     }
 
 
+    public String getFirstName() {
+        return patientFirstName;
+    }
+
+    public String getLastName() {
+        return patientSecondName;
+    }
 }
 

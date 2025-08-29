@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -72,14 +73,14 @@ public class GeneralUsService {
             generalUs.patientAge = patient.patientAge;
             generalUs.visit = procedureRequested.visit;
             generalUs.procedureRequested = procedureRequested;
-            generalUs.indication = "please type scan report indication";
-            generalUs.doneBy = "Imaging Technologist";
-            generalUs.recommendation = "please type scan report recommendation here";
+            generalUs.indication = "";
+            generalUs.doneBy = "";
+            generalUs.recommendation = "";
             generalUs.scanReportTitle = "";
 
             generalUs.exam = procedureRequested.procedureRequestedType;;
-            generalUs.findings = "please type scan report findings";
-            generalUs.impression = "please type scan report impression";
+            generalUs.findings = "";
+            generalUs.impression = "";
 
             generalUs.scanPerformingDate = LocalDate.now();
             generalUs.upDatedDate = LocalDate.now();
@@ -126,8 +127,16 @@ public class GeneralUsService {
 
         generalUsRepository.persist(generalUs);
 
-        procedureRequested.report = "Done";
-        procedureRequested.status = "Done";
+        procedureRequested.report = generalUs.scanReportTitle;
+
+        if (generalUs.findings == null || generalUs.findings.isEmpty() ||
+            generalUs.impression == null || generalUs.impression.isEmpty() ||
+            generalUs.indication == null || generalUs.indication.isEmpty() ||
+            generalUs.scanReportTitle == null || generalUs.scanReportTitle.isEmpty())
+                 {procedureRequested.status = "Pending";;
+        }else{
+            procedureRequested.status = "Done";
+        }
 
         procedureRequestedRepository.persist(procedureRequested);
 
