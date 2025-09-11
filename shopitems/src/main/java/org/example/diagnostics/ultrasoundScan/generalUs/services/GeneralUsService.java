@@ -133,9 +133,11 @@ public class GeneralUsService {
             generalUs.impression == null || generalUs.impression.isEmpty() ||
             generalUs.indication == null || generalUs.indication.isEmpty() ||
             generalUs.scanReportTitle == null || generalUs.scanReportTitle.isEmpty())
-                 {procedureRequested.status = "Pending";;
+                 {
+                     procedureRequested.status = "Pending";
         }else{
             procedureRequested.status = "Done";
+            procedureRequested.bgColor = "rgba(206, 7, 17, 1)";
         }
 
         procedureRequestedRepository.persist(procedureRequested);

@@ -43,6 +43,9 @@ public class ProcedureRequested extends PanacheEntity {
     public String status;
 
     @Column
+    public String bgColor;
+
+    @Column
     public String patientName;
 
     // Name or ID of the person who ordered the lab test

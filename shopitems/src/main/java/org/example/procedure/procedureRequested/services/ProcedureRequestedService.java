@@ -156,6 +156,7 @@ public class ProcedureRequestedService {
             procedureRequested.procedureRequestedType = procedure.procedureType;
             procedureRequested.exam = procedure.procedureType;
             procedureRequested.status = "pending";
+            procedureRequested.bgColor = "rgb(26, 139, 204)";
 
             procedureRequested.category = procedure.category;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
