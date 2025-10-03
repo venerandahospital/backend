@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
-import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.domains.Consultation;
 import org.example.consultations.domains.ConsultationRepository;
@@ -18,10 +17,7 @@ import org.example.procedure.procedure.domains.repositories.ProcedureRepository;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.procedure.procedureRequested.domains.repositories.ProcedureRequestedRepository;
 import org.example.visit.domains.PatientVisit;
-import org.example.vitals.domains.InitialTriageVitals;
-import org.example.vitals.services.payloads.responses.InitialTriageVitalsDTO;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

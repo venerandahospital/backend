@@ -6,8 +6,11 @@ import java.math.BigDecimal;
 
 public class ProcedureRequest {
 
-    @Schema(example = "LabTest")
+    @Schema(example = "malaria test")
     public String procedureType;
+
+    @Schema(example = "mrdt")
+    public String procedureName;
 
     @Schema(example = "LabTest")
     public String category;

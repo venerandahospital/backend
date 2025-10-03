@@ -83,12 +83,28 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/create-new-course") ||
                 request.path().contains("/course/course/update-course") ||
                 request.path().contains("/course/shop-cart/add-to-cart") ||
+                request.path().contains("/course/Patient-management/create-new-service-category") ||
+                request.path().contains("/course/Patient-management/update-service-category") ||
+                request.path().contains("/course/Patient-management/get-all-service-categories") ||
+
+
+                request.path().contains("/course/Patient-management/create-new-service-type") ||
+                request.path().contains("/course/Patient-management/update-service-type") ||
+                request.path().contains("/course/Patient-management/get-all-service-types") ||
+
+
                 request.path().contains("/course/diagnostics-management/scan/generate-pdf/") ||
+                request.path().contains("/course/diagnostics-management/get-malaria-report-by-request-id/") ||
+                request.path().contains("/course/diagnostics-management/update-malaria-report/") ||
+
+
                 request.path().contains("/course/Patient-management/get-all-consultations") ||
 
                 request.path().contains("/course/Patient-management/get-all-ultrasound-scan-procedures") ||
                 request.path().contains("/course/diagnostics-management/get-scan-report-by-request-id/") ||
                 request.path().contains("/course/Patient-management/compassion/invoice/generate-pdf") ||
+                request.path().contains("/course/Patient-management/get-all-lab-procedures") ||
+
                 request.path().contains("/course/Patient-management/compassion-invoice/generate-pdf/") ||
                 request.path().contains("group/invoice-period/generate-pdf") ||
 

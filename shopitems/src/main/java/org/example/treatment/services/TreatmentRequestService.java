@@ -73,8 +73,6 @@ public class TreatmentRequestService {
                     .build();
         }
 
-
-
         // Check if stock is sufficient
         if (roundedQuantity.compareTo(item.stockAtHand) > 0) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -126,7 +124,6 @@ public class TreatmentRequestService {
 
             treatmentRequested.durationValue = request.durationValue;
 
-
             if (request.durationUnit != null) {
                 switch (request.durationUnit) {
                     case 1:
@@ -147,9 +144,7 @@ public class TreatmentRequestService {
             treatmentRequested.route = request.route;
             treatmentRequested.frequencyValue = request.frequencyValue;
 
-
             //treatmentRequested.frequencyUnit = request.frequencyUnit;
-
 
             if (request.frequencyUnit != null) {
                 switch (request.frequencyUnit) {
@@ -166,7 +161,6 @@ public class TreatmentRequestService {
                         treatmentRequested.frequencyUnit = "Day"; // fallback to original value
                 }
             }
-
 
             treatmentRequested.itemName = item.title;
             treatmentRequested.itemId = item.id;
@@ -204,7 +198,6 @@ public class TreatmentRequestService {
                     .build();
         }
 
-
         // 3. Fetch the new item
         Item item = itemRepository.findById(request.itemId);
         if (item == null) {
@@ -220,7 +213,6 @@ public class TreatmentRequestService {
             // Persist the updated item
             itemRepository.persist(item);
         }
-
 
         // 5. Then, check if the new quantity can be fulfilled
         if (roundedQuantity.compareTo(item.stockAtHand) > 0) {
@@ -246,8 +238,6 @@ public class TreatmentRequestService {
         treatment.amountPerFrequencyValue = request.amountPerFrequencyValue;
         treatment.amountPerFrequencyUnit = request.amountPerFrequencyUnit;
 
-
-
         if (request.durationUnit != null) {
             switch (request.durationUnit) {
                 case 1:
@@ -264,11 +254,8 @@ public class TreatmentRequestService {
             }
         }
 
-
-
         //treatment.durationUnit = request.durationUnit;
         treatment.frequencyValue = request.frequencyValue;
-
 
         //treatment.frequencyUnit = request.frequencyUnit;
 
@@ -305,8 +292,6 @@ public class TreatmentRequestService {
     }
 
 
-
-
     public List<TreatmentRequestedDTO> getTreatmentRequestedByVisit(Long visitId) {
         List<TreatmentRequested> treatmentGive = TreatmentRequested.find(
                 "visit.id = ?1 ORDER BY id DESC",
@@ -335,8 +320,6 @@ public class TreatmentRequestService {
                     .build();
         }
 
-
-
         Invoice invoice = Invoice.find("visit.id", treatmentRequested.visit.id).firstResult();
 
         InvoiceUpdateRequest request = new InvoiceUpdateRequest();
@@ -345,17 +328,11 @@ public class TreatmentRequestService {
 
         invoiceService.updateInvoice(invoice.id, request);
 
-
         treatmentRequestedRepository.delete(treatmentRequested);
-
-
+        
         Item item = itemRepository.findById(treatmentRequested.itemId);
 
-
         itemService.updateItemStockAtHandAfterDeleting(treatmentRequested.quantity, item);
-
-
-
 
         return Response.ok(new ResponseMessage(ActionMessages.DELETED.label)).build();
     }

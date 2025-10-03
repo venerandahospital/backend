@@ -136,7 +136,9 @@ public class GeneralUsService {
                  {
                      procedureRequested.status = "Pending";
         }else{
+            procedureRequested.procedureRequestedType = generalUs.exam;
             procedureRequested.status = "Done";
+            procedureRequested.doneBy = request.doneBy;
             procedureRequested.bgColor = "rgba(206, 7, 17, 1)";
         }
 

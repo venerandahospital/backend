@@ -18,6 +18,8 @@ public class VisitGroupInitializer {
     void onStart(@Observes StartupEvent ev) {
         try {
             patientVisitService.updateAllVisitGroupsAndFinancialsFromPatients();
+            patientVisitService.fixProcedureRequestedNames();
+
             LOG.info("Visit groups initialized successfully");
         } catch (Exception e) {
             LOG.error("Failed to initialize visit groups", e);

@@ -37,6 +37,8 @@ import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.domains.repositories.InvoiceRepository;
 import org.example.finance.invoice.services.FooterHelperInvoice;
 import org.example.finance.invoice.services.InvoiceService;
+import org.example.procedure.procedureRequested.domains.ProcedureRequested;
+import org.example.procedure.procedureRequested.domains.repositories.ProcedureRequestedRepository;
 import org.example.visit.domains.PatientVisit;
 import org.example.visit.domains.repositories.PatientVisitRepository;
 import org.example.visit.services.paloads.requests.PatientVisitRequest;
@@ -84,6 +86,9 @@ public class PatientVisitService {
 
     @Inject
     PatientVisitRepository patientVisitRepository;
+
+    @Inject
+    ProcedureRequestedRepository procedureRequestedRepository;
 
     @Inject
     PatientRepository patientRepository;
@@ -216,7 +221,30 @@ public class PatientVisitService {
 
         // Persist all updates
         patientVisitRepository.persist(patientVisits);
+
+
+
     }
+
+    @Transactional
+    public void fixProcedureRequestedNames() {
+        // Fetch all ProcedureRequested where procedureRequestedName is null or empty
+        List<ProcedureRequested> proceduresToFix = ProcedureRequested.list(
+                "procedureRequestedName IS NULL OR procedureRequestedName = ''"
+        );
+
+        proceduresToFix.forEach(proc -> {
+            if (proc.procedureRequestedType != null) {
+                proc.procedureRequestedName = proc.procedureRequestedType;
+            } else {
+                proc.procedureRequestedName = "Unknown Procedure"; // fallback if type is null
+            }
+        });
+
+        // Persist all updates
+        procedureRequestedRepository.persist(proceduresToFix);
+    }
+
 
 
     private void updateFinancialFieldsFromInvoice(PatientVisit visit) {

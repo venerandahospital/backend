@@ -21,6 +21,7 @@ public class ProcedureRequestedDTO {
     public LocalDate dateOfProcedure;
     public LocalTime timeOfProcedure;
     public String procedureRequestedType;
+    public String procedureRequestedName;
     public String category;
 
     // Constructor to map LabTestsRequested to LabTestsRequestedDTO
@@ -40,6 +41,7 @@ public class ProcedureRequestedDTO {
         this.patientName = procedureRequested.visit.patient.patientFirstName+" "+procedureRequested.visit.patient.patientSecondName;
 
         this.procedureRequestedType = procedureRequested.procedureRequestedType;
+        this.procedureRequestedName = procedureRequested.procedureRequestedName;
         this.category = procedureRequested.category;
 
         // Properly reference the instance variable for visit

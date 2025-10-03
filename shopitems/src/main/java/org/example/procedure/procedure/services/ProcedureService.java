@@ -9,10 +9,15 @@ import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.item.domain.repositories.ItemRepository;
 import org.example.procedure.procedure.domains.Procedure;
+import org.example.procedure.procedure.domains.ProcedureCategory;
+import org.example.procedure.procedure.domains.ProcedureType;
+import org.example.procedure.procedure.domains.repositories.ProcedureCategoryRepository;
 import org.example.procedure.procedure.domains.repositories.ProcedureRepository;
-import org.example.procedure.procedure.services.payloads.requests.ProcedureRequest;
-import org.example.procedure.procedure.services.payloads.requests.ProcedureUpdateRequest;
+import org.example.procedure.procedure.domains.repositories.ProcedureTypeRepository;
+import org.example.procedure.procedure.services.payloads.requests.*;
+import org.example.procedure.procedure.services.payloads.responses.ProcedureCategoryDTO;
 import org.example.procedure.procedure.services.payloads.responses.ProcedureDTO;
+import org.example.procedure.procedure.services.payloads.responses.ProcedureTypeDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +30,12 @@ public class ProcedureService {
 
     @Inject
     ProcedureRepository procedureRepository;
+
+    @Inject
+    ProcedureTypeRepository procedureTypeRepository;
+
+    @Inject
+    ProcedureCategoryRepository procedureCategoryRepository;
 
     @Inject
     ItemRepository itemRepository;
@@ -41,12 +52,18 @@ public class ProcedureService {
     @Transactional
     public Response createNewProcedure(ProcedureRequest request) {
 
-        // Check if a procedure with the same name and type already exists
+        if (request.category == null) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(new ResponseMessage("A Service with the same first and second names already exists", null))
+                    .build();
+        }
+
         boolean exists = Procedure.find(
-                "category = ?1 and procedureType = ?2",
-                request.category,
-                request.procedureType
+                "procedureName = ?1 and category = ?2",
+                request.procedureName,
+                request.category
         ).firstResultOptional().isPresent();
+
 
         if (exists) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -58,7 +75,7 @@ public class ProcedureService {
         // Map request to entity
         Procedure procedure = new Procedure();
         procedure.procedureType = request.procedureType;
-        procedure.procedureName = request.procedureType;
+        procedure.procedureName = request.procedureName;
         procedure.category = request.category;
         procedure.description = request.description;
         procedure.unitSellingPrice = request.unitSellingPrice;
@@ -73,14 +90,138 @@ public class ProcedureService {
     }
 
     @Transactional
+    public Response createNewProcedureCategory(ProcedureCategoryRequest request) {
+
+        // Check if a procedure with the same name and type already exists
+        boolean exists = ProcedureCategory.find(
+                "procedureCategory = ?1",
+                request.procedureCategory
+        ).firstResultOptional().isPresent();
+
+        if (exists) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Procedure category with name '" + request.procedureCategory
+                            + "' and category already exists.", null))
+                    .build();
+        }
+
+        // Map request to entity
+        ProcedureCategory category = new ProcedureCategory();
+        category.procedureCategory = request.procedureCategory;
+        category.categoryDescription = request.categoryDescription;
+
+
+        // Persist the new procedure
+        procedureCategoryRepository.persist(category);
+
+        //return new ProcedureDTO(procedure);
+        return Response.ok(new ResponseMessage("New procedure category created successfully", new ProcedureCategoryDTO(category))).build();
+
+    }
+
+
+    @Transactional
+    public Response createNewProcedureType(ProcedureTypeRequest request) {
+
+        // Check if a procedure with the same name and type already exists
+        boolean exists = ProcedureType.find(
+                "procedureType = ?1",
+                request.procedureType
+        ).firstResultOptional().isPresent();
+
+        if (exists) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Procedure Type with name '" + request.procedureType
+                            + "' and Type already exists.", null))
+                    .build();
+        }
+
+        // Map request to entity
+        ProcedureType type = new ProcedureType();
+        type.procedureType = request.procedureType;
+        type.typeDescription = request.typeDescription;
+
+
+        // Persist the new procedure
+        procedureTypeRepository.persist(type);
+
+        //return new ProcedureDTO(procedure);
+        return Response.ok(new ResponseMessage("New procedure category created successfully", new ProcedureTypeDTO(type))).build();
+
+    }
+
+    @Transactional
+    public List<ProcedureCategoryDTO> getAllProceduresCategories() {
+        return procedureCategoryRepository.listAll(Sort.descending("id"))
+                .stream()
+                .map(ProcedureCategoryDTO::new)
+                .toList();
+    }
+
+    @Transactional
+    public List<ProcedureTypeDTO> getAllProceduresTypes() {
+        return procedureTypeRepository.listAll(Sort.descending("id"))
+                .stream()
+                .map(ProcedureTypeDTO::new)
+                .toList();
+    }
+
+
+    @Transactional
+    public ProcedureCategoryDTO updateServiceCategoryById(Long id, ProcedureCategoryUpdateRequest request) {
+
+        return procedureCategoryRepository.findByIdOptional(id)
+                .map(category -> {
+                    // Update procedure fields
+
+                    category.procedureCategory = request.procedureCategory;
+                    category.categoryDescription = request.categoryDescription;
+
+                    // Persist the updated procedure
+                    procedureCategoryRepository.persist(category);
+
+                    // Return the updated procedure as a DTO
+                    return new ProcedureCategoryDTO(category);
+                })
+                .orElseThrow(() ->
+                        new WebApplicationException("category not found for ID: " + id, Response.Status.NOT_FOUND)
+                );
+    }
+
+
+    @Transactional
+    public ProcedureTypeDTO updateServiceTypeById(Long id, ProcedureTypeUpdateRequest request) {
+
+        return procedureTypeRepository.findByIdOptional(id)
+                .map(type -> {
+                    // Update procedure fields
+
+                    type.procedureType = request.procedureType;
+                    type.typeDescription = request.typeDescription;
+
+                    // Persist the updated procedure
+                    procedureTypeRepository.persist(type);
+
+                    // Return the updated procedure as a DTO
+                    return new ProcedureTypeDTO(type);
+                })
+                .orElseThrow(() ->
+                        new WebApplicationException("type not found for ID: " + id, Response.Status.NOT_FOUND)
+                );
+    }
+
+
+
+
+    @Transactional
     public Response createBulkProcedures(List<ProcedureRequest> requests) {
         List<ProcedureDTO> createdProcedures = new ArrayList<>();
         List<String> duplicates = new ArrayList<>();
 
         for (ProcedureRequest request : requests) {
             boolean exists = Procedure.find(
-                    "category = ?1 and procedureType = ?2",
-                    request.category,
+                    "procedureType = ?1",
+
                     request.procedureType
             ).firstResultOptional().isPresent();
 
@@ -92,7 +233,7 @@ public class ProcedureService {
 
             Procedure procedure = new Procedure();
             procedure.procedureType = request.procedureType;
-            procedure.procedureName = request.procedureType;
+            procedure.procedureName = request.procedureName;
             procedure.category = request.category;
             procedure.description = request.description;
             procedure.unitSellingPrice = request.unitSellingPrice;
@@ -119,7 +260,7 @@ public class ProcedureService {
                 .map(procedure -> {
                     // Update procedure fields
                     procedure.procedureType = request.procedureType;
-                    procedure.procedureName = request.procedureType;
+                    procedure.procedureName = request.procedureName;
                     procedure.category = request.category;
                     procedure.description = request.description;
                     procedure.unitSellingPrice = request.unitSellingPrice;

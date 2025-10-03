@@ -13,15 +13,12 @@ import org.example.finance.expenses.domains.repositories.ExpenseTransactionRepos
 import org.example.finance.expenses.services.payloads.requests.ExpenseTransactionRequest;
 import org.example.finance.expenses.services.payloads.responses.ExpenseTransactionDto;
 import org.example.finance.invoice.services.InvoiceService;
-import org.example.procedure.procedure.domains.Procedure;
 import org.example.user.domains.User;
 import org.example.user.domains.repositories.UserRepository;
-import org.example.visit.services.paloads.responses.PatientVisitDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ExpenseTransactionService {

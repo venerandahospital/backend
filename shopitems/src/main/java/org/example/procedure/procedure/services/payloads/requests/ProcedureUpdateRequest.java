@@ -9,6 +9,9 @@ public class ProcedureUpdateRequest {
     @Schema(example = "MRDT")
     public String procedureType;
 
+    @Schema(example = "MRDT")
+    public String procedureName;
+
     @Schema(example = "LabTest")
     public String category;
 

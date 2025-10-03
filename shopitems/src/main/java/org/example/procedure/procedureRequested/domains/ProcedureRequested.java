@@ -22,6 +22,9 @@ public class ProcedureRequested extends PanacheEntity {
     public String procedureRequestedType;
 
     @Column(nullable = false)
+    public String procedureRequestedName;
+
+    @Column(nullable = false)
     public String category;
 
     // Quantity of lab tests requested

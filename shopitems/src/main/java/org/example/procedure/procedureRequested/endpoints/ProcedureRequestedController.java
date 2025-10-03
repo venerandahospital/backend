@@ -74,6 +74,17 @@ public class ProcedureRequestedController {
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, ultrasoundScanProcedureRequested)).build();
     }
 
+    @GET
+    @Path("get-all-lab-procedures")
+    @Operation(summary = "get-all-lab", description = "get-all-lab")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureRequestedDTO.class)))
+    public Response getAllLabRequests() {
+        List<ProcedureRequestedDTO> labProcedureRequested = procedureRequestedService.getAllLabTestProcedures();
+
+        // Return a successful response with the list of DTOs
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, labProcedureRequested)).build();
+    }
+
     @PUT
     @Path("update-procedure-requested/{id}")
     //@RolesAllowed({"ADMIN","CUSTOMER"})

@@ -36,7 +36,7 @@ public class FooterHelperUsReport implements IEventHandler {
 
             // Main footer text
             Paragraph mainFooter = new Paragraph()
-                    .add("- Department of Medical Diagnostics - Veneranda Medical (A subsidiary of Veneranda Hospital) - System Generated -")
+                    .add("- Department of Medical Diagnostics - For any Inquires call the Radiographer on 0784411848 - System Generated -")
                     .setFontSize(8)
                     .setMarginBottom(3)
                     .setTextAlignment(TextAlignment.CENTER);

@@ -14,14 +14,14 @@ public class ProcedureDTO {
     public BigDecimal unitSellingPrice;
     //public List<ItemDTO> itemsUsed;
 
-    public ProcedureDTO(Procedure labTest){
-        this.id = labTest.id;
-        this.procedureType = labTest.procedureType;
-        this.procedureName = labTest.procedureName;
-        this.category = labTest.category;
-        this.description = labTest.description;
-        this.unitCostPrice = labTest.unitCostPrice;
-        this.unitSellingPrice = labTest.unitSellingPrice;
+    public ProcedureDTO(Procedure procedure){
+        this.id = procedure.id;
+        this.procedureType = procedure.procedureType;
+        this.procedureName = procedure.procedureName;
+        this.category = procedure.category;
+        this.description = procedure.description;
+        this.unitCostPrice = procedure.unitCostPrice;
+        this.unitSellingPrice = procedure.unitSellingPrice;
         // Mapping lists with proper null check and stream processing
        /*this.itemsUsed = labTest.getItemsUsed() != null ?
                 labTest.getItemsUsed().stream()

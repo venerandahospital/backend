@@ -1,5 +1,6 @@
 package org.example.procedure.procedureRequested.services;
 
+import io.quarkus.hibernate.orm.panache.Panache;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,8 @@ import org.example.diagnostics.ultrasoundScan.generalUs.services.GeneralUsServic
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.invoice.services.InvoiceService;
 import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
+import org.example.lab.singleStatementReport.malaria.domains.Malaria;
+import org.example.lab.singleStatementReport.malaria.services.MalariaService;
 import org.example.procedure.itemUsedInProcedure.services.ItemUsedService;
 import org.example.procedure.procedure.domains.Procedure;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
@@ -19,6 +22,7 @@ import org.example.procedure.procedureRequested.domains.repositories.ProcedureRe
 import org.example.procedure.procedureRequested.services.payloads.requests.ProcedureRequestedRequest;
 import org.example.procedure.procedureRequested.services.payloads.requests.ProcedureRequestedUpdateRequest;
 import org.example.procedure.procedureRequested.services.payloads.responses.ProcedureRequestedDTO;
+import org.example.user.domains.User;
 import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
@@ -41,9 +45,13 @@ public class ProcedureRequestedService {
     @Inject
     GeneralUsService generalUsService;
 
+    @Inject
+    MalariaService malariaService;
+
     public static final String NOT_FOUND = "Not found!";
     public static final String VISIT_CLOSED = "Not found!";
 
+    @Transactional
     public Response createNewProcedureRequested(Long visitID, ProcedureRequestedRequest request) {
         // Fetch the PatientVisit and Procedure in one go
         PatientVisit patientVisit = PatientVisit.findById(visitID);
@@ -82,6 +90,10 @@ public class ProcedureRequestedService {
             }
         }
 
+        /*User user = User.find(
+                "role = ?1",
+                "sono"
+        ).firstResult();*/
 
 
 
@@ -120,9 +132,9 @@ public class ProcedureRequestedService {
 
         // Check if a ProcedureRequested with the same procedure and visit already exists
         ProcedureRequested existingProcedureRequested = ProcedureRequested.find(
-                "visit.id = ?1 and procedureRequestedType  = ?2 and unitSellingPrice = ?3",
+                "visit.id = ?1 and procedureRequestedName  = ?2 and unitSellingPrice = ?3",
                 patientVisit.id,
-                procedure.procedureType,
+                procedure.procedureName,
                 request.unitSellingPrice
         ).firstResult();
 
@@ -149,12 +161,13 @@ public class ProcedureRequestedService {
             procedureRequested.report = "";
             procedureRequested.procedureId = request.procedureId;
             procedureRequested.orderedBy = request.orderedBy;
-            procedureRequested.doneBy = request.doneBy;
+            //procedureRequested.doneBy = user.username;
             procedureRequested.unitSellingPrice = request.unitSellingPrice;
             procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(request.unitSellingPrice);
             procedureRequested.visit = patientVisit;
             procedureRequested.procedureRequestedType = procedure.procedureType;
-            procedureRequested.exam = procedure.procedureType;
+            procedureRequested.procedureRequestedName = procedure.procedureName;
+            procedureRequested.exam = procedure.procedureName;
             procedureRequested.status = "pending";
             procedureRequested.bgColor = "rgb(26, 139, 204)";
 
@@ -166,11 +179,14 @@ public class ProcedureRequestedService {
 
             itemUsedService.performProcedure(request.procedureId);
 
-            if(Objects.equals(procedureRequested.category, "imaging")){
+            if(Objects.equals(procedureRequested.procedureRequestedType, "ultrasoundscan")){
                 generalUsService.createGeneralUsReport(procedureRequested);
 
             }
+            if(Objects.equals(procedureRequested.procedureRequestedType, "malariatest")){
+                malariaService.createMrdtReport(procedureRequested);
 
+            }
 
             //return new ProcedureRequestedDTO(procedureRequested);
             return Response.ok(new ResponseMessage("New procedure request made successfully", new ProcedureRequestedDTO(procedureRequested))).build();
@@ -216,6 +232,7 @@ public class ProcedureRequestedService {
                     procedureRequested.unitSellingPrice = procedure.unitSellingPrice;
                     procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(procedure.unitSellingPrice);
                     procedureRequested.procedureRequestedType = procedure.procedureType;
+                    procedureRequested.procedureRequestedName = procedure.procedureName;
                     procedureRequested.updateDate = LocalDate.now();
 
                     proceduresRequestedRepository.persist(procedureRequested);
@@ -240,7 +257,19 @@ public class ProcedureRequestedService {
     }
 
 
+    public List<ProcedureRequestedDTO> getAllLabTestProcedures() {
+        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        List<ProcedureRequested> labTests = ProcedureRequested.find(
+                "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
+                "LabTest"
 
+        ).list();
+
+        // Convert the results to a list of ProcedureRequestedDTO
+        return labTests.stream()
+                .map(ProcedureRequestedDTO::new)
+                .toList();
+    }
 
 
 
@@ -390,6 +419,12 @@ public class ProcedureRequestedService {
 
         ).firstResult();
 
+        Malaria malaria = Malaria.find(
+                "procedureRequested.id = ?1",
+                id
+
+        ).firstResult();
+
         if ("closed".equals(procedureRequested.visit.visitStatus)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ResponseMessage("Visit is closed. You cannot add anything. Please Open a new visit or contact Admin on 0784411848: ", null))
@@ -397,12 +432,28 @@ public class ProcedureRequestedService {
         }
 
         if (Objects.equals(procedureRequested.category, "imaging")) {
-            if ((generalUs.findings == null || generalUs.findings.isEmpty()) && (generalUs.impression == null || generalUs.impression.isEmpty()) &&
-                    (generalUs.indication == null || generalUs.indication.isEmpty())) {
+            if (generalUs == null || ((generalUs.findings == null || generalUs.findings.isEmpty()) && (generalUs.impression == null || generalUs.impression.isEmpty()) &&
+                    (generalUs.indication == null || generalUs.indication.isEmpty()))) {
                 GeneralUs.delete("procedureRequested.id", id);
+                Panache.getEntityManager().flush(); // 👈 force flush children deletion
+
             }else {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(new ResponseMessage("Cannot delete scan report with findings ", null))
+                        .build();
+            }
+
+        }
+
+        if (Objects.equals(procedureRequested.procedureRequestedType, "malariatest")) {
+            if (malaria == null || ((malaria.bs == null || malaria.bs.trim().isEmpty()) && (malaria.mrdt == null || malaria.mrdt.trim().isEmpty()))
+                    ) {
+                Malaria.delete("procedureRequested.id", id);
+                Panache.getEntityManager().flush(); // 👈 force flush children deletion
+
+            }else {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Cannot delete MALARIA report with bs or mrdt results ", null))
                         .build();
             }
 

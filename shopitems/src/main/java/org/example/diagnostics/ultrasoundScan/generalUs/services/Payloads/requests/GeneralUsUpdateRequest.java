@@ -8,7 +8,7 @@ public class GeneralUsUpdateRequest {
     @Schema(example = "Lap and Abdominal Distention")
     public String indication;
 
-    @Schema(example = "Mr.Muwanguzi Joel")
+    @Schema(example = "Mr.judith uthung")
     public String doneBy;
 
     @Schema(example = "Abdominal Scan")

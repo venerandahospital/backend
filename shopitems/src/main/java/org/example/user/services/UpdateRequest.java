@@ -6,6 +6,8 @@ public class UpdateRequest {
 
     public String email;
 
+    public String contact;
+
     public String profilePic;
 
 }

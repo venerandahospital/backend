@@ -22,7 +22,13 @@ public class User extends PanacheEntity {
     public String role;
 
     @Column
+    public String status;
+
+    @Column
     public String profilePic;
+
+    @Column
+    public String contact;
 
     public User() {
     }
