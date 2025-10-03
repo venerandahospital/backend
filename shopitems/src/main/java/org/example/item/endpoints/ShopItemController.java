@@ -108,6 +108,15 @@ public class ShopItemController {
     }
 
     @GET
+    @Path("/get-all-Items-stock-below-reorder")
+    @Transactional
+    @Operation(summary = "get-all-Items-stock-below-reorder", description = "get-all-Items-stock-below-reorder")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = Item.class)))
+    public Response getShopItemsWithStockBelowReorder() {
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,shopItemService.getAllItemsWithStockAtHandBelowReOrderLevels())).build();
+    }
+
+    @GET
     @Path("/get-Items-advanced-search")
     //@RolesAllowed({"ADMIN","USER","AGENT"})
     @Operation(summary = "get shop items advanced search", description = "get shop items advanced search.")

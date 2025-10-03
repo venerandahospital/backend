@@ -82,6 +82,13 @@ public class ShopItemService {
 
     }
 
+    @Transactional
+    public List<Item> getAllItemsWithStockAtHandBelowReOrderLevels() {
+        return itemRepository.find("stockAtHand < reOrderLevel", Sort.descending("id"))
+                .list();
+    }
+
+
 
     @Transactional
     public List<Item> addShopItems(List<ShopItemRequest> requests) {
