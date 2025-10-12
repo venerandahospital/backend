@@ -318,7 +318,7 @@ public class ProcedureService {
     public List<ProcedureDTO> getLabTestProcedures(){
         List<Procedure> labTests = Procedure.find(
                 "category = ?1 ORDER BY id DESC",
-                "LabTest"
+                "labtest"
         ).list();
 
         // Convert ProcedureRequested entities to ProcedureDTO
@@ -343,7 +343,7 @@ public class ProcedureService {
     public List<ProcedureDTO> getOtherProcedures() {
         List<Procedure> otherProcedures = Procedure.find(
                 "category NOT IN (?1, ?2) ORDER BY id DESC",
-                "imaging", "LabTest"
+                "imaging", "labtest"
         ).list();
 
         // Convert Procedure entities to ProcedureDTO

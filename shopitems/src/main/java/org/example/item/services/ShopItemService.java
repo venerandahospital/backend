@@ -84,7 +84,7 @@ public class ShopItemService {
 
     @Transactional
     public List<Item> getAllItemsWithStockAtHandBelowReOrderLevels() {
-        return itemRepository.find("stockAtHand < reOrderLevel", Sort.descending("id"))
+        return itemRepository.find("stockAtHand <= reOrderLevel", Sort.descending("id"))
                 .list();
     }
 

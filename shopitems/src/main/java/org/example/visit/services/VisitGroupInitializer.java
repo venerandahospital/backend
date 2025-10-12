@@ -4,7 +4,6 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -16,13 +15,19 @@ public class VisitGroupInitializer {
     PatientVisitService patientVisitService;
 
     void onStart(@Observes StartupEvent ev) {
-        try {
-            patientVisitService.updateAllVisitGroupsAndFinancialsFromPatients();
-            patientVisitService.fixProcedureRequestedNames();
+        LOG.info("Application started successfully. Visit group updates are disabled at startup for performance reasons.");
 
-            LOG.info("Visit groups initialized successfully");
-        } catch (Exception e) {
-            LOG.error("Failed to initialize visit groups", e);
-        }
+        // Uncomment the below line if you want to run in background (optional)
+
+        new Thread(() -> {
+            try {
+                //patientVisitService.updateAllVisitGroupsAndFinancialsFromPatients();
+                //patientVisitService.fixProcedureRequestedNames();
+                LOG.info("Visit groups and procedure names updated successfully (background run).");
+            } catch (Exception e) {
+                LOG.error("Error during background initialization", e);
+            }
+        }).start();
+
     }
 }

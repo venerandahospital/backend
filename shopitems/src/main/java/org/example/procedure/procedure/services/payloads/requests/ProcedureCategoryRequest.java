@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class ProcedureCategoryRequest {
 
-    @Schema(example = "labTest")
+    @Schema(example = "labtest")
     public String procedureCategory;
 
     @Schema(example = "for laTest")

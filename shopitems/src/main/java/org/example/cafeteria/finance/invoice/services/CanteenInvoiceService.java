@@ -286,7 +286,7 @@ public class CanteenInvoiceService {
 
         List<ProcedureRequested> labTestsProcedures = ProcedureRequested.find(
                 "category = ?1 and visit.id = ?2 ORDER BY id DESC",
-                "LabTest",
+                "labtest",
                 visitId
         ).list();
 
@@ -300,7 +300,7 @@ public class CanteenInvoiceService {
 
         List<ProcedureRequested> otherProcedures = ProcedureRequested.find(
                 "category NOT IN (?1, ?2, ?3) and visit.id = ?4 ORDER BY id DESC",
-                "LabTest",      // First category to exclude
+                "labtest",      // First category to exclude
                 "imaging",      // Second category to exclude
                 "consultation", // Third category to exclude
                 visitId         // Visit ID filter

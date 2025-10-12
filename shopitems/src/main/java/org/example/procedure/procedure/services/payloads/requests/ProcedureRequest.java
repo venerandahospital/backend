@@ -12,7 +12,7 @@ public class ProcedureRequest {
     @Schema(example = "mrdt")
     public String procedureName;
 
-    @Schema(example = "LabTest")
+    @Schema(example = "labtest")
     public String category;
 
     @Schema(example = "check for pass cells")

@@ -106,7 +106,7 @@ public class InitialTriageVitalsService {
 
 
     public List<InitialTriageVitalsDTO> getInitialTriageVitalsByVisitId(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<InitialTriageVitals> initialTriageVitals = InitialTriageVitals.find(
                 "visit.id = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
                 visitId

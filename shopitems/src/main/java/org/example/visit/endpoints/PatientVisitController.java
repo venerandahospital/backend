@@ -68,6 +68,17 @@ public class PatientVisitController {
     }
 
     @PUT
+    @Path("/fix-procedure-requested-names")
+    @Operation(summary = "Fix missing procedure requested names", description = "Updates all ProcedureRequested records where the name is null or empty, setting it to the procedure type or a fallback value.")
+    @APIResponse(description = "Successful",responseCode = "200",content = @Content(schema = @Schema(implementation = ResponseMessage.class)))
+    @Transactional
+    public Response fixProcedureRequestedNames() {
+        patientVisitService.fixProcedureRequestedNames();
+        return Response.ok(new ResponseMessage("ProcedureRequested names fixed successfully")).build();
+    }
+
+
+    @PUT
     @Path("update-patient-visit-status/{id}")
     //@RolesAllowed({"ADMIN","CUSTOMER"})
     @Transactional

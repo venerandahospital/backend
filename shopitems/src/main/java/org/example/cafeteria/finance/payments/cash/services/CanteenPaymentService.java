@@ -185,7 +185,7 @@ public class CanteenPaymentService {
 
 
     public List<CanteenPaymentDTO> getPaymentsByVisitId(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<CanteenPayments> visitPayments = CanteenPayments.find(
                 "visit.id = ?1", // Replace 'id' with your desired field for sorting
                 visitId

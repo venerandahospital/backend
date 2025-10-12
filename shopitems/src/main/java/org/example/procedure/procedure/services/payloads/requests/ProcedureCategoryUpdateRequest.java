@@ -4,7 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class ProcedureCategoryUpdateRequest {
 
-    @Schema(example = "labTest")
+    @Schema(example = "labtest")
     public String procedureCategory;
 
     @Schema(example = "for laTest")

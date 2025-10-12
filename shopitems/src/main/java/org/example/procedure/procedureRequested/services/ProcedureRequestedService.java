@@ -243,10 +243,10 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getLabTestProceduresByVisit(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<ProcedureRequested> labTestProcedures = ProcedureRequested.find(
                 "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "LabTest",
+                "labtest",
                 visitId
         ).list();
 
@@ -258,10 +258,10 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getAllLabTestProcedures() {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<ProcedureRequested> labTests = ProcedureRequested.find(
                 "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "LabTest"
+                "labtest"
 
         ).list();
 
@@ -274,7 +274,7 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getAllUltrasoundScanProcedures() {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
                 "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
                 "imaging"
@@ -294,7 +294,7 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getUltrasoundScanProceduresByVisit(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is "LabTest" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
         List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
                 "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
                 "imaging",
@@ -309,10 +309,10 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getNonLabTestNonUltrasoundProceduresByVisit(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is neither "LabTest" nor "Ultrasound" and visit ID matches, ordered descending
+        // Query for ProcedureRequested where procedureRequestedType is neither "labtest" nor "Ultrasound" and visit ID matches, ordered descending
         List<ProcedureRequested> procedures = ProcedureRequested.find(
                 "category NOT IN (?1, ?2, ?3) and visit.id = ?4 ORDER BY id DESC",
-                "LabTest",
+                "labtest",
                 "imaging",
                 "consultation",
                 visitId
@@ -328,7 +328,7 @@ public class ProcedureRequestedService {
     public BigDecimal getLabTestProceduresAndSumByVisit(Long visitId) {
         List<ProcedureRequested> labTestProcedures = ProcedureRequested.find(
                 "category = ?1 and visit.id = ?2 ORDER BY id DESC",
-                "LabTest",
+                "labtest",
                 visitId
         ).list();
 
@@ -385,7 +385,7 @@ public class ProcedureRequestedService {
 
         List<ProcedureRequested> labTestsProcedures = ProcedureRequested.find(
                 "category = ?1 and visit.id = ?2 ORDER BY id DESC",
-                "LabTest",
+                "labtest",
                 visitId
         ).list();
 
