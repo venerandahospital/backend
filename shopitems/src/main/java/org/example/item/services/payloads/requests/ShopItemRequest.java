@@ -15,7 +15,6 @@ public class ShopItemRequest {
     @Schema(example = "Artesunate 30mg IV")
     public String title;
 
-
     @Schema(example = "This is the best and cheapest ladies hand bag ont he market ang that arches with most dresse")
     public String description;
 
@@ -34,8 +33,6 @@ public class ShopItemRequest {
     @Schema(example = "50")
     public Integer reOrderLevel;
 
-    @Schema(example = "50")
-    public Integer shelfNumber;
 
     @Schema(example = "500")
     public BigDecimal costPrice;

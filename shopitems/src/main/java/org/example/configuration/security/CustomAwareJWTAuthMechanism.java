@@ -97,6 +97,8 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/diagnostics-management/scan/generate-pdf/") ||
                 request.path().contains("/course/diagnostics-management/get-malaria-report-by-request-id/") ||
                 request.path().contains("/course/diagnostics-management/update-malaria-report/") ||
+                request.path().contains("/course/shop-item/update-shelfNumbers") ||
+
 
 
                 request.path().contains("/course/Patient-management/get-all-consultations") ||

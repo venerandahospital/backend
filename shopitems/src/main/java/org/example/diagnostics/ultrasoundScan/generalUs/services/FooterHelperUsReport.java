@@ -35,15 +35,22 @@ public class FooterHelperUsReport implements IEventHandler {
                     );
 
             // Main footer text
-            Paragraph mainFooter = new Paragraph()
+            /*Paragraph mainFooter = new Paragraph()
                     .add("- Department of Medical Diagnostics - For any Inquires call the Radiographer on 0784411848 - System Generated -")
                     .setFontSize(8)
                     .setMarginBottom(3)
+                    .setTextAlignment(TextAlignment.CENTER);*/
+
+            // Contact information
+            Paragraph inquiries = new Paragraph()
+                    .add("For any inquiries or suggestions about the report call on Tel: +256 784 411 848 or +256 7049 687 36 or email us at venerandamedical@gmail.com")
+                    .setFontSize(8)
+                    .setMarginBottom(1)
                     .setTextAlignment(TextAlignment.CENTER);
 
             // Contact information
             Paragraph contactInfo = new Paragraph()
-                    .add("Bugogo Village, Kyegegwa | Tel: +256 784 411 848 | Email: venerandahospital@gmail.com")
+                    .add("Bugogo Town Council, Kyegegwa District | Tel: +256 784 411 848 | Email: venerandahospital@gmail.com")
                     .setFontSize(7)
                     .setMarginBottom(1)
                     .setTextAlignment(TextAlignment.CENTER);
@@ -56,7 +63,7 @@ public class FooterHelperUsReport implements IEventHandler {
                     .setTextAlignment(TextAlignment.CENTER);
 
             // Add all elements to footer container
-            footerContainer.add(mainFooter);
+            footerContainer.add(inquiries);
             footerContainer.add(contactInfo);
             footerContainer.add(thankYou);
 

@@ -14,6 +14,21 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
+
+
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.property.*;
+import com.itextpdf.kernel.pdf.*;
+//import com.itextpdf.kernel.html.HtmlConverter;
+//import com.itextpdf.layout.borders.*;
+
+import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
+
 import io.quarkus.panache.common.Sort;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,6 +36,12 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.example.client.domains.Patient;
+
+
+
+
+
+
 
 import org.example.client.domains.PatientGroup;
 import org.example.configuration.handler.ResponseMessage;
@@ -179,7 +200,7 @@ public class GeneralUsService {
     public Response generateAndReturnScanReportPdf(Long procedureRequestedId) {
 
         try {
-             // Find the patient visit
+            // Find the patient visit
             ProcedureRequested procedureRequestedScan = ProcedureRequested.findById(procedureRequestedId);
             if (procedureRequestedScan == null) {
                 //throw new IllegalArgumentException("Visit not found.");
@@ -196,7 +217,7 @@ public class GeneralUsService {
 
 
             // Find the patient visit
-             Patient patient = Patient.findById(generalUs.visit.patient.id);
+            Patient patient = Patient.findById(generalUs.visit.patient.id);
             if (patient == null) {
                 //throw new IllegalArgumentException("Visit not found.");
                 return Response.status(Response.Status.NOT_FOUND)
@@ -379,25 +400,21 @@ public class GeneralUsService {
                     )// 6 rows tall, 1 column wide
                     .add("\n")
 
-                            // FINDINGS section
-                            .add(new Paragraph()
-                                    .add(new Text("FINDINGS:")
-                                            .setUnderline()
-                                            .setBold()  // Only the title is bold
-                                    )
-                                    .setFontSize(10)
-                                    .setTextAlignment(TextAlignment.LEFT)
+                    // FINDINGS section
+                    .add(new Paragraph()
+                            .add(new Text("FINDINGS:")
+                                    .setUnderline()
+                                    .setBold()  // Only the title is bold
                             )
-                            // FINDINGS content (normal weight)
-                            .add(new Paragraph(generalUs.findings)
-                                    .setFontSize(12)
-                                    .setTextAlignment(TextAlignment.LEFT)
-                            )
+                            .setFontSize(10)
+                            .setTextAlignment(TextAlignment.LEFT)
+                    )
+                    // FINDINGS content (normal weight)
+                    .add(new Paragraph(generalUs.findings)
+                            .setFontSize(12)
+                            .setTextAlignment(TextAlignment.LEFT)
+                    )
                     .add("\n")
-   
-
-
-
 
 
                     .setTextAlignment(TextAlignment.LEFT)
@@ -462,7 +479,7 @@ public class GeneralUsService {
                             .setBold()
                             .setFontSize(10)
                     )
-                    .add(new Paragraph(generalUs.doneBy)
+                    .add(new Paragraph(generalUs.doneBy.toUpperCase())
                             .setFontSize(12)
                             .setMarginTop(5)
                     )
@@ -552,7 +569,6 @@ public class GeneralUsService {
             throw new RuntimeException(e);
         }
     }
-
 
 
 

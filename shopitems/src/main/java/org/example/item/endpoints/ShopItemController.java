@@ -168,6 +168,17 @@ public class ShopItemController {
         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,shopItemService.updateShopItemById(id, request) )).build();
     }
 
+    @PUT
+    @Path("/update-shelfNumbers")
+// @RolesAllowed({"ADMIN","AGENT"}) // uncomment if needed
+    @Transactional
+    @Operation(summary = "Assign shelf numbers to unnumbered items", description = "Finds the highest existing shelf number, then assigns sequential shelf numbers to all items without one.")
+    @APIResponse(description = "Shelf numbers updated successfully",responseCode = "200")
+    public Response updateShelfNumbers() {
+        shopItemService.assignShelfNumbersToUnnumberedItems();
+        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label)).build();
+    }
+
     @DELETE
     @Path("delete-item/{id}")
     //@RolesAllowed({"ADMIN"})

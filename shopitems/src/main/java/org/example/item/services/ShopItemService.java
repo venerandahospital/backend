@@ -56,31 +56,34 @@ public class ShopItemService {
         shopItem.title = request.title;
         shopItem.number = userAuthService.generateRandomPassword(5);
         shopItem.category = request.category;
-        shopItem.shelfNumber = request.shelfNumber;
         shopItem.subCategory = request.subCategory;
         shopItem.description = request.description;
         shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
         shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
         shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
-
         shopItem.image = request.image;
-
         shopItem.lastUnitOfMeasure = request.lastUnitOfMeasure;
         shopItem.lastUnitValue = request.lastUnitValue;
-
-
-
         shopItem.unitOfMeasure = request.unitOfMeasure;
         shopItem.reOrderLevel = request.reOrderLevel;
-
         shopItem.creationDate = LocalDate.now();
-        //shopItem.expiryDate = request.expiryDate;
+
+        // ✅ Find the highest shelf number and assign +1
+        Integer highestShelfNumber = itemRepository.find("SELECT MAX(shelfNumber) FROM Item")
+                .project(Integer.class)
+                .firstResult();
+
+        if (highestShelfNumber == null) {
+            highestShelfNumber = 0;
+        }
+
+        shopItem.shelfNumber = highestShelfNumber + 1;
 
         itemRepository.persist(shopItem);
-
         return shopItem;
-
     }
+
+
 
     @Transactional
     public List<Item> getAllItemsWithStockAtHandBelowReOrderLevels() {
@@ -94,10 +97,19 @@ public class ShopItemService {
     public List<Item> addShopItems(List<ShopItemRequest> requests) {
         List<Item> createdItems = new ArrayList<>();
 
+        // ✅ Find the highest existing shelf number once before the loop
+        Integer highestShelfNumber = itemRepository.find("SELECT MAX(shelfNumber) FROM Item")
+                .project(Integer.class)
+                .firstResult();
+
+        if (highestShelfNumber == null) {
+            highestShelfNumber = 0;
+        }
+
+        // ✅ Create and assign shelf numbers incrementally
         for (ShopItemRequest request : requests) {
             Item shopItem = new Item();
             shopItem.title = request.title;
-            shopItem.shelfNumber = request.shelfNumber;
             shopItem.number = userAuthService.generateRandomPassword(5);
             shopItem.category = request.category;
             shopItem.subCategory = request.subCategory;
@@ -107,11 +119,14 @@ public class ShopItemService {
             shopItem.costPrice = request.costPrice != null ? request.costPrice : BigDecimal.valueOf(0);
             shopItem.sellingPrice = request.sellingPrice != null ? request.sellingPrice : BigDecimal.valueOf(0);
             shopItem.stockAtHand = request.stockAtHand != null ? request.stockAtHand : BigDecimal.valueOf(0);
-
             shopItem.image = request.image;
             shopItem.unitOfMeasure = request.unitOfMeasure;
             shopItem.reOrderLevel = request.reOrderLevel;
             shopItem.creationDate = LocalDate.now();
+
+            // ✅ Assign next shelf number
+            highestShelfNumber++;
+            shopItem.shelfNumber = highestShelfNumber;
 
             itemRepository.persist(shopItem);
             createdItems.add(shopItem);
@@ -119,6 +134,33 @@ public class ShopItemService {
 
         return createdItems;
     }
+
+
+    @Transactional
+    public void assignShelfNumbersToUnnumberedItems() {
+        // Step 1: Find the highest shelf number
+        Integer maxShelfNumber = itemRepository.find("SELECT MAX(shelfNumber) FROM Item").project(Integer.class).firstResult();
+
+        if (maxShelfNumber == null) {
+            maxShelfNumber = 0;
+        }
+
+        // Step 2: Find all items without a shelf number
+        List<Item> unassignedItems = itemRepository.find("shelfNumber IS NULL OR shelfNumber = 0 ORDER BY id").list();
+
+        // Step 3: Assign new shelf numbers starting from (maxShelfNumber + 1)
+        int nextShelfNumber = maxShelfNumber + 1;
+        for (Item item : unassignedItems) {
+            item.shelfNumber = nextShelfNumber++;
+        }
+
+        // Step 4: Persist changes in one batch
+        itemRepository.persist(unassignedItems);
+        itemRepository.flush();
+
+        // Step 5: Return updated items
+    }
+
 
 
 
@@ -404,7 +446,7 @@ public class ShopItemService {
 
                     shopItem.title = request.title;
                     shopItem.description = request.description;
-                    shopItem.shelfNumber = request.shelfNumber;
+
                     shopItem.category = request.category;
                     shopItem.subCategory = request.subCategory;
                     shopItem.lastUnitOfMeasure = request.lastUnitOfMeasure;
