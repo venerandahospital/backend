@@ -89,8 +89,11 @@ public class StockService {
 
 
     @Transactional
-    public List<Stock> getAllStockReceives() {
-        return stockRepository.listAll(Sort.descending("id"));
+    public List<StockDTO> getAllStockReceives() {
+        return stockRepository.listAll(Sort.descending("id"))
+                .stream()
+                .map(StockDTO::new)
+                .toList();
     }
 
 

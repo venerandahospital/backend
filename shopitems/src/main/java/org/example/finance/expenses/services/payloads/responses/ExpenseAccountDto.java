@@ -1,30 +1,40 @@
 package org.example.finance.expenses.services.payloads.responses;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import org.example.finance.expenses.domains.ExpenseAccount;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ExpenseAccountDto {
-
     public Long id;
+    public Long categoryId;
     public String accountName;
     public String expenseCategoryName;
     public String description;
+    
+    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate dateOfAccountCreation;
+    
+    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate dateOfAccountUpdate;
+    
     public LocalTime timeOfAccountCreation;
 
-
-    // Constructor to map LabTestsRequested to LabTestsRequestedDTO
     public ExpenseAccountDto(ExpenseAccount expenseAccount) {
-        this.dateOfAccountCreation = expenseAccount.dateOfAccountCreation;
-        this.timeOfAccountCreation = expenseAccount.timeOfAccountCreation;
-        this.id = expenseAccount.id;
-        this.expenseCategoryName = expenseAccount.expenseCategoryName;
-        this.accountName = expenseAccount.accountName;
-        this.description = expenseAccount.description;
-        this.dateOfAccountUpdate = expenseAccount.dateOfAccountUpdate;
-
+        if (expenseAccount != null) {
+            this.id = expenseAccount.id;
+            this.categoryId = expenseAccount.category != null ? expenseAccount.category.id : null;
+            this.accountName = expenseAccount.accountName;
+            this.expenseCategoryName = expenseAccount.expenseCategoryName;
+            this.description = expenseAccount.description;
+            this.dateOfAccountCreation = expenseAccount.dateOfAccountCreation;
+            this.dateOfAccountUpdate = expenseAccount.dateOfAccountUpdate;
+            this.timeOfAccountCreation = expenseAccount.timeOfAccountCreation;
+        }
     }
 }
+
+
+
+

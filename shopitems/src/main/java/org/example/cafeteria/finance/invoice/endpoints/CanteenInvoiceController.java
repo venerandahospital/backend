@@ -13,9 +13,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
-import org.example.finance.invoice.services.InvoiceService;
-import org.example.finance.invoice.services.payloads.requests.InvoiceUpdateRequest;
+import org.example.cafeteria.finance.invoice.services.CanteenInvoiceService;
+import org.example.cafeteria.finance.invoice.services.payloads.requests.CanteenInvoiceUpdateRequest;
+import org.example.cafeteria.finance.invoice.services.payloads.responses.CanteenInvoiceDTO;
 import org.example.statics.StatusTypes;
 
 import java.math.BigDecimal;
@@ -32,14 +32,14 @@ public class CanteenInvoiceController {
 
 
     @Inject
-    InvoiceService invoiceService;
+    CanteenInvoiceService invoiceService;
 
 
     @POST
     @Path("create-new-canteen-Invoice/{id}")
     @Transactional
     @Operation(summary = "new-invoice", description = "new-invoice")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InvoiceDTO.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = CanteenInvoiceDTO.class)))
     public Response createNewInvoice(@PathParam("id") Long visitId) {
         return Response.ok(new ResponseMessage(StatusTypes.CREATED.label, invoiceService.createInvoice(visitId))).build();
     }
@@ -84,10 +84,10 @@ public class CanteenInvoiceController {
     @APIResponse(
             description = "Successful",
             responseCode = "200",
-            content = @Content(schema = @Schema(implementation = InvoiceDTO.class, type = SchemaType.ARRAY))
+            content = @Content(schema = @Schema(implementation = CanteenInvoiceDTO.class, type = SchemaType.ARRAY))
     )
     public Response getAllInvoices() {
-        List<InvoiceDTO> invoiceList = invoiceService.getAllInvoices();
+        List<CanteenInvoiceDTO> invoiceList = invoiceService.getAllInvoices();
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, invoiceList)).build();
     }
 
@@ -101,7 +101,7 @@ public class CanteenInvoiceController {
     @APIResponse(
             description = "Successful",
             responseCode = "200",
-            content = @Content(schema = @Schema(implementation = InvoiceDTO.class))
+            content = @Content(schema = @Schema(implementation = CanteenInvoiceDTO.class))
     )
     public Response getInvoiceByVisitId(@PathParam("visitId") Long visitId) {
 
@@ -114,9 +114,9 @@ public class CanteenInvoiceController {
     //@RolesAllowed({"ADMIN", "CUSTOMER"})
     @Transactional
     @Operation(summary = "Update invoice", description = "Update an existing invoice by ID.")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = InvoiceDTO.class)))
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = CanteenInvoiceDTO.class)))
     @APIResponse(description = "Invoice not found", responseCode = "404")
-    public Response updateInvoice(@PathParam("id") Long id, InvoiceUpdateRequest request) {
+    public Response updateInvoice(@PathParam("id") Long id, CanteenInvoiceUpdateRequest request) {
             return invoiceService.updateInvoice(id, request);
 
     }

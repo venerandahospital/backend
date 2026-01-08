@@ -32,35 +32,12 @@ public class PaymentDTO {
         this.status = payments.status;
         this.dateOfPayment = payments.dateOfPayment;
         this.timeOfPayment = payments.timeOfPayment;
-
     }
-
-    // Getters and Setters
-
-
-    public LocalDate getDateOfPayment() {
-        return dateOfPayment;
-    }
-
-    public void setDateOfPayment(LocalDate dateOfPayment) {
-        this.dateOfPayment = dateOfPayment;
-    }
-
-
-    public LocalTime getTimeOfPayment() {
-        return timeOfPayment;
-    }
-
-    public void setTimeOfPayment(LocalTime timeOfPayment) {
-        this.timeOfPayment = timeOfPayment;
-    }
-
-
-
 
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -76,32 +53,8 @@ public class PaymentDTO {
     public BigDecimal getAmountToPay() {
         return amountToPay;
     }
-
-    public void setAmountToPay(BigDecimal amountToPay) {
-        this.amountToPay = amountToPay;
-    }
-
-    public String getPaymentForm() {
-        return paymentForm;
-    }
-
-    public void setPaymentForm(String paymentForm) {
-        this.paymentForm = paymentForm;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
+
+
+
+

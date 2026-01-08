@@ -10,11 +10,11 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.example.cafeteria.sales.saleDone.services.SaleService;
+import org.example.cafeteria.sales.saleDone.services.payloads.requests.SaleRequest;
+import org.example.cafeteria.sales.saleDone.services.payloads.responses.SaleDTO;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.cafeteria.sales.saleDone.services.SaleService;
-import org.example.cafeteria.sales.saleDone.services.payloads.responses.SaleDTO;
-import org.example.cafeteria.sales.saleDone.services.payloads.requests.SaleRequest;
 
 import java.util.List;
 

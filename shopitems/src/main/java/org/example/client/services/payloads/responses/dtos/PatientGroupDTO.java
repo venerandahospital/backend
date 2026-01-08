@@ -12,8 +12,7 @@ public class PatientGroupDTO {
     public String groupEmail;
     public String groupContact;
 
-
-    public PatientGroupDTO(PatientGroup patientGroup){
+    public PatientGroupDTO(PatientGroup patientGroup) {
         this.id = patientGroup.id;
         this.groupName = patientGroup.groupName;
         this.description = patientGroup.description;
@@ -21,11 +20,9 @@ public class PatientGroupDTO {
         this.groupAddress = patientGroup.groupAddress;
         this.groupEmail = patientGroup.groupEmail;
         this.groupContact = patientGroup.groupContact;
-
-
-
-
-
     }
-
 }
+
+
+
+

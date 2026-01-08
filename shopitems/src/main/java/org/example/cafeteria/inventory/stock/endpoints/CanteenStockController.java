@@ -11,11 +11,11 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.example.configuration.handler.ActionMessages;
-import org.example.configuration.handler.ResponseMessage;
 import org.example.cafeteria.inventory.stock.services.CanteenStockService;
 import org.example.cafeteria.inventory.stock.services.requests.CanteenStockTakeRequest;
 import org.example.cafeteria.inventory.stock.services.responses.dtos.CanteenStockDTO;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 
 @Path("/Cafeteria-stock-item")
 @Produces(MediaType.APPLICATION_JSON)

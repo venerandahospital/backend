@@ -9,10 +9,10 @@ import org.example.finance.payments.cash.domains.Payments;
 @ApplicationScoped
 public class PaymentsRepository implements PanacheRepository<Payments> {
 
-        @Transactional
-        public void hardDeleteById(Long id) {
-            deleteById(id);
-        }
+    @Transactional
+    public void hardDeleteById(Long id) {
+        deleteById(id);
+    }
 
     @Transactional
     public int deletePaymentById(Long id) {
@@ -23,8 +23,5 @@ public class PaymentsRepository implements PanacheRepository<Payments> {
         // Execute the query and return the number of rows affected
         return query.executeUpdate();
     }
-
-
-    }
-
+}
 

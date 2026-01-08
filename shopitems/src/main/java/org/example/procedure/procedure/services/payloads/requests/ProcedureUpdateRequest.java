@@ -5,22 +5,25 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.math.BigDecimal;
 
 public class ProcedureUpdateRequest {
-
-    @Schema(example = "MRDT")
+    @Schema(example = "labtest")
     public String procedureType;
 
-    @Schema(example = "MRDT")
-    public String procedureName;
-
-    @Schema(example = "labtest")
+    @Schema(example = "Hematology")
     public String category;
 
-    @Schema(example = "check for pass cells")
+    @Schema(example = "Complete Blood Count")
+    public String procedureName;
+
+    @Schema(example = "A test that measures different components of blood")
     public String description;
 
-    @Schema(example = "2000.0")
-    public BigDecimal unitCostPrice;
-
-    @Schema(example = "5000.0")
+    @Schema(example = "5000")
     public BigDecimal unitSellingPrice;
+
+    @Schema(example = "3000")
+    public BigDecimal unitCostPrice;
 }
+
+
+
+

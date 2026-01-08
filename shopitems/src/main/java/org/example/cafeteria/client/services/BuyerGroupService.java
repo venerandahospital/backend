@@ -6,12 +6,12 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
-import org.example.configuration.handler.ResponseMessage;
 import org.example.cafeteria.client.domains.BuyerGroup;
 import org.example.cafeteria.client.domains.repositories.BuyerGroupRepository;
 import org.example.cafeteria.client.services.payloads.requests.BuyerGroupRequest;
 import org.example.cafeteria.client.services.payloads.requests.BuyerGroupUpdateRequest;
 import org.example.cafeteria.client.services.payloads.responses.dtos.PatientGroupDTO;
+import org.example.configuration.handler.ResponseMessage;
 
 import java.time.LocalDate;
 import java.util.List;

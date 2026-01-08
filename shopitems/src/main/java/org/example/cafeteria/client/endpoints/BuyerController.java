@@ -11,13 +11,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.example.configuration.handler.ActionMessages;
-import org.example.configuration.handler.ResponseMessage;
 import org.example.cafeteria.client.domains.Buyer;
 import org.example.cafeteria.client.services.BuyerService;
 import org.example.cafeteria.client.services.payloads.requests.BuyerRequest;
 import org.example.cafeteria.client.services.payloads.requests.BuyerUpdateRequest;
 import org.example.cafeteria.client.services.payloads.responses.dtos.PatientDTO;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 
 import java.util.List;
 

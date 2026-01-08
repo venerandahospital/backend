@@ -7,3 +7,7 @@ import org.example.lab.singleStatementReport.malaria.domains.Malaria;
 @ApplicationScoped
 public class MalariaRepository implements PanacheRepository<Malaria> {
 }
+
+
+
+

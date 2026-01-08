@@ -10,6 +10,8 @@ public class StockDTO {
 
     public Long id;
     public Long itemId;
+    public String store;
+    public String title;
     public BigDecimal quantityReceived;
     public BigDecimal unitCostPrice;
     public BigDecimal totalCostPrice;
@@ -36,6 +38,8 @@ public class StockDTO {
         this.newQuantity = stock.newQuantity;
         this.expiryDate = stock.expiryDate;
         this.receiveDate = stock.receiveDate;
+        this.store = stock.store;
+        this.title = stock.item.title;
     }
 
     // Getters and Setters

@@ -2,35 +2,29 @@ package org.example.diagnostics.ultrasoundScan.generalUs.services.Payloads.reque
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-
 public class GeneralUsRequest {
-
-    @Schema(example = "1")
-    public Long visitId;
-
-    @Schema(example = "2")
-    public Long procedureRequestedId;
-
-    @Schema(example = "Lap and Abdominal Distention")
+    @Schema(example = "Abdominal pain")
     public String indication;
 
-    @Schema(example = "1")
-    public Long patientId;
-
-    @Schema(example = "Mr.Muwanguzi Joel")
+    @Schema(example = "Dr. John Doe")
     public String doneBy;
 
-    @Schema(example = "Abdominal Scan")
-    public String exam;
-
-    @Schema(example = "The urinary bladder is well distended with thick wall thickness and internal echoes noted")
-    public String findings;
-
-    @Schema(example = "Mild organomegaly")
-    public String impression;
-
-    @Schema(example = "Urinalysis recommended")
+    @Schema(example = "Follow up in 2 weeks")
     public String recommendation;
 
+    @Schema(example = "General Ultrasound Scan Report")
+    public String scanReportTitle;
 
+    @Schema(example = "Abdominal Ultrasound")
+    public String exam;
+
+    @Schema(example = "Normal findings")
+    public String findings;
+
+    @Schema(example = "No abnormalities detected")
+    public String impression;
 }
+
+
+
+

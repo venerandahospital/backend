@@ -15,7 +15,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.finance.payments.cash.services.payloads.requests.PaymentParametersRequest;
+//import org.example.finance.payments.cash.services.payloads.requests.PaymentParametersRequest;
 import org.example.statics.StatusTypes;
 import org.example.visit.domains.PatientVisit;
 import org.example.visit.services.*;

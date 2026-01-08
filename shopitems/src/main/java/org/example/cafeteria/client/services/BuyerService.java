@@ -9,8 +9,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
-import org.example.configuration.handler.ActionMessages;
-import org.example.configuration.handler.ResponseMessage;
 import org.example.cafeteria.client.domains.Buyer;
 import org.example.cafeteria.client.domains.BuyerGroup;
 import org.example.cafeteria.client.domains.repositories.BuyerGroupRepository;
@@ -20,6 +18,8 @@ import org.example.cafeteria.client.services.payloads.requests.BuyerRequest;
 import org.example.cafeteria.client.services.payloads.requests.BuyerUpdateRequest;
 import org.example.cafeteria.client.services.payloads.responses.FullBuyerResponse;
 import org.example.cafeteria.client.services.payloads.responses.dtos.PatientDTO;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

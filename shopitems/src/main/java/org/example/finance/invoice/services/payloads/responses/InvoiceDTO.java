@@ -1,29 +1,30 @@
 package org.example.finance.invoice.services.payloads.responses;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import org.example.client.domains.Patient;
+import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.finance.invoice.domains.Invoice;
 import org.example.finance.payments.cash.services.payloads.responses.PaymentDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InvoiceDTO {
 
     public Long id;
     public Long visitId;
-
     public LocalTime timeOfCreation;
     public String invoiceNo;
     public int invoicePlainNo;
-    public Long patientId;  // Uncomment if needed
-
+    public Long patientId;
+    
     @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate dateOfInvoice;
-
+    
     public BigDecimal balanceDue;
     public String tin;
     public String companyLogo;
@@ -39,21 +40,15 @@ public class InvoiceDTO {
     public BigDecimal totalAmount;
     public BigDecimal amountPaid;
     public String notes;
-    //public Patient patient;
-
-    // New field for payments
+    
+    public PatientDTO patient;
     public List<PaymentDTO> payments;
-    public Patient patient;
 
-    // Constructor to map from Invoice entity
     public InvoiceDTO(Invoice invoice) {
         if (invoice != null) {
-            // Safely map the properties
-            this.id = invoice.getId();  // Assuming getId() is non-nullable
-            this.visitId = (invoice.visit != null) ? invoice.visit.id : null;
-            this.patientId = (invoice.patient != null) ? invoice.patient.id : null;
-            //this.patient = (invoice.patient != null) ? invoice.patient : null;
-
+            this.id = invoice.getId();
+            this.visitId = invoice.visit != null ? invoice.visit.id : null;
+            this.patientId = invoice.patient != null ? invoice.patient.id : null;
             this.timeOfCreation = invoice.timeOfCreation != null ? invoice.timeOfCreation : LocalTime.now();
             this.invoiceNo = invoice.invoiceNo != null ? invoice.invoiceNo : "N/A";
             this.invoicePlainNo = invoice.invoicePlainNo;
@@ -66,21 +61,22 @@ public class InvoiceDTO {
             this.toName = invoice.toName != null ? invoice.toName : "N/A";
             this.fromAddress = invoice.fromAddress != null ? invoice.fromAddress : "Bugogo Town Council";
             this.toAddress = invoice.toAddress != null ? invoice.toAddress : "Bugogo Town Council";
-            this.reference = invoice.reference != null ? invoice.reference : generateRandomReferenceNo(20); // Or some default logic
+            this.reference = invoice.reference != null ? invoice.reference : generateRandomReferenceNo(20);
             this.subTotal = invoice.subTotal != null ? invoice.subTotal : BigDecimal.ZERO;
             this.discount = invoice.discount != null ? invoice.discount : BigDecimal.ZERO;
             this.tax = invoice.tax != null ? invoice.tax : BigDecimal.ZERO;
             this.totalAmount = invoice.totalAmount != null ? invoice.totalAmount : BigDecimal.ZERO;
             this.amountPaid = invoice.amountPaid != null ? invoice.amountPaid : BigDecimal.ZERO;
             this.notes = invoice.notes != null ? invoice.notes : "No Notes";
-
-            // Map payments to DTOs, handle null payments list
-            this.payments = (invoice.getPayments() != null) ?
-                    invoice.getPayments().stream()
-                            .map(PaymentDTO::new)
-                            .collect(Collectors.toList()) : null;
+            
+            this.patient = invoice.patient != null ? new PatientDTO(invoice.patient) : null;
+            
+            this.payments = Optional.ofNullable(invoice.getPayments())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(PaymentDTO::new)
+                    .collect(Collectors.toList());
         } else {
-            // Handle the case where invoice is null (if needed, set defaults or throw an exception)
             this.id = null;
             this.visitId = null;
             this.timeOfCreation = LocalTime.now();
@@ -102,12 +98,12 @@ public class InvoiceDTO {
             this.totalAmount = BigDecimal.ZERO;
             this.amountPaid = BigDecimal.ZERO;
             this.notes = "No Notes";
+            this.patient = null;
             this.payments = null;
         }
     }
 
     private String generateRandomReferenceNo(int length) {
-        // Implement a random reference number generator if needed
         return "REF" + Math.random();
     }
 
@@ -115,3 +111,4 @@ public class InvoiceDTO {
         return this.id;
     }
 }
+

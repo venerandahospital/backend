@@ -1,7 +1,7 @@
 package org.example.cafeteria.inventory.stock.services.responses.dtos;
 
-import org.example.cafeteria.inventory.stock.domains.CanteenStock;
 import jakarta.json.bind.annotation.JsonbDateFormat;
+import org.example.cafeteria.inventory.stock.domains.CanteenStock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

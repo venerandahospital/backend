@@ -67,21 +67,14 @@ public class ShopItemController {
     @Path("/add-new-bulk-items")  // Tip: lowercase "items" for consistency
     //@RolesAllowed({"ADMIN"})
     @Transactional
-    @Operation(
-            summary = "Add multiple shop items",
-            description = "Adds a list of new shop items."
-    )
-    @APIResponse(
-            description = "Successful",
-            responseCode = "200",
-            content = @Content(schema = @Schema(implementation = ShopItemResponse.class)) // You can use an array schema if needed
+    @Operation(summary = "Add multiple shop items",description = "Adds a list of new shop items.")
+    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ShopItemResponse.class))// You can use an array schema if needed
     )
     public Response addShopItems(List<ShopItemRequest> requests) {
         return Response.ok(
                 new ResponseMessage(ActionMessages.SAVED.label, shopItemService.addShopItems(requests))
         ).build();
     }
-
 
 
 

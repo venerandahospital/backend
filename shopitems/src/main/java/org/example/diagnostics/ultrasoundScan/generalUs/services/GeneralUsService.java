@@ -39,10 +39,6 @@ import org.example.client.domains.Patient;
 
 
 
-
-
-
-
 import org.example.client.domains.PatientGroup;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.consultations.services.payloads.responses.ConsultationDTO;
@@ -160,7 +156,7 @@ public class GeneralUsService {
             procedureRequested.procedureRequestedType = generalUs.exam;
             procedureRequested.status = "Done";
             procedureRequested.doneBy = request.doneBy;
-            procedureRequested.bgColor = "rgba(206, 7, 17, 1)";
+            procedureRequested.bgColor = "rgb(11, 155, 112)";
         }
 
         procedureRequestedRepository.persist(procedureRequested);
@@ -252,9 +248,9 @@ public class GeneralUsService {
             PdfWriter pdfWriter = new PdfWriter(baos);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-            pdfDocument.addEventHandler(PdfDocumentEvent.END_PAGE, new FooterHelperUsReport());
-
             Document document = new Document(pdfDocument);
+            // Set narrow margins for printing (15 points = ~0.21 inches)
+            document.setMargins(10, 10, 10, 10);
 
             // Add invoice title
             Table invoiceTitle = new Table(new float[]{1});
@@ -271,7 +267,7 @@ public class GeneralUsService {
                     )
                     .setBorder(Border.NO_BORDER)
                     .setPaddingBottom(15)
-                    .add(new Paragraph("Department of Medical Diagnostics - Veneranda Medical (A subsidiary of Veneranda Hospital)")
+                    .add(new Paragraph("Department of Medical Diagnostics-Veneranda Medical (A subsidiary of Veneranda Hospital) Address:Bugogo Town Council-Kyegegwa.\n For inquiries / suggestions call: 0784411848 / 0704968736. Email:venerandahospital@gmail.com.")
                             .setFontSize(7)
                             //.setItalic()
                             .setMarginTop(3)
@@ -406,15 +402,15 @@ public class GeneralUsService {
                                     .setUnderline()
                                     .setBold()  // Only the title is bold
                             )
-                            .setFontSize(10)
+                            .setFontSize(9)
                             .setTextAlignment(TextAlignment.LEFT)
                     )
                     // FINDINGS content (normal weight)
                     .add(new Paragraph(generalUs.findings)
-                            .setFontSize(12)
+                            .setFontSize(11)
                             .setTextAlignment(TextAlignment.LEFT)
                     )
-                    .add("\n")
+                    
 
 
                     .setTextAlignment(TextAlignment.LEFT)
@@ -429,46 +425,47 @@ public class GeneralUsService {
 
             document.add(totalsTable);
 
-            // Create a 2-column table with 60-40 width ratio
-            Table impressionTable = new Table(new float[]{3, 2});
+            // Create a single-column table with full width
+            Table impressionTable = new Table(new float[]{1});
             impressionTable.setWidthPercent(100);
-            impressionTable.setMarginBottom(15);
+            impressionTable.setMarginBottom(1);
 
+            // IMPRESSION row - full width
             impressionTable.addCell(new Cell()
                     .setBorder(Border.NO_BORDER)
                     .setPadding(5)
                     .add(new Paragraph("IMPRESSION:")
                             .setUnderline()
                             .setBold()
-                            .setFontSize(10)
+                            .setFontSize(8)
                     )
                     .add(new Paragraph(generalUs.impression)
-                            .setFontSize(12)
-                            .setMarginTop(5)
+                            .setFontSize(10)
+                            .setMarginTop(3)
                     )
             );
 
-// Right Column - RECOMMENDATIONS
-            impressionTable.addCell(new Cell()
-                    .setBorder(Border.NO_BORDER)
-                    .setPadding(5)
-                    .add(new Paragraph("RECOMMENDATIONS:")
-                            .setUnderline()
-                            .setBold()
-                            .setFontSize(10)
-                    )
-                    .add(new Paragraph(generalUs.recommendation)
-                            .setFontSize(12)
-                            .setMarginTop(5)
-                    )
-            );
+            // RECOMMENDATIONS row - full width (only if recommendation exists)
+            if (generalUs.recommendation != null && !generalUs.recommendation.trim().isEmpty()) {
+                impressionTable.addCell(new Cell()
+                        .setBorder(Border.NO_BORDER)
+                        .setPadding(5)
+                        .add(new Paragraph()
+                                .add(new Text("NB:RECOMMENDATIONS: ")
+                                        .setUnderline()
+                                        .setBold())
+                                .add(new Text(generalUs.recommendation))
+                                .setFontSize(8)
+                        )
+                );
+            }
 
             document.add(impressionTable);
 
             // Create a 2-column table with 60-40 width ratio
             Table initialsTable = new Table(new float[]{3, 2});
             initialsTable.setWidthPercent(100);
-            initialsTable.setMarginBottom(15);
+            initialsTable.setMarginBottom(1);
 
 // Left Column - IMPRESSION
             initialsTable.addCell(new Cell()
@@ -480,8 +477,8 @@ public class GeneralUsService {
                             .setFontSize(10)
                     )
                     .add(new Paragraph(generalUs.doneBy.toUpperCase())
-                            .setFontSize(12)
-                            .setMarginTop(5)
+                            .setFontSize(8)
+                            .setMarginTop(1)
                     )
             );
 
@@ -494,10 +491,7 @@ public class GeneralUsService {
                             .setBold()
                             .setFontSize(10)
                     )
-                    .add(new Paragraph(".............................................")
-                            .setFontSize(12)
-                            .setMarginTop(5)
-                    )
+
             );
 
             document.add(initialsTable);
@@ -516,6 +510,7 @@ public class GeneralUsService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 
     // Utility method to create cells with alignment

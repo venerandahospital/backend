@@ -10,17 +10,13 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.border.SolidBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.*;
-
-
-import java.awt.*;
-
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.property.HorizontalAlignment;
-
-
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -28,18 +24,19 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.example.cafeteria.client.domains.BuyerGroup;
 import org.example.cafeteria.client.services.BuyerService;
-import org.example.configuration.handler.ActionMessages;
-import org.example.configuration.handler.ResponseMessage;
+import org.example.cafeteria.finance.invoice.domains.CanteenInvoice;
+import org.example.cafeteria.finance.invoice.domains.repositories.CanteenInvoiceRepository;
+import org.example.cafeteria.finance.invoice.services.payloads.requests.CanteenInvoiceUpdateRequest;
+import org.example.cafeteria.finance.invoice.services.payloads.responses.CanteenInvoiceDTO;
+import org.example.cafeteria.finance.payments.cash.services.CanteenPaymentService;
 import org.example.cafeteria.sales.saleDay.domains.SaleDay;
 import org.example.cafeteria.sales.saleDay.domains.repository.SaleDayRepository;
-import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.cafeteria.sales.saleDone.domains.Sale;
-import org.example.cafeteria.finance.invoice.domains.repositories.CanteenInvoiceRepository;
-import org.example.cafeteria.finance.invoice.domains.CanteenInvoice;
-import org.example.cafeteria.finance.invoice.services.payloads.responses.CanteenInvoiceDTO;
-import org.example.cafeteria.finance.invoice.services.payloads.requests.CanteenInvoiceUpdateRequest;
-import org.example.cafeteria.finance.payments.cash.services.CanteenPaymentService;
+import org.example.configuration.handler.ActionMessages;
+import org.example.configuration.handler.ResponseMessage;
+import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -47,8 +44,8 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @ApplicationScoped
 public class CanteenInvoiceService {

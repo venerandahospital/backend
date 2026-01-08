@@ -1,8 +1,8 @@
 package org.example.cafeteria.finance.invoice.services.payloads.responses;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import org.example.cafeteria.finance.payments.cash.services.payloads.responses.CanteenPaymentDTO;
 import org.example.cafeteria.finance.invoice.domains.CanteenInvoice;
+import org.example.cafeteria.finance.payments.cash.services.payloads.responses.CanteenPaymentDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

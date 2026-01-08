@@ -21,10 +21,9 @@ public class Stock extends PanacheEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)  // Auto-delete stock when item is deleted
     public Item item;
 
+
     @Column
     public String store;
-
-
 
     @Column
     public String lastUnitOfMeasure;

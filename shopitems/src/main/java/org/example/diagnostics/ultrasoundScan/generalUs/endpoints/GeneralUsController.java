@@ -57,6 +57,7 @@ public class GeneralUsController {
         return generalUsService.generateAndReturnScanReportPdf(procedureRequestedId);
     }
 
+
     @GET
     @Path("get-scan-report-by-request-id/{id}")
     //@RolesAllowed({"ADMIN","CUSTOMER","md"})

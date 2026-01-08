@@ -1,9 +1,9 @@
 package org.example.client.services.payloads.responses.dtos;
+
 import org.example.client.domains.Patient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
 
 public class PatientDTO {
     public Long id;
@@ -22,27 +22,21 @@ public class PatientDTO {
     public String nextOfKinName;
     public String nextOfKinContact;
     public String relationship;
-    public String occupation;
-    public String groupName;
-
     public Long patientGroupId;
     public BigDecimal totalAmountDue;
-
     public String nextOfKinAddress;
+    public String occupation;
+
 
     public PatientDTO(Patient patient) {
         this.id = patient.id;
-        this.patientGroupId = patient.patientGroup!= null ? patient.patientGroup.id : null;
+        this.patientGroupId = patient.patientGroup != null ? patient.patientGroup.id : null;
         this.patientFirstName = patient.patientFirstName;
         this.patientSecondName = patient.patientSecondName;
         this.patientAddress = patient.patientAddress;
         this.patientContact = patient.patientContact;
         this.patientGender = patient.patientGender;
         this.patientAge = patient.patientAge;
-        this.occupation = patient.occupation;
-        this.groupName = patient.patientGroup!= null ? patient.patientGroup.groupNameShortForm : null;
-
-
         this.patientDateOfBirth = patient.patientDateOfBirth;
         this.patientProfilePic = patient.patientProfilePic;
         this.creationDate = patient.creationDate;
@@ -54,6 +48,10 @@ public class PatientDTO {
         this.relationship = patient.relationship;
         this.totalAmountDue = patient.totalAmountDue;
         this.nextOfKinAddress = patient.nextOfKinAddress;
+        this.occupation = patient.occupation;
     }
 }
+
+
+
 
