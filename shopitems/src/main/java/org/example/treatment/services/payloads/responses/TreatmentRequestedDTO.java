@@ -10,13 +10,12 @@ public class TreatmentRequestedDTO {
     public BigDecimal quantity;
     public BigDecimal unitSellingPrice;
     public BigDecimal totalAmount;
+    public BigDecimal unitCostPrice;
     public BigDecimal provisionalTotalAmount;
     public String itemName;
     public Integer shelfNumber;
     public BigDecimal provisionalQuantity;
     public BigDecimal totalUnits;
-
-
 
     public BigDecimal availableQuantity;
 
@@ -59,14 +58,12 @@ public class TreatmentRequestedDTO {
         this.totalUnits = treatmentRequested.totalUnits;
 
 
-
-
         this.durationUnit = treatmentRequested.durationUnit;
 
 
         this.lastUpDateQuantity = treatmentRequested.lastUpDateQuantity;
         this.quantity = treatmentRequested.quantity;
-        this.shelfNumber = treatmentRequested.shelfNumber;
+        this.shelfNumber = treatmentRequested.getShelfNumber(); // Use getter method
         this.availableQuantity = treatmentRequested.availableQuantity;
         this.unitBuy = treatmentRequested.unitBuy;
 
@@ -74,6 +71,7 @@ public class TreatmentRequestedDTO {
         this.unitSellingPrice = treatmentRequested.unitSellingPrice;
         this.provisionalTotalAmount = treatmentRequested.provisionalTotalAmount;
         this.totalAmount = treatmentRequested.totalAmount;
+        this.unitCostPrice = treatmentRequested.unitBuy;
         this.itemName = treatmentRequested.itemName;
 
     }

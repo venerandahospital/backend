@@ -1,12 +1,14 @@
 package org.example.cafeteria.inventory.item.services;
 
-import com.itextpdf.io.IOException;
+import java.io.IOException;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
@@ -32,7 +34,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -175,7 +181,7 @@ public class CanteenItemService {
             Document document = new Document(pdfDocument);
 
             Table table = new Table(6);
-            table.setWidthPercent(100);
+            table.setWidth(UnitValue.createPercentValue(100));
 
             Cell[] headerCells = {
                     createCell("Number"),
@@ -211,13 +217,13 @@ public class CanteenItemService {
                     .header("Content-Disposition", "attachment; filename=shop_items.pdf")
                     .type("application/pdf")
                     .build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     private Cell createCell(String content) {
-        return new Cell().add(content);
+        return new Cell().add(new Paragraph(content));
     }
 
 

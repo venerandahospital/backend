@@ -1,17 +1,24 @@
 package org.example.client.services;
 
-import com.itextpdf.io.IOException;
+import java.io.IOException;
+
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.color.DeviceRgb;
+
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.border.Border;
-import com.itextpdf.layout.border.SolidBorder;
-import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
@@ -46,15 +53,16 @@ import org.example.treatment.domains.TreatmentRequested;
 import org.example.treatment.services.payloads.responses.TreatmentRequestedDTO;
 import org.example.visit.domains.PatientVisit;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 
 @ApplicationScoped
@@ -322,8 +330,6 @@ public class PatientService {
             return logo;
         } catch (IOException e) {
             throw new RuntimeException("Failed to load the logo image.", e);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException(e);
         }
     }
 /*@Transactional
@@ -395,7 +401,7 @@ public class PatientService {
 
             // Add invoice title
             Table invoiceTitle = new Table(new float[]{1});
-            invoiceTitle.setWidthPercent(100);
+            invoiceTitle.setWidth(UnitValue.createPercentValue(100));
             invoiceTitle.addCell(new Cell()
                     .add(new Div()
                             .setBorderBottom(new SolidBorder(1)) // Underline (1px solid line)
@@ -418,7 +424,7 @@ public class PatientService {
 
             // Add header: Logo and Invoice Details
             Table headerTable = new Table(new float[]{1, 1, 1, 2, 1});
-            headerTable.setWidthPercent(100);
+            headerTable.setWidth(UnitValue.createPercentValue(100));
 
             // Add logo
             headerTable.addCell(new Cell()
@@ -481,42 +487,42 @@ public class PatientService {
             // Add items table
             float[] columnWidths = {4, 1, 2, 2};
             Table itemsTable = new Table(columnWidths);
-            itemsTable.setWidthPercent(100);
+            itemsTable.setWidth(UnitValue.createPercentValue(100));
 
             // Add header with no column lines
             itemsTable.addCell(createCell("CLIENT NAME", 1, TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("SERVICE", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("AMOUNT TO PAY (UGX)", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("AMOUNT PAID (UGX)", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("BALANCE DUE (UGX)", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
 
@@ -527,9 +533,9 @@ public class PatientService {
             List<PatientDTO> patientDTOs = result.patients();
 
             for (PatientDTO patientDto : patientDTOs) {
-                com.itextpdf.kernel.color.Color rowColor = isEvenRow
-                        ? com.itextpdf.kernel.color.Color.WHITE
-                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+                com.itextpdf.kernel.colors.Color rowColor = isEvenRow
+                        ? ColorConstants.WHITE
+                        : ColorConstants.LIGHT_GRAY;
 
                 itemsTable.addCell(createCell(patientDto.patientFirstName.toUpperCase() + " " + patientDto.patientSecondName.toUpperCase() , 1, TextAlignment.LEFT)
                         .setFontSize(7)
@@ -566,9 +572,9 @@ public class PatientService {
 
             // Add rows for TreatmentRequested
             /*for (TreatmentRequested treatmentRequested : invoice.visit.getTreatmentRequested()) {
-                com.itextpdf.kernel.color.Color rowColor = isEvenRow
-                        ? com.itextpdf.kernel.color.Color.WHITE
-                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+                com.itextpdf.kernel.colors.Color rowColor = isEvenRow
+                        ? ColorConstants.WHITE
+                        : ColorConstants.LIGHT_GRAY;
 
                 itemsTable.addCell(createCell(treatmentRequested.itemName.toUpperCase(), 1, TextAlignment.LEFT)
                         .setFontSize(7)
@@ -604,13 +610,13 @@ public class PatientService {
 
             // Add totals table
             Table totalsTable = new Table(new float[]{4, 2, 2});
-            totalsTable.setWidthPercent(100);
+            totalsTable.setWidth(UnitValue.createPercentValue(100));
 
             //PatientGroupDTO patientDTO = patientGroupService.getPatientGroupById(1);
 
 
             Cell notesCell1 = new Cell(6, 1)
-                    .add(("\n IMPRESSION / DIAGNOSIS: " ))
+                    .add(new Paragraph("\n IMPRESSION / DIAGNOSIS: " ))
                     .setTextAlignment(TextAlignment.LEFT)
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
@@ -625,13 +631,13 @@ public class PatientService {
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
                     .setBold()
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell(String.valueOf(totalDebt), 1, TextAlignment.RIGHT)
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
                     .setBold()
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             // Add discount row
             totalsTable.addCell(createCell("DISCOUNT:", 1, TextAlignment.LEFT)
@@ -659,13 +665,13 @@ public class PatientService {
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell("500000", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             // Add amount paid row
             totalsTable.addCell(createCell("AMOUNT PAID:", 1, TextAlignment.LEFT)
@@ -683,13 +689,13 @@ public class PatientService {
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell("1200000", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             document.add(totalsTable);
 
@@ -703,7 +709,7 @@ public class PatientService {
                     .type("application/pdf")
                     .build();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -745,7 +751,8 @@ public class PatientService {
                 logo.scaleToFit(80, 80);
                 logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            } catch (IOException | MalformedURLException e) {
+            } catch (IOException e) {
+                document.close();
                 throw new RuntimeException("Failed to load the logo image.", e);
             }
 
@@ -774,19 +781,19 @@ public class PatientService {
             Table infoTable = new Table(UnitValue.createPercentArray(new float[]{1, 2, 1, 2}))
                     .useAllAvailableWidth()
                     .setMarginTop(15);
-            infoTable.addCell(createCell("FROM:", 3, TextAlignment.LEFT).setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
-            infoTable.addCell(createCell("TO:", 3, TextAlignment.LEFT).setBold().setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
-            infoTable.addCell(createCell("VENERANDA MEDICAL", 3, TextAlignment.LEFT).setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
-            infoTable.addCell(createCell("TIN: ", 3, TextAlignment.LEFT).setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
-            infoTable.addCell(createCell(invoice.toName, 3, TextAlignment.LEFT).setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
-            infoTable.addCell(createCell("EMAIL: ", 3, TextAlignment.LEFT).setBorder(com.itextpdf.layout.border.Border.NO_BORDER));
+            infoTable.addCell(createCell("FROM:", 3, TextAlignment.LEFT).setBorder(Border.NO_BORDER));
+            infoTable.addCell(createCell("TO:", 3, TextAlignment.LEFT).setBold().setBorder(Border.NO_BORDER));
+            infoTable.addCell(createCell("VENERANDA MEDICAL", 3, TextAlignment.LEFT).setBorder(Border.NO_BORDER));
+            infoTable.addCell(createCell("TIN: ", 3, TextAlignment.LEFT).setBorder(Border.NO_BORDER));
+            infoTable.addCell(createCell(invoice.toName, 3, TextAlignment.LEFT).setBorder(Border.NO_BORDER));
+            infoTable.addCell(createCell("EMAIL: ", 3, TextAlignment.LEFT).setBorder(Border.NO_BORDER));
             document.add(infoTable);
 
             // Invoice Items
             Table itemsTable = new Table(UnitValue.createPercentArray(new float[]{4, 1, 1, 1}))
                     .useAllAvailableWidth()
                     .setMarginTop(15)
-                    .setBackgroundColor(new DeviceRgb(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue()));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY);
             itemsTable.addHeaderCell("Item");
             itemsTable.addHeaderCell("Qty");
             itemsTable.addHeaderCell("Unit Price (UGX)");

@@ -1,14 +1,18 @@
 package org.example.cafeteria.finance.invoice.services;
 
-import com.itextpdf.io.IOException;
+import java.io.IOException;
+
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.color.DeviceRgb;
+
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.border.Border;
-import com.itextpdf.layout.border.SolidBorder;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
@@ -36,16 +40,19 @@ import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class CanteenInvoiceService {
@@ -535,8 +542,6 @@ public class CanteenInvoiceService {
             return logo;
         } catch (IOException e) {
             throw new RuntimeException("Failed to load the logo image.", e);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -599,7 +604,7 @@ public class CanteenInvoiceService {
 
             // Add invoice title
             Table invoiceTitle = new Table(new float[]{1});
-            invoiceTitle.setWidthPercent(100);
+            invoiceTitle.setWidth(UnitValue.createPercentValue(100));
             invoiceTitle.addCell(new Cell()
                     .add(new Paragraph("STATEMENT")
                             .setBold()
@@ -612,7 +617,7 @@ public class CanteenInvoiceService {
 
             // Add header: Logo and Invoice Details
             Table headerTable = new Table(new float[]{1, 1, 1, 2, 1});
-            headerTable.setWidthPercent(100);
+            headerTable.setWidth(UnitValue.createPercentValue(100));
 
             // Add logo
             headerTable.addCell(new Cell()
@@ -681,35 +686,35 @@ public class CanteenInvoiceService {
             // Add items table
             float[] columnWidths = {4, 1, 2, 2};
             Table itemsTable = new Table(columnWidths);
-            itemsTable.setWidthPercent(100);
+            itemsTable.setWidth(UnitValue.createPercentValue(100));
 
             // Add header with no column lines
             itemsTable.addCell(createCell("ITEM", 1, TextAlignment.LEFT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("QTY", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("UNIT PRICE (UGX)", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             itemsTable.addCell(createCell("TOTAL (UGX)", 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
-                    .setFontColor(com.itextpdf.kernel.color.Color.WHITE)
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.BLACK)
+                    .setFontColor(ColorConstants.WHITE)
+                    .setBackgroundColor(ColorConstants.BLACK)
                     .setBorder(Border.NO_BORDER));
 
             // Add table rows
@@ -741,11 +746,11 @@ public class CanteenInvoiceService {
             boolean isEvenRow = false;
             assert invoice.saleDay != null;
             /*for (ProcedureRequested procedureRequested : invoice.saleDay.getProceduresRequested()) {
-                com.itextpdf.kernel.color.Color rowColor = isEvenRow
-                        ? com.itextpdf.kernel.color.Color.WHITE
-                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+                com.itextpdf.kernel.colors.Color rowColor = isEvenRow
+                        ? ColorConstants.WHITE
+                        : ColorConstants.LIGHT_GRAY;
 
-                itemsTable.addCell(createCell(procedureRequested.procedureRequestedType.toUpperCase(), 1, TextAlignment.LEFT)
+                itemsTable.addCell(createCell(procedureRequested.procedureRequestedName != null ? procedureRequested.procedureRequestedName.toUpperCase() : "", 1, TextAlignment.LEFT)
                         .setFontSize(7)
                         .setBackgroundColor(rowColor)
                         .setBorder(Border.NO_BORDER)
@@ -774,9 +779,9 @@ public class CanteenInvoiceService {
 
             // Add rows for TreatmentRequested
             for (Sale treatmentRequested : invoice.saleDay.getTreatmentRequested()) {
-                com.itextpdf.kernel.color.Color rowColor = isEvenRow
-                        ? com.itextpdf.kernel.color.Color.WHITE
-                        : com.itextpdf.kernel.color.Color.LIGHT_GRAY;
+                com.itextpdf.kernel.colors.Color rowColor = isEvenRow
+                        ? ColorConstants.WHITE
+                        : ColorConstants.LIGHT_GRAY;
 
                 itemsTable.addCell(createCell(treatmentRequested.itemName.toUpperCase(), 1, TextAlignment.LEFT)
                         .setFontSize(7)
@@ -810,11 +815,11 @@ public class CanteenInvoiceService {
 
             // Add totals table
             Table totalsTable = new Table(new float[]{4, 2, 2});
-            totalsTable.setWidthPercent(100);
+            totalsTable.setWidth(UnitValue.createPercentValue(100));
 
 
             Cell notesCell1 = new Cell(6, 1)
-                    .add(("NOTES: " +"\n"+"PATIENT NAME: " +invoice.saleDay.patient.patientFirstName.toUpperCase()+" "+invoice.saleDay.patient.patientSecondName.toUpperCase() ))
+                    .add(new Paragraph("NOTES: " +"\n"+"PATIENT NAME: " +invoice.saleDay.patient.patientFirstName.toUpperCase()+" "+invoice.saleDay.patient.patientSecondName.toUpperCase() ))
                     .setTextAlignment(TextAlignment.LEFT)
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
@@ -840,13 +845,13 @@ public class CanteenInvoiceService {
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
                     .setBold()
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell(invoice.subTotal.toString(), 1, TextAlignment.RIGHT)
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
                     .setBold()
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             // Add discount row
             totalsTable.addCell(createCell("DISCOUNT:", 1, TextAlignment.LEFT)
@@ -874,13 +879,13 @@ public class CanteenInvoiceService {
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell(invoice.totalAmount.toString(), 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             // Add amount paid row
             totalsTable.addCell(createCell("AMOUNT PAID:", 1, TextAlignment.LEFT)
@@ -898,13 +903,13 @@ public class CanteenInvoiceService {
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
             totalsTable.addCell(createCell(invoice.balanceDue.toString(), 1, TextAlignment.RIGHT)
                     .setBold()
                     .setFontSize(7)
                     .setBorder(Border.NO_BORDER)
                     .setBorderBottom(new SolidBorder(1))
-                    .setBackgroundColor(com.itextpdf.kernel.color.Color.LIGHT_GRAY));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
             document.add(totalsTable);
 
@@ -918,7 +923,7 @@ public class CanteenInvoiceService {
                     .type("application/pdf")
                     .build();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -956,7 +961,8 @@ public class CanteenInvoiceService {
                 logo.scaleToFit(80, 80);
                 logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            } catch (IOException | MalformedURLException e) {
+            } catch (IOException e) {
+                document.close();
                 throw new RuntimeException("Failed to load the logo image.", e);
             }
 
@@ -997,7 +1003,7 @@ public class CanteenInvoiceService {
             Table itemsTable = new Table(UnitValue.createPercentArray(new float[]{4, 1, 1, 1}))
                     .useAllAvailableWidth()
                     .setMarginTop(15)
-                    .setBackgroundColor(new DeviceRgb(Color.LIGHT_GRAY.getRed(), Color.LIGHT_GRAY.getGreen(), Color.LIGHT_GRAY.getBlue()));
+                    .setBackgroundColor(ColorConstants.LIGHT_GRAY);
             itemsTable.addHeaderCell("Item");
             itemsTable.addHeaderCell("Qty");
             itemsTable.addHeaderCell("Unit Price (UGX)");
@@ -1068,7 +1074,7 @@ public class CanteenInvoiceService {
             Document document = new Document(pdfDocument);
 
             Table table = new Table(6);
-            table.setWidthPercent(100);
+            table.setWidth(UnitValue.createPercentValue(100));
 
             Cell[] headerCells = {
                     createCell("Number"),

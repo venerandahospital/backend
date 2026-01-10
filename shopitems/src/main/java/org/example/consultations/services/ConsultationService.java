@@ -7,8 +7,15 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.configuration.handler.ResponseMessage;
+import org.example.consultations.domains.Complaint;
+import org.example.consultations.domains.ComplaintRepository;
+import org.example.consultations.domains.ComplaintSite;
+import org.example.consultations.domains.ComplaintSiteRepository;
+import org.example.consultations.domains.ComplaintType;
+import org.example.consultations.domains.ComplaintTypeRepository;
 import org.example.consultations.domains.Consultation;
 import org.example.consultations.domains.ConsultationRepository;
+import org.example.consultations.services.payloads.requests.ComplaintRequest;
 import org.example.consultations.services.payloads.requests.ConsultationRequest;
 import org.example.consultations.services.payloads.responses.ConsultationDTO;
 import org.example.procedure.itemUsedInProcedure.services.ItemUsedService;
@@ -28,6 +35,15 @@ public class ConsultationService {
     ConsultationRepository consultationRepository;
 
     @Inject
+    ComplaintRepository complaintRepository;
+
+    @Inject
+    ComplaintTypeRepository complaintTypeRepository;
+
+    @Inject
+    ComplaintSiteRepository complaintSiteRepository;
+
+    @Inject
     ProcedureRepository procedureRepository;
 
     @Inject
@@ -37,6 +53,57 @@ public class ConsultationService {
     ProcedureRequestedRepository procedureRequestedRepository;
 
     private static final String NOT_FOUND = "Not found!";
+
+    private void processComplaints(Consultation consultation, List<ComplaintRequest> complaintRequests) {
+        if (complaintRequests == null || complaintRequests.isEmpty()) {
+            return;
+        }
+
+        // Clear existing complaints if updating
+        if (consultation.complaints != null && !consultation.complaints.isEmpty()) {
+            consultation.complaints.clear();
+        }
+
+        // Create new complaints from request
+        for (ComplaintRequest complaintRequest : complaintRequests) {
+            Complaint complaint = new Complaint();
+            complaint.consultation = consultation;
+            
+            // Fetch ComplaintSite by ID
+            if (complaintRequest.siteId != null) {
+                ComplaintSite complaintSite = complaintSiteRepository.findById(complaintRequest.siteId);
+                if (complaintSite == null) {
+                    throw new WebApplicationException("ComplaintSite with id " + complaintRequest.siteId + " not found", Response.Status.BAD_REQUEST);
+                }
+                complaint.site = complaintSite;
+            } else {
+                throw new WebApplicationException("ComplaintSite ID is required", Response.Status.BAD_REQUEST);
+            }
+            
+            // Fetch ComplaintType by ID
+            if (complaintRequest.typeId != null) {
+                ComplaintType complaintType = complaintTypeRepository.findById(complaintRequest.typeId);
+                if (complaintType == null) {
+                    throw new WebApplicationException("ComplaintType with id " + complaintRequest.typeId + " not found", Response.Status.BAD_REQUEST);
+                }
+                complaint.type = complaintType;
+            } else {
+                throw new WebApplicationException("ComplaintType ID is required", Response.Status.BAD_REQUEST);
+            }
+            
+            complaint.duration = complaintRequest.duration;
+            complaint.natureCharacter = complaintRequest.natureCharacter;
+            complaint.severity = complaintRequest.severity;
+            complaint.onset = complaintRequest.onset;
+            complaint.courseProgression = complaintRequest.courseProgression;
+            complaint.aggravatingFactors = complaintRequest.aggravatingFactors;
+            complaint.relievingFactors = complaintRequest.relievingFactors;
+            complaint.associatedSymptoms = complaintRequest.associatedSymptoms;
+            complaint.creationDate = LocalDate.now();
+            
+            consultation.complaints.add(complaint);
+        }
+    }
 
     @Transactional
     public Response createNewConsultation(Long visitId, ConsultationRequest request) {
@@ -90,12 +157,15 @@ public class ConsultationService {
             existingConsultation.updateDate = LocalDate.now();
             existingConsultation.medicalHistory = request.medicalHistory;
 
+            // Process complaints
+            processComplaints(existingConsultation, request.complaints);
+
             // Save consultation
             consultationRepository.persist(existingConsultation);
 
 
 
-            if ("consultation".equalsIgnoreCase(procedure.category)) {
+            if ("consultation".equalsIgnoreCase(procedure.category.name)) {
 
 
                 if (consultationAlreadyDone) {
@@ -105,7 +175,7 @@ public class ConsultationService {
 
 
                     return Response.status(Response.Status.CONFLICT)
-                            .entity(new ResponseMessage("Everything Already done, Clinical notes already saved and Consultation fee already billed for this visit", new ConsultationDTO(consultation)))
+                            .entity(new ResponseMessage("Everything Already done, Clinical notes already saved and Consultation fee already billed for this visit", new ConsultationDTO(existingConsultation)))
                             .build();
                 }else{
 
@@ -115,7 +185,7 @@ public class ConsultationService {
 
 
                     return Response.status(Response.Status.CONFLICT)
-                            .entity(new ResponseMessage("Clinical notes already saved and Consultation fee billed successfully for this visit", new ConsultationDTO(consultation)))
+                            .entity(new ResponseMessage("Clinical notes already saved and Consultation fee billed successfully for this visit", new ConsultationDTO(existingConsultation)))
                             .build();
                 }
             }
@@ -149,13 +219,16 @@ public class ConsultationService {
             consultation.creationDate = LocalDate.now();
             consultation.medicalHistory = request.medicalHistory;
 
+            // Process complaints
+            processComplaints(consultation, request.complaints);
+
             // Save consultation
             consultationRepository.persist(consultation);
 
             // Get procedure by category
 
             // Check if it's a consultation category
-            if ("consultation".equalsIgnoreCase(procedure.category)) {
+            if ("consultation".equalsIgnoreCase(procedure.category.name)) {
 
                 if (consultationAlreadyDone) {
                     return Response.status(Response.Status.CONFLICT)

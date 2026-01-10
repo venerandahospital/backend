@@ -8,13 +8,14 @@ import java.math.BigDecimal;
 @Table(name = "ProcedureTable")
 public class Procedure extends PanacheEntity {
 
-
-    @Column(nullable = false)
-    public String procedureType;
+    // Name of the lab test (e.g., "Complete Blood Count")
+    @Column
+    public String procedureName;
 
     // Category of the lab test (e.g., "Hematology", "Biochemistry")
-    @Column
-    public String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    public ProcedureCategory category;
 
     // Description of the lab test, providing additional information on how its done
     @Column(columnDefinition = "TEXT") // Assuming this may be a longer text
@@ -29,9 +30,6 @@ public class Procedure extends PanacheEntity {
     public BigDecimal unitSellingPrice;
 
 
-    // Name of the lab test (e.g., "Complete Blood Count")
-    @Column
-    public String procedureName;
 
 
 }

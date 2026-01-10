@@ -3,11 +3,12 @@ package org.example.procedure.procedure.services.payloads.requests;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class ProcedureCategoryRequest {
-    @Schema(example = "Hematology")
-    public String procedureCategory;
+    
+    @Schema(example = "artesunate")
+    public String name;
 
-    @Schema(example = "Tests related to blood and blood-forming organs")
-    public String categoryDescription;
+    @Schema(example = "1")
+    public Long parentId;
 }
 
 

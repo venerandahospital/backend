@@ -1,6 +1,6 @@
 package org.example.finance.invoice.services;
 
-import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.events.Event;
 import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -65,7 +65,7 @@ public class FooterHelperInvoice implements IEventHandler {
             canvas.add(footerContainer);
 
             // Optional: Add a separator line above footer (position adjusted higher)
-            pdfCanvas.setStrokeColor(Color.BLACK)
+            pdfCanvas.setStrokeColor(ColorConstants.BLACK)
                     .setLineWidth(0.5f)
                     .moveTo(pageSize.getLeft() + 36, 72)  // 72 points from bottom (1 inch)
                     .lineTo(pageSize.getRight() - 36, 72)  // 72 points from bottom (1 inch)

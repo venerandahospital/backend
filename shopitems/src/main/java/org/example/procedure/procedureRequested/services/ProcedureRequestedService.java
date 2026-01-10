@@ -77,7 +77,7 @@ public class ProcedureRequestedService {
         }
 
         // Check if it's a consultation category
-        if ("consultation".equalsIgnoreCase(procedure.category)) {
+        if (procedure.category != null && "consultation".equalsIgnoreCase(procedure.category.name)) {
             boolean consultationAlreadyDone = proceduresRequestedRepository
                     .find("category = ?1 and visit.id = ?2", "consultation", visitID)
                     .firstResultOptional()
@@ -122,7 +122,7 @@ public class ProcedureRequestedService {
 
         // Throw exception if either of them is not found now
 
-        if (procedure.category == null) {
+       if (procedure.category.parent == null ) {
             //throw new IllegalArgumentException(NOT_FOUND); // Handle not found error
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ResponseMessage(procedure.procedureName + " " + "Service has no category, please give it a category and try again", null))
@@ -156,6 +156,7 @@ public class ProcedureRequestedService {
         } else {
             // Otherwise, create a new ProcedureRequested record
             ProcedureRequested procedureRequested = new ProcedureRequested();
+            procedureRequested.procedure = procedure;
             procedureRequested.patientName = patientVisit.patient.patientFirstName+" "+patientVisit.patient.patientSecondName;
             procedureRequested.quantity = request.quantity;
             procedureRequested.report = "";
@@ -165,13 +166,14 @@ public class ProcedureRequestedService {
             procedureRequested.unitSellingPrice = request.unitSellingPrice;
             procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(request.unitSellingPrice);
             procedureRequested.visit = patientVisit;
-            procedureRequested.procedureRequestedType = procedure.procedureType;
+            //procedureRequested.procedureRequestedType = procedure.procedureType;
             procedureRequested.procedureRequestedName = procedure.procedureName;
             procedureRequested.exam = procedure.procedureName;
             procedureRequested.status = "pending";
             procedureRequested.bgColor = "rgb(26, 139, 204)";
 
-            procedureRequested.category = procedure.category;
+            procedureRequested.category = procedure.category != null && procedure.category.parent != null 
+                    ? procedure.category.parent.name : null;
             procedureRequested.dateOfProcedure = java.time.LocalDate.now();
             procedureRequested.timeOfProcedure = java.time.LocalTime.now();
 
@@ -179,11 +181,11 @@ public class ProcedureRequestedService {
 
             itemUsedService.performProcedure(request.procedureId);
 
-            if(Objects.equals(procedureRequested.procedureRequestedType, "ultrasoundscan")){
+            if(procedure.category != null && Objects.equals(procedure.category.name, "ultrasound scan")){
                 generalUsService.createGeneralUsReport(procedureRequested);
 
             }
-            if(Objects.equals(procedureRequested.procedureRequestedType, "malariatest")){
+            if(procedure.category != null && Objects.equals(procedure.category.name, "malaria test")){
                 malariaService.createMrdtReport(procedureRequested);
 
             }
@@ -193,6 +195,40 @@ public class ProcedureRequestedService {
 
         }
     }
+
+    @Transactional
+    public Response updateMissingProcedureReferences() {
+        // Find all ProcedureRequested records where procedure is null but procedureId is not null
+        List<ProcedureRequested> procedureRequestedList = ProcedureRequested.find(
+                "procedure is null and procedureId is not null"
+        ).list();
+
+        int updatedCount = 0;
+        int notFoundCount = 0;
+
+        for (ProcedureRequested procedureRequested : procedureRequestedList) {
+            if (procedureRequested.procedureId != null) {
+                Procedure procedure = Procedure.findById(procedureRequested.procedureId);
+                if (procedure != null) {
+                    procedureRequested.procedure = procedure;
+                    proceduresRequestedRepository.persist(procedureRequested);
+                    updatedCount++;
+                } else {
+                    notFoundCount++;
+                }
+            }
+        }
+
+        String message = String.format(
+                "Update completed. Updated: %d records, Procedure not found for: %d records",
+                updatedCount,
+                notFoundCount
+        );
+
+        return Response.ok(new ResponseMessage(message, null)).build();
+    }
+
+
 
 
 
@@ -231,7 +267,7 @@ public class ProcedureRequestedService {
                     procedureRequested.quantity = request.quantity;
                     procedureRequested.unitSellingPrice = procedure.unitSellingPrice;
                     procedureRequested.totalAmount = BigDecimal.valueOf(request.quantity).multiply(procedure.unitSellingPrice);
-                    procedureRequested.procedureRequestedType = procedure.procedureType;
+                    //procedureRequested.procedureRequestedType = procedure.procedureType;
                     procedureRequested.procedureRequestedName = procedure.procedureName;
                     procedureRequested.updateDate = LocalDate.now();
 
@@ -242,13 +278,21 @@ public class ProcedureRequestedService {
     }
 
 
+
+
+
+
+
+
+
+    
+
+
     public List<ProcedureRequestedDTO> getLabTestProceduresByVisit(Long visitId) {
         // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
-        List<ProcedureRequested> labTestProcedures = ProcedureRequested.find(
-                "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "labtest",
-                visitId
-        ).list();
+        List<ProcedureRequested> labTestProcedures = ProcedureRequested
+                .<ProcedureRequested>find("SELECT DISTINCT p FROM ProcedureRequested p LEFT JOIN FETCH p.procedure LEFT JOIN FETCH p.procedure.category WHERE p.category = ?1 AND p.visit.id = ?2 ORDER BY p.id DESC", "labtest", visitId)
+                .list();
 
         // Convert the results to a list of ProcedureRequestedDTO
         return labTestProcedures.stream()
@@ -259,11 +303,9 @@ public class ProcedureRequestedService {
 
     public List<ProcedureRequestedDTO> getAllLabTestProcedures() {
         // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
-        List<ProcedureRequested> labTests = ProcedureRequested.find(
-                "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "labtest"
-
-        ).list();
+        List<ProcedureRequested> labTests = ProcedureRequested
+                .<ProcedureRequested>find("SELECT DISTINCT p FROM ProcedureRequested p LEFT JOIN FETCH p.procedure LEFT JOIN FETCH p.procedure.category WHERE p.category = ?1 ORDER BY p.id DESC", "labtest")
+                .list();
 
         // Convert the results to a list of ProcedureRequestedDTO
         return labTests.stream()
@@ -274,12 +316,10 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getAllUltrasoundScanProcedures() {
-        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
-        List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
-                "category = ?1 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "imaging"
-
-        ).list();
+        // Query for ProcedureRequested where category is "imaging", ordered descending
+        List<ProcedureRequested> UltrasoundScan = ProcedureRequested
+                .<ProcedureRequested>find("SELECT DISTINCT p FROM ProcedureRequested p LEFT JOIN FETCH p.procedure LEFT JOIN FETCH p.procedure.category WHERE p.category = ?1 ORDER BY p.id DESC", "imaging")
+                .list();
 
         // Convert the results to a list of ProcedureRequestedDTO
         return UltrasoundScan.stream()
@@ -294,12 +334,10 @@ public class ProcedureRequestedService {
 
 
     public List<ProcedureRequestedDTO> getUltrasoundScanProceduresByVisit(Long visitId) {
-        // Query for ProcedureRequested where procedureRequestedType is "labtest" and visit ID matches, ordered descending
-        List<ProcedureRequested> UltrasoundScan = ProcedureRequested.find(
-                "category = ?1 and visit.id = ?2 ORDER BY id DESC", // Replace 'id' with your desired field for sorting
-                "imaging",
-                visitId
-        ).list();
+        // Query for ProcedureRequested where category is "imaging" and visit ID matches, ordered descending
+        List<ProcedureRequested> UltrasoundScan = ProcedureRequested
+                .<ProcedureRequested>find("SELECT DISTINCT p FROM ProcedureRequested p LEFT JOIN FETCH p.procedure LEFT JOIN FETCH p.procedure.category WHERE p.category = ?1 AND p.visit.id = ?2 ORDER BY p.id DESC", "imaging", visitId)
+                .list();
 
         // Convert the results to a list of ProcedureRequestedDTO
         return UltrasoundScan.stream()

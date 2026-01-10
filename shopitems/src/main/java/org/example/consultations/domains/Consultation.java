@@ -2,11 +2,19 @@ package org.example.consultations.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Consultation extends PanacheEntity {
@@ -70,6 +78,10 @@ public class Consultation extends PanacheEntity {
     @ManyToOne
     @JoinColumn(nullable = false)  // Foreign key to link to the PatientVisit
     public PatientVisit visit;  // Link to the specific visit this recommendation is related to
+
+    // One consultation can have many complaints
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    public List<Complaint> complaints = new ArrayList<>();
 
     // You can add other fields as needed to capture consultation details
 

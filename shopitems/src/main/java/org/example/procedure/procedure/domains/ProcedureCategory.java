@@ -1,19 +1,29 @@
 package org.example.procedure.procedure.domains;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.List;
+
+import jakarta.json.bind.annotation.JsonbDateFormat;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "ProcedureCategoryTable")
 public class ProcedureCategory extends PanacheEntity {
 
-    @Column(nullable = false)
-    public String procedureCategory;
+    @Column
+    public String name;
 
-    // Description of the lab test, providing additional information on how its done
-    @Column(columnDefinition = "TEXT") // Assuming this may be a longer text
-    public String categoryDescription;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    public ProcedureCategory parent;
+
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate creationDate;
+
+    @Column
+    @JsonbDateFormat(value = "yyyy/MM/dd")
+    public LocalDate LastUpdatedDate;
 
 }

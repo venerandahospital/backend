@@ -8,8 +8,8 @@ public class ProcedureUpdateRequest {
     @Schema(example = "labtest")
     public String procedureType;
 
-    @Schema(example = "Hematology")
-    public String category;
+    @Schema(example = "1")
+    public Long categoryId;
 
     @Schema(example = "Complete Blood Count")
     public String procedureName;

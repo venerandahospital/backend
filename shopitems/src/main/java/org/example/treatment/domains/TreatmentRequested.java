@@ -22,7 +22,6 @@ public class TreatmentRequested extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal provisionalQuantity;
 
-
     @Column
     public BigDecimal amountPerFrequencyValue;
 
@@ -47,20 +46,20 @@ public class TreatmentRequested extends PanacheEntity {
     @Column
     public BigDecimal totalUnits;
 
-
     @Column
     public String instructions;
 
     @Column
     public String route;
 
-    // Unit price of the lab test
+    // Unit price
     @Column(nullable = false)
     public BigDecimal unitSellingPrice;
 
-    // Total amount for the requested lab tests (unitPrice * quantity)
+    // Total amount
     @Column(nullable = false)
     public BigDecimal totalAmount;
+
 
     @Column
     public Integer shelfNumber;
@@ -68,14 +67,13 @@ public class TreatmentRequested extends PanacheEntity {
     @Column(nullable = false)
     public BigDecimal provisionalTotalAmount;
 
-    // Reference to the specific lab test being requested
+    // Item details
     @Column(nullable = false)
     public String itemName;
 
     @Column
     public BigDecimal lastStockAtHand;
 
-    // Reference to the specific lab test being requested
     @Column
     public BigDecimal unitBuy;
 
@@ -85,13 +83,21 @@ public class TreatmentRequested extends PanacheEntity {
     @Column
     public BigDecimal lastUpDateQuantity;
 
-    // Reference to the specific lab test being requested
     @Column(nullable = false)
     public Long itemId;
 
     @Column
     public String status;
 
+    // =========================
+    // ONLY REQUIRED METHODS
+    // =========================
 
+    public Integer getShelfNumber() {
+        return shelfNumber;
+    }
 
+    public void setShelfNumber(Integer shelfNumber) {
+        this.shelfNumber = shelfNumber;
+    }
 }

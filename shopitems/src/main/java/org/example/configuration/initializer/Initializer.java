@@ -17,7 +17,11 @@ public class Initializer {
     @Transactional
     public void initUser(@Observes StartupEvent ev){
 
-        if (Boolean.FALSE.equals(userRepository.usernameExists("admin"))){
+        // Check if admin user already exists by username OR email to avoid duplicate entry errors
+        boolean adminExists = userRepository.usernameExists("admin") || 
+                             userRepository.findByEmailOptional("admin@vmd.com").isPresent();
+        
+        if (!adminExists){
             User adminUser = new User();
             adminUser.username = "admin";
             adminUser.profilePic = "https://firebasestorage.googleapis.com/v0/b/newstorageforuplodapp.appspot.com/o/images%2Fpic.PNG?alt=media&token=56906e62-65aa-4f2b-bc1a-60d5df63839c";

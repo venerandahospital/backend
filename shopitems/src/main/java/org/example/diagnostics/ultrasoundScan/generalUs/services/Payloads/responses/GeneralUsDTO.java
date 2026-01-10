@@ -44,7 +44,8 @@ public class GeneralUsDTO {
             this.patientAge = generalUs.patientAge;
             this.gender = generalUs.gender;
             this.doneBy = generalUs.doneBy;
-            this.exam = generalUs.exam;
+            this.exam = generalUs.procedureRequested.procedureRequestedName;
+        
             this.findings = generalUs.findings;
             this.impression = generalUs.impression;
             this.recommendation = generalUs.recommendation;

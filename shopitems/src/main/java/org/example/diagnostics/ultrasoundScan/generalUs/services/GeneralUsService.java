@@ -1,26 +1,31 @@
 package org.example.diagnostics.ultrasoundScan.generalUs.services;
 
-import com.itextpdf.io.IOException;
+import java.io.IOException;
+
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
+
 import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.border.Border;
-import com.itextpdf.layout.border.SolidBorder;
-import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.IBlockElement;
+import com.itextpdf.layout.element.IElement;
 import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
 
-
-import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.property.*;
-import com.itextpdf.kernel.pdf.*;
-//import com.itextpdf.kernel.html.HtmlConverter;
-//import com.itextpdf.layout.borders.*;
+import com.itextpdf.html2pdf.HtmlConverter;
 
 import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
@@ -52,6 +57,7 @@ import org.example.finance.invoice.services.payloads.responses.InvoiceDTO;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.procedure.procedureRequested.domains.repositories.ProcedureRequestedRepository;
 import org.example.visit.domains.PatientVisit;
+import org.example.user.domains.User;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,6 +67,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 
 @ApplicationScoped
 public class GeneralUsService {
@@ -95,7 +102,7 @@ public class GeneralUsService {
             generalUs.recommendation = "";
             generalUs.scanReportTitle = "";
 
-            generalUs.exam = procedureRequested.procedureRequestedType;;
+            generalUs.exam = procedureRequested.procedureRequestedName;
             generalUs.findings = "";
             generalUs.impression = "";
 
@@ -190,16 +197,13 @@ public class GeneralUsService {
 
     }
 
-
-
     @Transactional
     public Response generateAndReturnScanReportPdf(Long procedureRequestedId) {
-
+    
         try {
             // Find the patient visit
             ProcedureRequested procedureRequestedScan = ProcedureRequested.findById(procedureRequestedId);
             if (procedureRequestedScan == null) {
-                //throw new IllegalArgumentException("Visit not found.");
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity(new ResponseMessage("procedure requested not found for ID: " + procedureRequestedId))
                         .build();
@@ -210,55 +214,53 @@ public class GeneralUsService {
                         .entity(new ResponseMessage("Scan Report not found for procedure ID: " + procedureRequestedId))
                         .build();
             }
-
-
-            // Find the patient visit
+    
+            // Find the patient
             Patient patient = Patient.findById(generalUs.visit.patient.id);
             if (patient == null) {
-                //throw new IllegalArgumentException("Visit not found.");
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity(new ResponseMessage("patient not found for ID: " + generalUs.visit.patient.id))
                         .build();
             }
 
-            // Find the patient visit
+            User user = User.find("role = ?1 and status = ?2", "sono", "active").firstResult();
+            if (user != null) {
+                generalUs.doneBy = user.username != null ? user.username : user.email;
+            }
+
+
+    
+            // Find the visit
             PatientVisit visit = PatientVisit.findById(generalUs.visit.id);
             if (visit == null) {
-                //throw new IllegalArgumentException("Visit not found.");
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity(new ResponseMessage("visit not found for ID: " + generalUs.visit.id))
                         .build();
             }
-
-
-
-            // Get the first invoice from the list (or handle multiple invoices as needed)
-            Invoice invoice = visit.invoice.get(0); // Assuming visit.invoice is a List<Invoice>
-
-            // Ensure the invoice is not null
+    
+            // Use 1st invoice
+            Invoice invoice = visit.invoice.get(0);
             if (invoice == null) {
-                //throw new IllegalArgumentException("Invoice not found.");
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity(new ResponseMessage("invoice not found for ID: "))
                         .build();
             }
-
-            // Create the PDF document
+    
+            // Create PDF
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter pdfWriter = new PdfWriter(baos);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-
+    
             Document document = new Document(pdfDocument);
-            // Set narrow margins for printing (15 points = ~0.21 inches)
             document.setMargins(10, 10, 10, 10);
-
-            // Add invoice title
+    
+            // Title
             Table invoiceTitle = new Table(new float[]{1});
-            invoiceTitle.setWidthPercent(100);
+            invoiceTitle.setWidth(UnitValue.createPercentValue(100));
             invoiceTitle.addCell(new Cell()
                     .add(new Div()
-                            .setBorderBottom(new SolidBorder(1)) // Underline (1px solid line)
-                            .setPaddingBottom(2) // Space between text and underline
+                            .setBorderBottom(new SolidBorder(1))
+                            .setPaddingBottom(2)
                             .add(new Paragraph("GENERAL ULTRASOUND SCAN REPORT")
                                     .setBold()
                                     .setFontSize(11)
@@ -267,21 +269,18 @@ public class GeneralUsService {
                     )
                     .setBorder(Border.NO_BORDER)
                     .setPaddingBottom(15)
-                    .add(new Paragraph("Department of Medical Diagnostics-Veneranda Medical (A subsidiary of Veneranda Hospital) Address:Bugogo Town Council-Kyegegwa.\n For inquiries / suggestions call: 0784411848 / 0704968736. Email:venerandahospital@gmail.com.")
+                    .add(new Paragraph("Department of Medical Diagnostics-Veneranda Medical (A subsidiary of Veneranda HealthCare) Address:Bugogo Town Council-Kyegegwa.\n For inquiries / suggestions call: 0784411848 / 0704968736. Email:venerandahospital@gmail.com.")
                             .setFontSize(7)
-                            //.setItalic()
                             .setMarginTop(3)
                             .setTextAlignment(TextAlignment.CENTER))
                     .setBorder(Border.NO_BORDER)
                     .setPaddingBottom(15)
             );
             document.add(invoiceTitle);
-
-            // Add header: Logo and Invoice Details
+    
+            // Header table (unchanged)
             Table headerTable = new Table(new float[]{1, 1, 1, 2, 1});
-            headerTable.setWidthPercent(100);
-
-            // Add logo
+            headerTable.setWidth(UnitValue.createPercentValue(100));
             headerTable.addCell(new Cell()
                     .add(getLogo().setWidth(79).setHeight(68))
                     .setBorder(Border.NO_BORDER)
@@ -290,226 +289,232 @@ public class GeneralUsService {
                     .setPaddingTop(-7)
                     .setPaddingLeft(-27)
             );
-
-            // Add invoice details
             headerTable.addCell(new Cell()
                     .add(new Paragraph("CLIENT NAME: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
                     .add(new Paragraph("NEXT OF KEEN: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
                     .add(new Paragraph("EXAM: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
                     .add(new Paragraph("ADDRESS: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
-
-
                     .setBorder(Border.NO_BORDER)
             );
-
             headerTable.addCell(new Cell()
                     .add(new Paragraph(generalUs.patientName.toUpperCase()).setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
-                    .add(new Paragraph()
-                            .add(Optional.ofNullable(patient.nextOfKinName)
-                                    .map(String::toUpperCase)
-                                    .orElse("N/A"))  // Fallback value if null
-                            .setFontSize(8)
-                            .setTextAlignment(TextAlignment.LEFT)
-                    )
-                    .add(new Paragraph(generalUs.exam.toUpperCase())
-                            .setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
-                    .add(new Paragraph()
-                            .add(Optional.ofNullable(invoice.visit.patient)
-                                    .map(p -> p.patientAddress +
-                                            (p.getPatientGroup() != null
-                                                    ? " (" + p.patientGroup.groupNameShortForm + ")"
-                                                    : ""))
-                                    .map(String::toUpperCase)
-                                    .orElse(""))
-                            .setFontSize(8)
-                            .setTextAlignment(TextAlignment.LEFT)
-                    )
-
-
-
-                    //.add(new Paragraph(patient.nextOfKinName.toUpperCase()).setFontSize(8).orElse("N/A")).setTextAlignment(TextAlignment.LEFT))
-
-
-                    /*.add(new Paragraph()
-                            .add(Optional.ofNullable(invoice.visit.patient.getPatientGroup())
-                                    .map(PatientGroup::getGroupName)
-                                    .map(String::toUpperCase)
-                                    .orElse(""))
-                            .setFontSize(8)
-                            .setTextAlignment(TextAlignment.LEFT))*/
-
-
-
-
+                    .add(new Paragraph(Optional.ofNullable(patient.nextOfKinName)
+                            .map(String::toUpperCase)
+                            .orElse("N/A")).setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph(generalUs.exam.toUpperCase()).setFontSize(8))
+                    .add(new Paragraph(Optional.ofNullable(invoice.visit.patient)
+                            .map(p -> p.patientAddress +
+                                    (p.getPatientGroup() != null
+                                            ? " (" + p.patientGroup.groupNameShortForm + ")"
+                                            : ""))
+                            .map(String::toUpperCase)
+                            .orElse("")).setFontSize(8))
                     .setBorder(Border.NO_BORDER)
             );
-
             headerTable.addCell(new Cell()
-                    .add(new Paragraph("GENDER: "+ generalUs.gender.toUpperCase()).setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph("CONTACT: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-
-                    .add(new Paragraph("REQUEST DATE: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
-                    .add(new Paragraph("PROCEDURE DATE: ").setFontSize(8).setTextAlignment(TextAlignment.LEFT))
+                    .add(new Paragraph("GENDER: " + generalUs.gender.toUpperCase()).setFontSize(8))
+                    .add(new Paragraph("CONTACT: ").setFontSize(8))
+                    .add(new Paragraph("REQUEST DATE: ").setFontSize(8))
+                    .add(new Paragraph("PROCEDURE DATE: ").setFontSize(8))
                     .setBorder(Border.NO_BORDER)
             );
-
             headerTable.addCell(new Cell()
-                    .add(new Paragraph("AGE: "+ generalUs.patientAge  + "YRS").setFontSize(8).setTextAlignment(TextAlignment.RIGHT))
+                    .add(new Paragraph("AGE: " + generalUs.patientAge + "YRS").setFontSize(8).setTextAlignment(TextAlignment.RIGHT))
                     .add(new Paragraph(String.valueOf(patient.patientContact)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT))
-
                     .add(new Paragraph(String.valueOf(generalUs.scanRequestDate)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT))
                     .add(new Paragraph(String.valueOf(generalUs.scanPerformingDate)).setFontSize(8).setTextAlignment(TextAlignment.RIGHT))
                     .setBorder(Border.NO_BORDER)
             );
-
+    
             headerTable.setBorderBottom(new SolidBorder(1));
-
-
             document.add(headerTable);
-
-
-
-
-            // Add totals table
+    
+            // Totals table
             Table totalsTable = new Table(new float[]{4, 2, 2});
-            totalsTable.setWidthPercent(100);
-
-
+            totalsTable.setWidth(UnitValue.createPercentValue(100));
+    
             Cell notesCell1 = new Cell(6, 1)
-                    // FINDINGS section
                     .add(new Div()
-                            .setBorderBottom(new SolidBorder(1)) // Add 1px bottom border
-
-                            .setPaddingBottom(2) // Space between text and border
+                            .setBorderBottom(new SolidBorder(1))
+                            .setPaddingBottom(2)
                             .add(new Paragraph()
-                                    .add(new Text("INDICATION: ")
-                                            .setBold() // Make only the label bold
-                                    )
-                                    .add(generalUs.indication.toUpperCase()) // Non-bold content
+                                    .add(new Text("INDICATION: ").setBold())
+                                    .add(generalUs.indication.toUpperCase())
                                     .setFontSize(9)
                                     .setTextAlignment(TextAlignment.CENTER)
                             )
-                    )// 6 rows tall, 1 column wide
-                    .add("\n")
-
-                    // FINDINGS section
+                    )
+    
+                    // FINDINGS
                     .add(new Paragraph()
+                            .setMarginTop(5)
                             .add(new Text("FINDINGS:")
                                     .setUnderline()
-                                    .setBold()  // Only the title is bold
-                            )
-                            .setFontSize(9)
+                                    .setBold())
+                            .setFontSize(10)
                             .setTextAlignment(TextAlignment.LEFT)
                     )
-                    // FINDINGS content (normal weight)
-                    .add(new Paragraph(generalUs.findings)
-                            .setFontSize(11)
-                            .setTextAlignment(TextAlignment.LEFT)
-                    )
-                    
-
-
+    
+                    // HTML → PDF conversion of findings
+                    .add(convertHtmlFindings(generalUs.findings))
+    
                     .setTextAlignment(TextAlignment.LEFT)
-                    .setFontSize(7)
+                    .setFontSize(20)
                     .setBorder(Border.NO_BORDER)
                     .setVerticalAlignment(VerticalAlignment.TOP);
-
-
+    
             totalsTable.addCell(notesCell1);
-
-
-
             document.add(totalsTable);
-
-            // Create a single-column table with full width
+    
+            // Impression table (unchanged)
             Table impressionTable = new Table(new float[]{1});
-            impressionTable.setWidthPercent(100);
+            impressionTable.setWidth(UnitValue.createPercentValue(100));
             impressionTable.setMarginBottom(1);
-
-            // IMPRESSION row - full width
             impressionTable.addCell(new Cell()
                     .setBorder(Border.NO_BORDER)
                     .setPadding(5)
-                    .add(new Paragraph("IMPRESSION:")
+                    .add(new Paragraph("IMPRESSION/CONCLUSION:")
                             .setUnderline()
                             .setBold()
-                            .setFontSize(8)
-                    )
-                    .add(new Paragraph(generalUs.impression)
-                            .setFontSize(10)
-                            .setMarginTop(3)
-                    )
+                            .setFontSize(10))
+                    .add(convertHtmlImpression(generalUs.impression))
             );
-
-            // RECOMMENDATIONS row - full width (only if recommendation exists)
+    
             if (generalUs.recommendation != null && !generalUs.recommendation.trim().isEmpty()) {
                 impressionTable.addCell(new Cell()
                         .setBorder(Border.NO_BORDER)
                         .setPadding(5)
                         .add(new Paragraph()
-                                .add(new Text("NB:RECOMMENDATIONS: ")
+                                .add(new Text("RECOMMENDATIONS: ")
                                         .setUnderline()
                                         .setBold())
-                                .add(new Text(generalUs.recommendation))
-                                .setFontSize(8)
-                        )
+                                .setFontSize(10))
+                        .add(convertHtmlImpression(generalUs.recommendation))
                 );
             }
-
+    
             document.add(impressionTable);
-
-            // Create a 2-column table with 60-40 width ratio
+    
+            // Signature section (unchanged)
             Table initialsTable = new Table(new float[]{3, 2});
-            initialsTable.setWidthPercent(100);
+            initialsTable.setWidth(UnitValue.createPercentValue(100));
             initialsTable.setMarginBottom(1);
-
-// Left Column - IMPRESSION
+    
             initialsTable.addCell(new Cell()
                     .setBorder(Border.NO_BORDER)
                     .setPadding(5)
                     .add(new Paragraph("Imaging Technologist / Sonographer / Radiographer:")
                             .setUnderline()
                             .setBold()
-                            .setFontSize(10)
-                    )
-                    .add(new Paragraph(generalUs.doneBy.toUpperCase())
+                            .setFontSize(10))
+                    .add(new Paragraph(user.username.toUpperCase() + " " + "["+ user.qualification.toUpperCase()+ "]")
                             .setFontSize(8)
-                            .setMarginTop(1)
-                    )
+                            .setMarginTop(1))
+                    
             );
-
-// Right Column - RECOMMENDATIONS
+    
             initialsTable.addCell(new Cell()
                     .setBorder(Border.NO_BORDER)
                     .setPadding(5)
                     .add(new Paragraph("Signature/Stamp")
                             .setUnderline()
                             .setBold()
-                            .setFontSize(10)
-                    )
-
+                            .setFontSize(10))
             );
-
+    
             document.add(initialsTable);
-
-            // Close the document
+    
+            // Close
             document.close();
-
-            // Return the PDF as a response
+    
             byte[] pdfBytes = baos.toByteArray();
             return Response.ok(new ByteArrayInputStream(pdfBytes))
                     .header("Content-Disposition", "attachment; filename=invoice.pdf")
                     .type("application/pdf")
                     .build();
-
-        } catch (IOException e) {
+    
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+
+
+
+
+
+
+    private Div convertHtmlFindings(String html) {
+        Div container = new Div();
+    
+        String wrappedHtml = """
+            <html>
+            <head>
+            <style>
+                body, p, div, span {
+                    line-height: 1.3 !important;
+                    margin: 0 !important;
+                    font-size: 17px;
+                    padding: 0 !important;
+                }
+            </style>
+            </head>
+            <body>
+                <div>
+            """ 
+            + html +
+            """
+                </div>
+            </body>
+            </html>
+            """;
+    
+        for (IElement element : HtmlConverter.convertToElements(wrappedHtml)) {
+            if (element instanceof IBlockElement) {
+                container.add((IBlockElement) element);
+            }
+        }
+    
+        return container;
+    }
+
+    private Div convertHtmlImpression(String html) {
+        Div container = new Div();
+    
+        String wrappedHtml = """
+            <html>
+            <head>
+            <style>
+                body, p, div, span {
+                    line-height: 1.3 !important;
+                    margin: 0 !important;
+                    font-size: 17px;
+                    padding: 0 !important;
+                }
+            </style>
+            </head>
+            <body>
+                <div>
+            """ 
+            + html +
+            """
+                </div>
+            </body>
+            </html>
+            """;
+    
+        for (IElement element : HtmlConverter.convertToElements(wrappedHtml)) {
+            if (element instanceof IBlockElement) {
+                container.add((IBlockElement) element);
+            }
+        }
+    
+        return container;
+    }
+    
+    
+
+
 
 
 
@@ -560,8 +565,6 @@ public class GeneralUsService {
             return logo;
         } catch (IOException e) {
             throw new RuntimeException("Failed to load the logo image.", e);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

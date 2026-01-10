@@ -45,7 +45,7 @@ public class MalariaService {
         malaria.doneBy = "";
         malaria.recommendation = "";
         malaria.labReportTitle = "";
-        malaria.test = procedureRequested.procedureRequestedType;
+        malaria.test = procedureRequested.procedureRequestedName;
         malaria.bs = "";
         malaria.mrdt = "";
 
@@ -88,14 +88,16 @@ public class MalariaService {
 
         procedureRequested.report = malaria.bs;
 
+
         if (malaria.bs == null || malaria.bs.isEmpty() ||
                 malaria.mrdt == null || malaria.mrdt.isEmpty()
 )
         {
             procedureRequested.status = "Pending";
+            procedureRequested.bgColor = "rgb(6, 113, 212)";
         }else{
             procedureRequested.status = "Done";
-            procedureRequested.bgColor = "rgba(206, 7, 17, 1)";
+            procedureRequested.bgColor = "rgb(5, 182, 58)";
         }
 
         procedureRequestedRepository.persist(procedureRequested);

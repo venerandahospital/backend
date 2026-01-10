@@ -40,7 +40,7 @@ public class Patient extends PanacheEntity {
     public BigDecimal totalAmountDue;
 
     @Column
-    @JsonbDateFormat(value = "yyyy/MM/dd")
+    @JsonbDateFormat(value = "yyyy-MM-dd")
     public LocalDate patientDateOfBirth;
 
     @Column
@@ -50,11 +50,9 @@ public class Patient extends PanacheEntity {
     public String occupation;
 
     @Column
-    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate creationDate;
 
     @Column
-    @JsonbDateFormat(value = "yyyy/MM/dd")
     public LocalDate patientLastUpdatedDate;
 
     @Column(unique = true)

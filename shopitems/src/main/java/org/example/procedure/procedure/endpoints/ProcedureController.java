@@ -2,7 +2,14 @@ package org.example.procedure.procedure.endpoints;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -13,12 +20,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
-import org.example.client.services.payloads.responses.dtos.PatientDTO;
 import org.example.procedure.procedure.services.payloads.requests.*;
-import org.example.procedure.procedure.services.payloads.responses.ProcedureCategoryDTO;
-import org.example.procedure.procedure.services.payloads.responses.ProcedureDTO;
 import org.example.procedure.procedure.services.ProcedureService;
-import org.example.procedure.procedure.services.payloads.responses.ProcedureTypeDTO;
+import org.example.procedure.procedure.services.payloads.responses.dtos.ProcedureDTO;
 
 import java.util.List;
 
@@ -41,26 +45,19 @@ public class ProcedureController {
         return procedureService.createNewProcedure(request);
     }
 
-    @POST
+    /*@POST
     @Path("create-new-service-category")
     @Transactional
     @Operation(summary = "new-category", description = "new-category")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureCategoryDTO.class)))
     public Response createNewProcedureCategory(ProcedureCategoryRequest request){
         return procedureService.createNewProcedureCategory(request);
-    }
-
-    @POST
-    @Path("create-new-service-type")
-    @Transactional
-    @Operation(summary = "new-type", description = "new-type")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureTypeDTO.class)))
-    public Response createNewProcedureType(ProcedureTypeRequest request){
-        return procedureService.createNewProcedureType(request);
-    }
+    }*/
 
 
-    @GET
+
+
+   /*  @GET
     @Transactional
     @Path("/get-all-service-categories")
     // @RolesAllowed({"ADMIN"})
@@ -69,20 +66,11 @@ public class ProcedureController {
     public Response getAllProceduresCategories() {
         List<ProcedureCategoryDTO> procedureCategoryList = procedureService.getAllProceduresCategories();
         return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureCategoryList)).build();
-    }
+    }*/
 
-    @GET
-    @Transactional
-    @Path("/get-all-service-types")
-    // @RolesAllowed({"ADMIN"})
-    @Operation(summary = "Get all type", description = "Retrieve a list of all type")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureTypeDTO.class, type = SchemaType.ARRAY)))
-    public Response getAllProceduresType() {
-        List<ProcedureTypeDTO> procedureTypeList = procedureService.getAllProceduresTypes();
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, procedureTypeList)).build();
-    }
+ 
 
-    @PUT
+    /*@PUT
     @Path("update-service-category/{id}")
     //@RolesAllowed({"ADMIN","CUSTOMER"})
     @Transactional
@@ -90,18 +78,10 @@ public class ProcedureController {
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureCategoryDTO.class)))
     public Response updateServiceCategory(@PathParam("id") Long id, ProcedureCategoryUpdateRequest request){
         return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,procedureService.updateServiceCategoryById(id, request) )).build();
-    }
+    }*/
 
 
-    @PUT
-    @Path("update-service-type/{id}")
-    //@RolesAllowed({"ADMIN","CUSTOMER"})
-    @Transactional
-    @Operation(summary = "Update type", description = "Update type")
-    @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureTypeDTO.class)))
-    public Response updateServiceType(@PathParam("id") Long id, ProcedureTypeUpdateRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,procedureService.updateServiceTypeById(id, request) )).build();
-    }
+ 
 
     @POST
     @Path("create-bulk-procedures")
@@ -174,7 +154,7 @@ public class ProcedureController {
     @Operation(summary = "Update service", description = "Update service")
     @APIResponse(description = "Successful", responseCode = "200", content = @Content(schema = @Schema(implementation = ProcedureDTO.class)))
     public Response updateService(@PathParam("id") Long id, ProcedureUpdateRequest request){
-        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,procedureService.updateServiceById(id, request) )).build();
+        return Response.ok(new ResponseMessage(ActionMessages.UPDATED.label,procedureService.updateProcedureById(id, request) )).build();
     }
 
 

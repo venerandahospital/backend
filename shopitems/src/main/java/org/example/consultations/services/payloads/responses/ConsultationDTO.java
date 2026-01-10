@@ -3,6 +3,8 @@ package org.example.consultations.services.payloads.responses;
 import org.example.consultations.domains.Consultation;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConsultationDTO {
     public Long id;  // The unique identifier of the consultation
@@ -16,6 +18,7 @@ public class ConsultationDTO {
 
     public BigDecimal consultationFee;
     public Long visitId;  // The ID of the associated patient visit
+    public List<ComplaintDTO> complaints;  // List of complaints associated with this consultation
 
     public ConsultationDTO(Consultation consultation) {
         this.id = consultation.id;
@@ -30,5 +33,8 @@ public class ConsultationDTO {
 
         this.diagnosis = consultation.diagnosis!= null ? consultation.diagnosis : null;
         this.visitId = consultation.visit != null ? consultation.visit.id : null;
+        this.complaints = consultation.complaints != null 
+            ? consultation.complaints.stream().map(ComplaintDTO::new).collect(Collectors.toList())
+            : List.of();
     }
 }

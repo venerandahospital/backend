@@ -3,13 +3,17 @@ package org.example.user.services;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import org.example.auth.services.payloads.RoleResponse;
 import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.statics.RoleEnums;
-import org.example.user.roles.UpdateAgentRole;
+import org.example.user.services.payLoads.requests.AgentUserRequest;
+import org.example.user.services.payLoads.requests.UpdateAgentRole;
+import org.example.user.services.payLoads.requests.UpdateRequest;
+import org.example.user.services.payLoads.requests.UserRequest;
+import org.example.user.services.payLoads.responses.dtos.UserDTO;
 import org.example.user.domains.User;
 import org.example.user.domains.repositories.UserRepository;
 
@@ -25,16 +29,20 @@ public class UserService {
 
     public static final String NOT_FOUND = "Not found!";
 
-    public User createNewCustomerUser(UserRequest request){
+    public UserDTO createNewCustomerUser(UserRequest request){
         User user = new User();
         user.username = request.username;
         user.email = request.email;
         user.password = BcryptUtil.bcryptHash(request.password);
+        user.role = request.role;
+        user.qualification = request.qualification;
+        user.registrationNumber = request.registrationNumber;
+        user.status = request.status;
         user.profilePic = request.profilePic;
         user.contact = request.contact;
         userRepository.persist(user);
 
-        return user;
+        return new UserDTO(user);
 
     }
 
@@ -43,7 +51,7 @@ public class UserService {
                 .orElseThrow(() -> new WebApplicationException(NOT_FOUND,404));
     }
 
-    public User updateUserById(UpdateRequest request, Long id){
+    public UserDTO updateUserById(UpdateRequest request, Long id){
         User user = userRepository.findById(id);
         user.username = request.username;
         user.email = request.email;
@@ -52,7 +60,7 @@ public class UserService {
 
         userRepository.persist(user);
 
-        return user;
+        return new UserDTO(user);
 
     }
 

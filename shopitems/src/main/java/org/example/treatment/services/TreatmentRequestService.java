@@ -176,7 +176,6 @@ public class TreatmentRequestService {
         }
     }
 
-
     @Transactional
     public Response updateTreatmentRequested(Long treatmentId, TreatmentRequestedRequest request) {
 

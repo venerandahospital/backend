@@ -56,6 +56,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
             "http://192.168.1.157",
             "http://192.168.1.*",  // Wildcard for entire subnet
             "http://localhost:4300",
+            "http://localhost:4400/",
             "http://localhost:4300/ **",
             "http://localhost:4400",
             "http://localhost:4200",
@@ -92,15 +93,50 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
                 request.path().contains("/course/Patient-management/create-new-service-type") ||
                 request.path().contains("/course/Patient-management/update-service-type") ||
                 request.path().contains("/course/Patient-management/get-all-service-types") ||
+                request.path().contains("/course/Patient-management/get-all-complaint-types") ||
+                request.path().contains("/course/Patient-management/get-complaint-type/") ||
+                request.path().contains("/course/Patient-management/create-new-complaint-type") ||
+                request.path().contains("/course/Patient-management/update-complaint-type/") ||
+                request.path().contains("/course/Patient-management/delete-complaint-type/") ||
+                request.path().contains("/course/Patient-management/get-all-sites") ||
+                request.path().contains("/course/Patient-management/get-complaint-site/") ||
+                request.path().contains("/course/Patient-management/create-new-complaint-site") ||
+                request.path().contains("/course/Patient-management/update-complaint-site/") ||
+                request.path().contains("/course/Patient-management/delete-complaint-site/") ||
+                request.path().contains("/course/health") ||
+                request.path().contains("/course/diagnostics-management/get-all-generalUs") ||
 
-
+                
+                
+                
                 request.path().contains("/course/diagnostics-management/scan/generate-pdf/") ||
                 request.path().contains("/course/diagnostics-management/get-malaria-report-by-request-id/") ||
                 request.path().contains("/course/diagnostics-management/update-malaria-report/") ||
                 request.path().contains("/course/shop-item/update-shelfNumbers") ||
                 request.path().contains("/course/diagnostics-management/scan-generate-pdf/") ||
+                request.path().contains("/course/Patient-management/add-new-procedure-categories") ||
 
-    
+                request.path().contains("/course/Patient-management/update-procedure-category/") ||
+
+                request.path().contains("/course/Patient-management/get-all-procedure-categories") ||
+
+                request.path().contains("/course/Patient-management/get-procedure-category/") ||
+
+                request.path().contains("/course/Patient-management/delete-procedure-category/") ||
+
+                request.path().contains("/course/Patient-management/update-missing-procedure-references") ||
+
+                request.path().contains("/course/messages/conversations") ||
+
+                request.path().contains("/course/messages/conversations/") ||
+
+                request.path().contains("/course/messages/users") ||
+
+                request.path().contains("/course/messages/conversations") ||
+
+                request.path().contains("/course/messages/conversations/") ||
+
+                
 
                 request.path().contains("/course/Patient-management/get-all-consultations") ||
 

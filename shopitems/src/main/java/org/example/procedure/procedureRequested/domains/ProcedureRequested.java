@@ -3,6 +3,7 @@ package org.example.procedure.procedureRequested.domains;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
+import org.example.procedure.procedure.domains.Procedure;
 import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
@@ -18,13 +19,20 @@ public class ProcedureRequested extends PanacheEntity {
     @JoinColumn(nullable = false)
     public PatientVisit visit;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "procedure_id")
+    public Procedure procedure;
+
+    @Column
     public String procedureRequestedType;
 
     @Column(nullable = false)
     public String procedureRequestedName;
 
-    @Column(nullable = false)
+    @Column
+    public Long procedureId;
+
+    @Column
     public String category;
 
     // Quantity of lab tests requested
@@ -32,11 +40,11 @@ public class ProcedureRequested extends PanacheEntity {
     public int quantity;
 
     // Unit price of the lab test
-    @Column(nullable = false)
+    @Column
     public BigDecimal unitSellingPrice;
 
     // Total amount for the requested lab tests (unitPrice * quantity)
-    @Column(nullable = false)
+    @Column
     public BigDecimal totalAmount;
 
     @Column
@@ -73,8 +81,7 @@ public class ProcedureRequested extends PanacheEntity {
     @Column
     public LocalTime timeOfProcedure;
 
-    @Column
-    public Long procedureId;
+
 
 }
 

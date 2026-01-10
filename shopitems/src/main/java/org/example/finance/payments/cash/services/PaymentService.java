@@ -241,7 +241,7 @@ public class PaymentService {
             dateOfPayment,
             paidBy,
             timeOfPayment
-        FROM vena2.Payments
+        FROM vena.Payments
         %s
         ORDER BY dateOfPayment DESC;
         """.formatted(whereClause);

@@ -5,6 +5,7 @@ import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import org.example.procedure.procedureRequested.domains.ProcedureRequested;
 import org.example.treatment.domains.TreatmentRequested;
+import org.example.user.domains.User;
 import org.example.visit.domains.PatientVisit;
 
 import java.math.BigDecimal;
@@ -39,6 +40,10 @@ public class GeneralUs extends PanacheEntity {
 
     @Column
     public String doneBy;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    public User performer;
 
     @Column(columnDefinition = "TEXT")
     public String exam;

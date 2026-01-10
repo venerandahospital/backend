@@ -22,6 +22,12 @@ public class User extends PanacheEntity {
     public String role;
 
     @Column
+    public String qualification;
+
+    @Column
+    public String registrationNumber;
+
+    @Column
     public String status;
 
     @Column

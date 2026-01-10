@@ -3,7 +3,14 @@ package org.example.user.endpoints;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -19,11 +26,11 @@ import org.example.configuration.handler.ResponseMessage;
 import org.example.statics.StatusTypes;
 import org.example.user.domains.User;
 import org.example.user.domains.repositories.UserRepository;
-import org.example.user.roles.UpdateAgentRole;
-import org.example.user.services.AgentUserRequest;
-import org.example.user.services.UpdateRequest;
-import org.example.user.services.UserRequest;
 import org.example.user.services.UserService;
+import org.example.user.services.payLoads.requests.AgentUserRequest;
+import org.example.user.services.payLoads.requests.UpdateAgentRole;
+import org.example.user.services.payLoads.requests.UpdateRequest;
+import org.example.user.services.payLoads.requests.UserRequest;
 
 @Path("user-management")
 @Produces(MediaType.APPLICATION_JSON)

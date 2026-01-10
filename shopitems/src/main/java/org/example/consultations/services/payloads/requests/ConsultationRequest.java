@@ -2,6 +2,8 @@ package org.example.consultations.services.payloads.requests;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.List;
+
 public class ConsultationRequest {
     // A brief medical history of the patient (e.g., "Has a history of hypertension, diabetes")
     @Schema(example = "neck surgery")
@@ -54,6 +56,9 @@ public class ConsultationRequest {
 
     @Schema(example = "normal heart beat")
     public String notes;
+
+    @Schema(description = "List of complaints associated with this consultation")
+    public List<ComplaintRequest> complaints;
 
 
 
