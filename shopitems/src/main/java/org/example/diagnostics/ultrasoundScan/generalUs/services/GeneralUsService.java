@@ -35,7 +35,7 @@ import org.jsoup.select.Elements;
 
 
 import io.quarkus.panache.common.Sort;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.pgclient.PgPool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -79,7 +79,7 @@ public class GeneralUsService {
     ProcedureRequestedRepository procedureRequestedRepository;
 
     @Inject
-    MySQLPool client;
+    PgPool client;
 
 
     public static final String NOT_FOUND = "Not found!";

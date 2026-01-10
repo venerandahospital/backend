@@ -1,7 +1,7 @@
 package org.example.finance.payments.cash.services;
 
 import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -40,7 +40,7 @@ public class PaymentService {
     InvoiceService invoiceService;
 
     @Inject
-    MySQLPool client;
+    PgPool client;
 
     @Inject
     PatientVisitRepository patientVisitRepository;

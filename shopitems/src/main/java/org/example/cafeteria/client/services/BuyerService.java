@@ -2,7 +2,7 @@ package org.example.cafeteria.client.services;
 
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -41,7 +41,7 @@ public class BuyerService {
     BuyerGroupRepository buyerGroupRepository;
 
     @Inject
-    MySQLPool client;
+    PgPool client;
 
 
     public static final String NOT_FOUND = "Not found!";

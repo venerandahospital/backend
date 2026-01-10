@@ -1,7 +1,7 @@
 package org.example.stock.services;
 
 import io.quarkus.panache.common.Sort;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.pgclient.PgPool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -38,7 +38,7 @@ public class StockService {
     ShopItemService itemService;
 
     @Inject
-    MySQLPool client;
+    PgPool client;
 
     public static final String INVALID_REQUEST = "Invalid request data!";
 

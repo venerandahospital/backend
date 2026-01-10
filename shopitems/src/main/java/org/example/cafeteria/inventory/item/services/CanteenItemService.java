@@ -11,7 +11,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -49,7 +49,7 @@ public class CanteenItemService {
     CanteenItemRepository canteenItemRepository;
 
     @Inject
-    MySQLPool client;
+    PgPool client;
 
     @Inject
     UserAuthService userAuthService;
