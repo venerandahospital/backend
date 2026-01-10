@@ -57,6 +57,7 @@ public class CustomAwareJWTAuthMechanism implements HttpAuthenticationMechanism,
             "http://192.168.1.*",  // Wildcard for entire subnet
             "http://localhost:4300",
             "http://localhost:4400/",
+            "https://venerandahospital.github.io",
             "http://localhost:4300/ **",
             "http://localhost:4400",
             "http://localhost:4200",
