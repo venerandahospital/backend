@@ -1,0 +1,32 @@
+package org.example.pharmacy.otc.services.payloads.requests;
+
+import jakarta.json.bind.annotation.JsonbProperty;
+
+import java.math.BigDecimal;
+
+/** One cart line: stock batch OR shop item, quantity only for OTC counter. */
+public class OtcSaleLineRequest {
+    @JsonbProperty("stockBatchId")
+    public Long stockBatchId;
+
+    /** Shop item id when selling without a stock batch (ITM / OTC). */
+    @JsonbProperty("itemId")
+    public Long itemId;
+
+    /** When set, line is a visit prescription tied to a treatment request. */
+    public Long treatmentRequestedId;
+    public BigDecimal quantity;
+    public BigDecimal amountPerFrequencyValue;
+    public String amountPerFrequencyUnit;
+    public BigDecimal frequencyValue;
+    public Integer frequencyUnit;
+    public BigDecimal durationValue;
+    public Integer durationUnit;
+    public BigDecimal totalUnits;
+    public String instructions;
+    public String route;
+    /** When false, line is listed but excluded from billing and stock deduction. Defaults to true. */
+    public Boolean given;
+    /** Selected unit selling model for OTC counter lines. */
+    public Long unitSellingModelId;
+}
