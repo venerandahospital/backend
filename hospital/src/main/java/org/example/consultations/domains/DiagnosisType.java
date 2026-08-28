@@ -13,6 +13,17 @@ public class DiagnosisType extends PanacheEntity {
     @Column(nullable = false)
     public String title;
 
+    /** Uganda HMIS code for this diagnosis catalog entry. */
+    @Column(length = 20)
+    public String hmisCode;
+
+    @Column(length = 20)
+    public String icd10Code;
+
+    /** Comma-separated keywords for auto-mapping free-text diagnoses (e.g. malaria,fever). */
+    @Column(columnDefinition = "TEXT")
+    public String matchKeywords;
+
     @Column(columnDefinition = "TEXT")
     public String description;
 

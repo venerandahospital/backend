@@ -22,6 +22,18 @@ public class Diagnosis extends PanacheEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     public String name;
 
+    /** Uganda HMIS line code, e.g. MA., EP01, DY. */
+    @Column(length = 20)
+    public String hmisCode;
+
+    /** Optional ICD-10 code for reporting / future use. */
+    @Column(length = 20)
+    public String icd10Code;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diagnosis_type_id")
+    public DiagnosisType diagnosisType;
+
     /** Clinical severity, e.g. "Mild", "Moderate", "Severe". */
     @Column(length = 80)
     public String severity;

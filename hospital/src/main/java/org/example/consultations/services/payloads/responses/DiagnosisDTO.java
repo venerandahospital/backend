@@ -13,6 +13,9 @@ public class DiagnosisDTO {
     public String severity;
     public String kind;
     public String notes;
+    public String hmisCode;
+    public String icd10Code;
+    public Long diagnosisTypeId;
     public Long consultationId;
     public Long visitId;
     public LocalDate creationDate;
@@ -28,6 +31,9 @@ public class DiagnosisDTO {
         this.severity = diagnosis.severity;
         this.kind = diagnosis.kind;
         this.notes = diagnosis.notes;
+        this.hmisCode = diagnosis.hmisCode;
+        this.icd10Code = diagnosis.icd10Code;
+        this.diagnosisTypeId = diagnosis.diagnosisType != null ? diagnosis.diagnosisType.id : null;
         this.consultationId = diagnosis.consultation != null ? diagnosis.consultation.id : null;
         this.visitId = diagnosis.consultation != null && diagnosis.consultation.visit != null
                 ? diagnosis.consultation.visit.id

@@ -42,6 +42,9 @@ public class DiagnosisTypeService {
         DiagnosisType row = new DiagnosisType();
         row.title = trimmedTitle;
         row.description = blankToNull(request.description);
+        row.hmisCode = blankToNull(request.hmisCode);
+        row.icd10Code = blankToNull(request.icd10Code);
+        row.matchKeywords = blankToNull(request.matchKeywords);
         row.creationDate = LocalDate.now();
         row.updateDate = LocalDate.now();
         diagnosisTypeRepository.persist(row);
@@ -75,6 +78,9 @@ public class DiagnosisTypeService {
 
         row.title = trimmedTitle;
         row.description = blankToNull(request.description);
+        row.hmisCode = blankToNull(request.hmisCode);
+        row.icd10Code = blankToNull(request.icd10Code);
+        row.matchKeywords = blankToNull(request.matchKeywords);
         row.updateDate = LocalDate.now();
         diagnosisTypeRepository.persist(row);
 

@@ -16,6 +16,15 @@ public class DiagnosisRequest {
     @Schema(example = "Community acquired", description = "Optional clinical notes")
     public String notes;
 
+    @Schema(description = "Uganda HMIS code, e.g. MA., DY.")
+    public String hmisCode;
+
+    @Schema(description = "Optional ICD-10 code")
+    public String icd10Code;
+
+    @Schema(description = "Diagnosis catalog entry — copies HMIS code when set")
+    public Long diagnosisTypeId;
+
     @Schema(description = "Existing diagnosis id when updating via consultation sync")
     public Long id;
 }

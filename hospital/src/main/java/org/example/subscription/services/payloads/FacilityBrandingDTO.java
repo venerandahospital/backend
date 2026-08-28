@@ -30,4 +30,10 @@ public class FacilityBrandingDTO {
     public String privilegeVenerandaGroupUserIds;
     public String privilegeCreditGroupUserIds;
     public String privilegeCreditAllowedGroupIds;
+    public String hmisFacilityCode;
+    public String hmisFacilityLevel;
+    public String hmisDistrict;
+    public String hmisHsd;
+    public String hmisSubCounty;
+    public String hmisParish;
 }

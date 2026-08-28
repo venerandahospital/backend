@@ -10,6 +10,8 @@ import org.example.consultations.domains.Consultation;
 import org.example.consultations.domains.ConsultationRepository;
 import org.example.consultations.domains.Diagnosis;
 import org.example.consultations.domains.DiagnosisRepository;
+import org.example.consultations.domains.DiagnosisType;
+import org.example.consultations.domains.DiagnosisTypeRepository;
 import org.example.consultations.services.payloads.requests.DiagnosisRequest;
 import org.example.consultations.services.payloads.responses.DiagnosisDTO;
 import org.example.treatment.domains.TreatmentRequested;
@@ -25,6 +27,9 @@ public class DiagnosisService {
 
     @Inject
     DiagnosisRepository diagnosisRepository;
+
+    @Inject
+    DiagnosisTypeRepository diagnosisTypeRepository;
 
     @Inject
     ConsultationRepository consultationRepository;
@@ -56,6 +61,7 @@ public class DiagnosisService {
         diagnosis.severity = blankToNull(request.severity);
         diagnosis.kind = normalizeKind(request.kind);
         diagnosis.notes = blankToNull(request.notes);
+        applyHmisFields(diagnosis, request);
         diagnosis.creationDate = LocalDate.now();
         diagnosis.updateDate = LocalDate.now();
 
@@ -94,6 +100,7 @@ public class DiagnosisService {
         diagnosis.severity = blankToNull(request.severity);
         diagnosis.kind = normalizeKind(request.kind);
         diagnosis.notes = blankToNull(request.notes);
+        applyHmisFields(diagnosis, request);
         diagnosis.updateDate = LocalDate.now();
         syncLegacyDiagnosisText(consultation);
 
@@ -160,6 +167,30 @@ public class DiagnosisService {
                     .build();
         }
         return Response.ok(new ResponseMessage("Diagnosis fetched successfully", new DiagnosisDTO(diagnosis))).build();
+    }
+
+    private void applyHmisFields(Diagnosis diagnosis, DiagnosisRequest request) {
+        if (request == null || diagnosis == null) {
+            return;
+        }
+        if (request.diagnosisTypeId != null) {
+            DiagnosisType type = diagnosisTypeRepository.findById(request.diagnosisTypeId);
+            if (type != null) {
+                diagnosis.diagnosisType = type;
+                if (request.hmisCode == null || request.hmisCode.isBlank()) {
+                    diagnosis.hmisCode = blankToNull(type.hmisCode);
+                }
+                if (request.icd10Code == null || request.icd10Code.isBlank()) {
+                    diagnosis.icd10Code = blankToNull(type.icd10Code);
+                }
+            }
+        }
+        if (request.hmisCode != null) {
+            diagnosis.hmisCode = blankToNull(request.hmisCode);
+        }
+        if (request.icd10Code != null) {
+            diagnosis.icd10Code = blankToNull(request.icd10Code);
+        }
     }
 
     private Consultation ensureConsultation(PatientVisit visit) {

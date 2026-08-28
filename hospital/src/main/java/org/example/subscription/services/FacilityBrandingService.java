@@ -59,6 +59,7 @@ public class FacilityBrandingService {
         this.applyOtcIncludePrescribingToDto(facilityId, dto);
         this.applyPharmacyUseStockBatchToDto(facilityId, dto);
         this.applySpecialPrivilegesToDto(facilityId, dto);
+        this.applyHmisMetadataToDto(facilityId, dto);
         return dto;
     }
 
@@ -76,6 +77,7 @@ public class FacilityBrandingService {
         this.applyOtcIncludePrescribingToDto(facilityId, dto);
         this.applyPharmacyUseStockBatchToDto(facilityId, dto);
         this.applySpecialPrivilegesToDto(facilityId, dto);
+        this.applyHmisMetadataToDto(facilityId, dto);
         return dto;
     }
 
@@ -126,6 +128,7 @@ public class FacilityBrandingService {
         this.applyOtcIncludePrescribingToDto(resolvedFacilityId, dto);
         this.applyPharmacyUseStockBatchToDto(resolvedFacilityId, dto);
         this.applySpecialPrivilegesToDto(resolvedFacilityId, dto);
+        this.applyHmisMetadataToDto(resolvedFacilityId, dto);
         return dto;
     }
 
@@ -190,6 +193,24 @@ public class FacilityBrandingService {
         if (request.privilegeCreditAllowedGroupIds != null) {
             settings.privilegeCreditAllowedGroupIds = this.normalizeUserIdCsv(request.privilegeCreditAllowedGroupIds);
         }
+        if (request.hmisFacilityCode != null) {
+            settings.hmisFacilityCode = FacilityBrandingService.trimOrNull(request.hmisFacilityCode);
+        }
+        if (request.hmisFacilityLevel != null) {
+            settings.hmisFacilityLevel = FacilityBrandingService.trimOrNull(request.hmisFacilityLevel);
+        }
+        if (request.hmisDistrict != null) {
+            settings.hmisDistrict = FacilityBrandingService.trimOrNull(request.hmisDistrict);
+        }
+        if (request.hmisHsd != null) {
+            settings.hmisHsd = FacilityBrandingService.trimOrNull(request.hmisHsd);
+        }
+        if (request.hmisSubCounty != null) {
+            settings.hmisSubCounty = FacilityBrandingService.trimOrNull(request.hmisSubCounty);
+        }
+        if (request.hmisParish != null) {
+            settings.hmisParish = FacilityBrandingService.trimOrNull(request.hmisParish);
+        }
     }
 
     private boolean requestTouchesSpecialPrivileges(BusinessSettingsUpdateRequest request) {
@@ -222,6 +243,22 @@ public class FacilityBrandingService {
 
     private void applyPharmacyUseStockBatchToDto(Long facilityId, FacilityBrandingDTO dto) {
         dto.pharmacyUseStockBatch = this.resolvePharmacyUseStockBatch(facilityId);
+    }
+
+    private void applyHmisMetadataToDto(Long facilityId, FacilityBrandingDTO dto) {
+        if (facilityId == null || dto == null) {
+            return;
+        }
+        FacilityBusinessSettings settings = this.businessSettingsRepository.findByFacilityId(facilityId).orElse(null);
+        if (settings == null) {
+            return;
+        }
+        dto.hmisFacilityCode = settings.hmisFacilityCode;
+        dto.hmisFacilityLevel = settings.hmisFacilityLevel;
+        dto.hmisDistrict = settings.hmisDistrict;
+        dto.hmisHsd = settings.hmisHsd;
+        dto.hmisSubCounty = settings.hmisSubCounty;
+        dto.hmisParish = settings.hmisParish;
     }
 
     private void applySpecialPrivilegesToDto(Long facilityId, FacilityBrandingDTO dto) {

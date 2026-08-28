@@ -51,4 +51,18 @@ extends PanacheEntity {
     public String privilegeCreditGroupUserIds;
     @Column(columnDefinition="TEXT")
     public String privilegeCreditAllowedGroupIds;
+
+    /** HMIS reporting metadata (headers on 033b / 105 forms). Stored as TEXT to avoid MySQL row-size limits. */
+    @Column(columnDefinition = "TEXT")
+    public String hmisFacilityCode;
+    @Column(columnDefinition = "TEXT")
+    public String hmisFacilityLevel;
+    @Column(columnDefinition = "TEXT")
+    public String hmisDistrict;
+    @Column(columnDefinition = "TEXT")
+    public String hmisHsd;
+    @Column(columnDefinition = "TEXT")
+    public String hmisSubCounty;
+    @Column(columnDefinition = "TEXT")
+    public String hmisParish;
 }
