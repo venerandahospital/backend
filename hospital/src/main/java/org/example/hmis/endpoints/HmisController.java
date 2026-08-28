@@ -19,6 +19,7 @@ import org.example.configuration.handler.ActionMessages;
 import org.example.configuration.handler.ResponseMessage;
 import org.example.hmis.services.Hmis033bAggregationService;
 import org.example.hmis.services.Hmis033bPdfService;
+import org.example.hmis.services.Hmis105PdfService;
 import org.example.hmis.services.HmisTracerItemService;
 import org.example.hmis.services.payloads.Hmis033bAggregateResponse;
 import org.example.hmis.services.payloads.HmisTracerItemUpdateRequest;
@@ -29,6 +30,7 @@ public class HmisController {
 
     @Inject Hmis033bAggregationService hmis033bAggregationService;
     @Inject Hmis033bPdfService hmis033bPdfService;
+    @Inject Hmis105PdfService hmis105PdfService;
     @Inject HmisTracerItemService hmisTracerItemService;
 
     @GET
@@ -82,6 +84,45 @@ public class HmisController {
             }
             byte[] pdf = hmis033bPdfService.generate(fromDate, toDate);
             String filename = "hmis_033b_" + fromDate + "_" + toDate + ".pdf";
+            return Response.ok(pdf)
+                    .header("Content-Disposition", "attachment; filename=" + filename)
+                    .type("application/pdf")
+                    .build();
+        } catch (IllegalArgumentException ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage(ex.getMessage(), null))
+                    .build();
+        } catch (DateTimeParseException ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ResponseMessage("Invalid date format. Use YYYY-MM-DD.", null))
+                    .build();
+        } catch (RuntimeException ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new ResponseMessage(ex.getMessage(), null))
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("105/pdf")
+    @Produces("application/pdf")
+    @Transactional
+    @Operation(summary = "HMIS 105 monthly outpatient report PDF (official template overlay)")
+    public Response pdf105(
+            @QueryParam("from") String from,
+            @QueryParam("to") String to,
+            @QueryParam("datefrom") String datefrom,
+            @QueryParam("dateto") String dateto) {
+        try {
+            LocalDate fromDate = parseDate(from != null ? from : datefrom);
+            LocalDate toDate = parseDate(to != null ? to : dateto);
+            if (fromDate == null || toDate == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new ResponseMessage("Query params from and to (YYYY-MM-DD) are required", null))
+                        .build();
+            }
+            byte[] pdf = hmis105PdfService.generate(fromDate, toDate);
+            String filename = "hmis_105_" + fromDate.getYear() + "-" + String.format("%02d", fromDate.getMonthValue()) + ".pdf";
             return Response.ok(pdf)
                     .header("Content-Disposition", "attachment; filename=" + filename)
                     .type("application/pdf")
