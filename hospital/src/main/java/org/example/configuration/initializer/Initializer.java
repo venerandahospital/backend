@@ -2,6 +2,7 @@ package org.example.configuration.initializer;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,7 @@ import org.example.subscription.domains.repositories.ActivationTokenRepository;
 import org.example.user.domains.User;
 import org.example.user.domains.repositories.UserRepository;
 
+@ApplicationScoped
 public class Initializer {
 
     @Inject
@@ -26,16 +28,16 @@ public class Initializer {
     @Transactional
     public void initUser(@Observes StartupEvent ev){
 
-        boolean adminExists = userRepository.usernameExists("kavumamedicalclinic") ||
-                             userRepository.findByEmailOptional("md@kavumamedicalclinic.com").isPresent();
+        boolean adminExists = userRepository.usernameExists("vmd") ||
+                             userRepository.findByEmailOptional("md@vmd.com").isPresent();
 
         if (!adminExists){
             User adminUser = new User();
-            adminUser.username = "kavumamedicalclinic";
+            adminUser.username = "vmd";
             adminUser.profilePic = "";
             adminUser.role = "md";
-            adminUser.email = "md@kavumamedicalclinic.com";
-            adminUser.password = BcryptUtil.bcryptHash("123");
+            adminUser.email = "md@vmd.com";
+            adminUser.password = BcryptUtil.bcryptHash("password@vmd.com");
             adminUser.persist();
         }
 
