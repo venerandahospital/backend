@@ -6,8 +6,13 @@ public class HmisTracerItemDTO {
     public String tracerName;
     public Long stockItemId;
     public Long shopItemId;
+    public String stockItemName;
+    public String shopItemName;
     public Boolean active;
     public Integer sortOrder;
+    public double stockBalance;
+    /** Treatment lines prescribed/dispensed in the requested period (matched by mapped item IDs). */
+    public int dispensedInPeriod;
 
     public static HmisTracerItemDTO from(org.example.hmis.domains.HmisTracerItem row) {
         HmisTracerItemDTO dto = new HmisTracerItemDTO();

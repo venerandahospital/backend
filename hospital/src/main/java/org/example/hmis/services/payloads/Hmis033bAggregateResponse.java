@@ -69,6 +69,9 @@ public class Hmis033bAggregateResponse {
         public String tracerName;
         public Long stockItemId;
         public Long shopItemId;
+        public String stockItemName;
+        public String shopItemName;
         public double balance;
+        public int dispensedInPeriod;
     }
 }

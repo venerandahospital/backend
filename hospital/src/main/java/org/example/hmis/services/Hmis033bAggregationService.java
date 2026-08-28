@@ -16,7 +16,9 @@ import org.example.consultations.domains.Consultation;
 import org.example.consultations.domains.Diagnosis;
 import org.example.hmis.domains.HmisTracerItem;
 import org.example.hmis.services.payloads.Hmis033bAggregateResponse;
+import org.example.inventory.item.domain.Item;
 import org.example.inventory.stock.domains.StockBatch;
+import org.example.inventory.stock.domains.StockItem;
 import org.example.lab.singleStatementReport.malaria.domains.Malaria;
 import org.example.referrals.domains.ReferralForm;
 import org.example.subscription.domains.FacilityBusinessSettings;
@@ -59,7 +61,7 @@ public class Hmis033bAggregationService {
         aggregateReferrals(from, to, response);
         aggregateDiseases(from, to, response);
         aggregateMalaria(from, to, response);
-        aggregateTracerStock(response);
+        aggregateTracerStock(from, to, response);
         response.notes.add("Reattendance: patient with another visit in the prior 7 days.");
         response.notes.add("Diagnosis counts use HMIS codes, catalog types, or keyword matching.");
         return response;
@@ -229,7 +231,7 @@ public class Hmis033bAggregationService {
         }
     }
 
-    private void aggregateTracerStock(Hmis033bAggregateResponse response) {
+    private void aggregateTracerStock(LocalDate from, LocalDate to, Hmis033bAggregateResponse response) {
         List<HmisTracerItem> tracers = HmisTracerItem.find("active = true order by sortOrder, id").list();
         if (tracers == null) {
             return;
@@ -243,12 +245,75 @@ public class Hmis033bAggregationService {
             line.tracerName = tracer.tracerName;
             line.stockItemId = tracer.stockItemId;
             line.shopItemId = tracer.shopItemId;
-            line.balance = resolveStockBalance(tracer.stockItemId);
+            if (tracer.stockItemId != null) {
+                StockItem stockItem = StockItem.findById(tracer.stockItemId);
+                if (stockItem != null) {
+                    line.stockItemName = stockItem.stockItemName;
+                }
+            }
+            if (tracer.shopItemId != null) {
+                Item shopItem = Item.findById(tracer.shopItemId);
+                if (shopItem != null) {
+                    line.shopItemName = shopItem.title;
+                }
+            }
+            line.balance = resolveTracerBalance(tracer);
+            line.dispensedInPeriod = countTracerTreatments(tracer, from, to);
             response.tracerStock.add(line);
         }
     }
 
-    private double resolveStockBalance(Long stockItemId) {
+    public double resolveTracerBalance(HmisTracerItem tracer) {
+        if (tracer == null) {
+            return 0d;
+        }
+        double total = 0d;
+        if (tracer.stockItemId != null) {
+            total += resolveStockBatchBalance(tracer.stockItemId);
+        }
+        if (tracer.shopItemId != null) {
+            Item shopItem = Item.findById(tracer.shopItemId);
+            if (shopItem != null && shopItem.stockAtHand != null) {
+                total += shopItem.stockAtHand.doubleValue();
+            }
+        }
+        return total;
+    }
+
+    private int countTracerTreatments(HmisTracerItem tracer, LocalDate from, LocalDate to) {
+        if (tracer.stockItemId == null && tracer.shopItemId == null) {
+            return 0;
+        }
+        List<TreatmentRequested> treatments = TreatmentRequested.find(
+                "visit.visitDate >= ?1 and visit.visitDate <= ?2", from, to).list();
+        if (treatments == null) {
+            return 0;
+        }
+        int count = 0;
+        for (TreatmentRequested treatment : treatments) {
+            if (treatment == null) {
+                continue;
+            }
+            if (treatment.itemId != null) {
+                if (tracer.stockItemId != null && treatment.itemId.equals(tracer.stockItemId)) {
+                    count++;
+                    continue;
+                }
+                if (tracer.shopItemId != null && treatment.itemId.equals(tracer.shopItemId)) {
+                    count++;
+                    continue;
+                }
+            }
+            if (tracer.stockItemId != null && treatment.stockBatch != null
+                    && treatment.stockBatch.stockItemId != null
+                    && treatment.stockBatch.stockItemId.equals(tracer.stockItemId)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private double resolveStockBatchBalance(Long stockItemId) {
         if (stockItemId == null) {
             return 0d;
         }

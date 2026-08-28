@@ -146,9 +146,14 @@ public class HmisController {
     @Path("tracer-items")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @Operation(summary = "List HMIS tracer medicine mappings")
-    public Response listTracerItems() {
-        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label, hmisTracerItemService.listActive())).build();
+    @Operation(summary = "List HMIS tracer medicine mappings with inventory details")
+    public Response listTracerItems(
+            @QueryParam("from") String from,
+            @QueryParam("to") String to) {
+        LocalDate fromDate = parseDate(from);
+        LocalDate toDate = parseDate(to);
+        return Response.ok(new ResponseMessage(ActionMessages.FETCHED.label,
+                hmisTracerItemService.listAll(fromDate, toDate))).build();
     }
 
     @PUT
